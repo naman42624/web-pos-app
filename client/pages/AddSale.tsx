@@ -144,6 +144,29 @@ export default function AddSale() {
       return;
     }
 
+    if (orderType === "delivery") {
+      if (!deliveryDetails.receiverName.trim()) {
+        alert("Please enter receiver name");
+        return;
+      }
+      if (!deliveryDetails.receiverAddress.trim()) {
+        alert("Please enter receiver address");
+        return;
+      }
+      if (!deliveryDetails.receiverPhone.trim()) {
+        alert("Please enter receiver phone number");
+        return;
+      }
+      if (!deliveryDetails.senderName.trim()) {
+        alert("Please enter sender name");
+        return;
+      }
+      if (!deliveryDetails.senderPhone.trim()) {
+        alert("Please enter sender phone number");
+        return;
+      }
+    }
+
     setIsLoading(true);
     try {
       // Use the first payment mode (or primary mode if multiple)
@@ -156,6 +179,7 @@ export default function AddSale() {
         orderType,
         pickupDate: (orderType === "pickup_later" || orderType === "delivery") ? pickupDate : undefined,
         pickupTime: (orderType === "pickup_later" || orderType === "delivery") ? pickupTime : undefined,
+        deliveryDetails: orderType === "delivery" ? deliveryDetails : undefined,
       });
 
       setItems([]);
@@ -166,6 +190,14 @@ export default function AddSale() {
       setOrderType("pickup");
       setPickupDate("");
       setPickupTime("");
+      setDeliveryDetails({
+        receiverName: "",
+        receiverAddress: "",
+        receiverPhone: "",
+        message: "",
+        senderName: "",
+        senderPhone: "",
+      });
 
       setTimeout(() => {
         setIsLoading(false);
