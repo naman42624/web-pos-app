@@ -497,10 +497,10 @@ export default function AddSale() {
 
               <button
                 onClick={handleSaveSale}
-                disabled={isLoading || items.length === 0}
+                disabled={isLoading || items.length === 0 || !isPaymentValid()}
                 className={cn(
                   "w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2",
-                  isLoading || items.length === 0
+                  isLoading || items.length === 0 || !isPaymentValid()
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                     : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md hover:shadow-lg"
                 )}
