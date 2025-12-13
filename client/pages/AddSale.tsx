@@ -280,9 +280,18 @@ export default function AddSale() {
 
               {paymentMode === "credit" && (
                 <div className="mt-6 pt-6 border-t border-slate-200">
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Select Customer
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-slate-700">
+                      Select Customer
+                    </label>
+                    <button
+                      onClick={() => setShowAddCustomerModal(true)}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add New
+                    </button>
+                  </div>
                   <select
                     value={selectedCustomerId}
                     onChange={(e) => setSelectedCustomerId(e.target.value)}
