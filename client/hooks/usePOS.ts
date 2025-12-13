@@ -7,6 +7,15 @@ export interface SaleItem {
   price: number;
 }
 
+export interface DeliveryDetails {
+  receiverName: string;
+  receiverAddress: string;
+  receiverPhone: string;
+  message?: string;
+  senderName: string;
+  senderPhone: string;
+}
+
 export interface Sale {
   id: string;
   items: SaleItem[];
@@ -17,6 +26,7 @@ export interface Sale {
   orderType: "pickup" | "pickup_later" | "delivery";
   pickupDate?: string; // ISO date string for later pickup or delivery
   pickupTime?: string; // Time in HH:MM format
+  deliveryDetails?: DeliveryDetails;
 }
 
 export interface Address {
