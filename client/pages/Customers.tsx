@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Users, Phone, Mail, CreditCard, Plus, X, Trash2 } from "lucide-react";
+import { Users, Phone, Mail, CreditCard, Plus, X, Trash2, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Address } from "@/hooks/usePOS";
 
 export default function Customers() {
   const { customers, addCustomer } = usePOSContext();
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -16,6 +17,15 @@ export default function Customers() {
     email: "",
     organization: "",
     addresses: [] as Address[],
+  });
+
+  const filteredCustomers = customers.filter((customer) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      customer.name.toLowerCase().includes(query) ||
+      customer.phone.toLowerCase().includes(query) ||
+      (customer.organization?.toLowerCase().includes(query) ?? false)
+    );
   });
 
   const handleInputChange = (
