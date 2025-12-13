@@ -311,24 +311,19 @@ export default function AddSale() {
                 Payment Mode
               </h2>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4 mb-6">
                 {(["cash", "upi", "credit"] as PaymentMode[]).map((mode) => (
                   <button
                     key={mode}
-                    onClick={() => {
-                      setPaymentMode(mode);
-                      if (mode !== "credit") {
-                        setSelectedCustomerId("");
-                      }
-                    }}
+                    onClick={() => togglePaymentMode(mode)}
                     className={cn(
                       "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
-                      paymentMode === mode
+                      selectedPaymentModes.has(mode)
                         ? "border-blue-600 bg-blue-50 text-blue-700"
                         : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
                     )}
                   >
-                    {paymentMode === mode && (
+                    {selectedPaymentModes.has(mode) && (
                       <Check className="w-5 h-5 absolute top-2 right-2" />
                     )}
                     <span className="capitalize block">{mode}</span>
@@ -336,7 +331,55 @@ export default function AddSale() {
                 ))}
               </div>
 
-              {paymentMode === "credit" && (
+              {selectedPaymentModes.size > 1 && (
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-medium text-blue-700 mb-4">
+                    Enter amount for each payment method (must sum to ₹{total.toFixed(2)})
+                  </p>
+                  <div className="space-y-3">
+                    {Array.from(selectedPaymentModes).map((mode) => (
+                      <div key={mode} className="flex items-center gap-3">
+                        <label className="min-w-20 text-sm font-medium text-slate-700 capitalize">
+                          {mode}:
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <span className="text-slate-600">₹</span>
+                          <input
+                            type="number"
+                            value={paymentAmounts[mode]}
+                            onChange={(e) => updatePaymentAmount(mode, e.target.value)}
+                            placeholder="0.00"
+                            step="0.01"
+                            min="0"
+                            className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 p-3 bg-white rounded border border-slate-200">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">Total Entered:</span>
+                      <span className={cn(
+                        "font-semibold",
+                        Math.abs(getTotalPaymentAmount() - total) < 0.01
+                          ? "text-green-600"
+                          : "text-red-600"
+                      )}>
+                        ₹{getTotalPaymentAmount().toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">Expected Total:</span>
+                      <span className="font-semibold text-slate-900">
+                        ₹{total.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {selectedPaymentModes.has("credit") && (
                 <div className="mt-6 pt-6 border-t border-slate-200">
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-slate-700">
