@@ -113,23 +113,32 @@ export default function AddSale() {
       return;
     }
 
-    if (paymentMode === "credit" && !selectedCustomerId) {
+    if (!isPaymentValid()) {
+      alert("Payment amounts must sum to the total sale amount");
+      return;
+    }
+
+    if (selectedPaymentModes.has("credit") && !selectedCustomerId) {
       alert("Please select a customer for credit sale");
       return;
     }
 
     setIsLoading(true);
     try {
+      // Use the first payment mode (or primary mode if multiple)
+      const primaryMode = Array.from(selectedPaymentModes)[0];
       addSale({
         items,
-        paymentMode,
-        customerId: paymentMode === "credit" ? selectedCustomerId : undefined,
+        paymentMode: primaryMode,
+        customerId: selectedPaymentModes.has("credit") ? selectedCustomerId : undefined,
         total,
       });
 
       setItems([]);
       setOrderRemarks("");
       setSelectedCustomerId("");
+      setSelectedPaymentModes(new Set(["cash"]));
+      setPaymentAmounts({ cash: "", upi: "", credit: "" });
 
       setTimeout(() => {
         setIsLoading(false);
