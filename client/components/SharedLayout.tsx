@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, ShoppingCart, Users, FileText, CreditCard } from "lucide-react";
+import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SharedLayoutProps {
@@ -13,6 +13,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
     { path: "/", label: "Dashboard", icon: BarChart3 },
     { path: "/add-sale", label: "Add Sale", icon: ShoppingCart },
     { path: "/customers", label: "Customers", icon: Users },
+    { path: "/deliveries-pickups", label: "Deliveries & Pickups", icon: Truck },
     { path: "/credit-records", label: "Credit Records", icon: CreditCard },
   ];
 
