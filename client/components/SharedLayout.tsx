@@ -13,7 +13,8 @@ export function SharedLayout({ children }: SharedLayoutProps) {
     { path: "/", label: "Dashboard", icon: BarChart3 },
     { path: "/add-sale", label: "Add Sale", icon: ShoppingCart },
     { path: "/customers", label: "Customers", icon: Users },
-    { path: "/deliveries-pickups", label: "Deliveries & Pickups", icon: Truck },
+    { path: "/deliveries", label: "Deliveries", icon: Truck },
+    { path: "/pickups", label: "Pickups", icon: Package },
     { path: "/credit-records", label: "Credit Records", icon: CreditCard },
   ];
 
