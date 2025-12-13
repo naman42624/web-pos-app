@@ -309,6 +309,14 @@ export default function AddSale() {
                     {paymentMode}
                   </span>
                 </div>
+                {orderRemarks && (
+                  <div className="pt-2 border-t border-blue-200 mt-2">
+                    <p className="text-xs text-slate-500 font-medium mb-1">Remarks</p>
+                    <p className="text-sm text-slate-700 bg-white rounded px-2 py-1">
+                      {orderRemarks}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t-2 border-blue-300 flex justify-between text-lg">
