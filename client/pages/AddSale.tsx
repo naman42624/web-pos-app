@@ -327,6 +327,73 @@ export default function AddSale() {
               )}
             </div>
 
+            {/* Order Type Selection */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">
+                Order Type
+              </h2>
+
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                {(["pickup", "pickup_later", "delivery"] as const).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      setOrderType(type);
+                      if (type === "pickup") {
+                        setPickupDate("");
+                        setPickupTime("");
+                      }
+                    }}
+                    className={cn(
+                      "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
+                      orderType === type
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
+                    )}
+                  >
+                    {orderType === type && (
+                      <Check className="w-5 h-5 absolute top-2 right-2" />
+                    )}
+                    <span className="block">
+                      {type === "pickup" && "Pick Up"}
+                      {type === "pickup_later" && "Pick Up Later"}
+                      {type === "delivery" && "Delivery"}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {(orderType === "pickup_later" || orderType === "delivery") && (
+                <div className="space-y-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      {orderType === "pickup_later" ? "Pickup Date" : "Delivery Date"} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={pickupDate}
+                      onChange={(e) => setPickupDate(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      {orderType === "pickup_later" ? "Pickup Time" : "Delivery Time"} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="time"
+                      value={pickupTime}
+                      onChange={(e) => setPickupTime(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Payment Mode Selection */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
