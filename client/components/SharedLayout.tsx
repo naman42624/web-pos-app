@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck, Package } from "lucide-react";
+import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck, Box } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SharedLayoutProps {
