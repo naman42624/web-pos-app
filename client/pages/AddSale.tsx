@@ -560,7 +560,7 @@ export default function AddSale() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Email Address *
+                    Email Address
                   </label>
                   <input
                     type="email"
