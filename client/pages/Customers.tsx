@@ -1,10 +1,52 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Users, Phone, Mail, CreditCard } from "lucide-react";
+import { Users, Phone, Mail, CreditCard, Plus, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Customers() {
-  const { customers } = usePOSContext();
+  const { customers, addCustomer } = usePOSContext();
+  const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    setFormData({ ...formData, [field]: e.target.value });
+  };
+
+  const handleAddCustomer = () => {
+    if (!formData.name.trim()) {
+      alert("Please enter customer name");
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      alert("Please enter phone number");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      alert("Please enter email address");
+      return;
+    }
+
+    addCustomer({
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      totalCredit: 0,
+    });
+
+    setFormData({ name: "", phone: "", email: "" });
+    setShowAddCustomerModal(false);
+  };
 
   return (
     <SharedLayout>
