@@ -451,12 +451,33 @@ export default function AddSale() {
                     ₹{total.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Payment</span>
-                  <span className="font-medium text-slate-900 capitalize">
-                    {paymentMode}
-                  </span>
-                </div>
+
+                {selectedPaymentModes.size === 1 ? (
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Payment</span>
+                    <span className="font-medium text-slate-900 capitalize">
+                      {Array.from(selectedPaymentModes)[0]}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="pt-2 border-t border-blue-200 mt-2">
+                    <p className="text-xs text-slate-500 font-medium mb-2">Payment Breakdown</p>
+                    <div className="space-y-1">
+                      {Array.from(selectedPaymentModes).map((mode) => {
+                        const amount = parseFloat(paymentAmounts[mode]) || 0;
+                        return (
+                          <div key={mode} className="flex justify-between text-sm">
+                            <span className="text-slate-600 capitalize">{mode}:</span>
+                            <span className="font-medium text-slate-900">
+                              ₹{amount.toFixed(2)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {orderRemarks && (
                   <div className="pt-2 border-t border-blue-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-1">Remarks</p>
