@@ -24,6 +24,9 @@ export default function AddSale() {
   });
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [orderRemarks, setOrderRemarks] = useState("");
+  const [orderType, setOrderType] = useState<"pickup" | "pickup_later" | "delivery">("pickup");
+  const [pickupDate, setPickupDate] = useState("");
+  const [pickupTime, setPickupTime] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [newCustomerName, setNewCustomerName] = useState("");
