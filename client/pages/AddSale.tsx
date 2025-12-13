@@ -567,6 +567,17 @@ export default function AddSale() {
                   </div>
                 )}
 
+                {(orderType === "pickup_later" || orderType === "delivery") && (
+                  <div className="pt-2 border-t border-blue-200 mt-2">
+                    <p className="text-xs text-slate-500 font-medium mb-1">
+                      {orderType === "pickup_later" ? "Pickup" : "Delivery"}
+                    </p>
+                    <p className="text-sm text-slate-700 bg-white rounded px-2 py-1">
+                      {pickupDate && new Date(pickupDate).toLocaleDateString("en-IN")} {pickupTime && `at ${pickupTime}`}
+                    </p>
+                  </div>
+                )}
+
                 {orderRemarks && (
                   <div className="pt-2 border-t border-blue-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-1">Remarks</p>
