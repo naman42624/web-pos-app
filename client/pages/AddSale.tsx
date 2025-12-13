@@ -713,6 +713,17 @@ export default function AddSale() {
                   </div>
                 )}
 
+                {orderType === "delivery" && deliveryDetails.receiverName && (
+                  <div className="pt-2 border-t border-blue-200 mt-2">
+                    <p className="text-xs text-slate-500 font-medium mb-2">Delivery Info</p>
+                    <div className="text-xs text-slate-700 bg-white rounded px-2 py-1 space-y-1">
+                      <p><span className="font-medium">To:</span> {deliveryDetails.receiverName}</p>
+                      <p><span className="font-medium">Phone:</span> {deliveryDetails.receiverPhone}</p>
+                      <p><span className="font-medium">From:</span> {deliveryDetails.senderName}</p>
+                    </div>
+                  </div>
+                )}
+
                 {orderRemarks && (
                   <div className="pt-2 border-t border-blue-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-1">Remarks</p>
