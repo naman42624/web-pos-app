@@ -136,11 +136,6 @@ export default function AddSale() {
       return;
     }
 
-    if ((orderType === "pickup_later" || orderType === "delivery") && !pickupTime) {
-      alert("Please select a time for " + (orderType === "pickup_later" ? "later pickup" : "delivery"));
-      return;
-    }
-
     setIsLoading(true);
     try {
       // Use the first payment mode (or primary mode if multiple)
