@@ -167,15 +167,13 @@ export default function AddSale() {
       return;
     }
 
-    if (!newCustomerEmail.trim()) {
-      alert("Please enter email address");
-      return;
-    }
-
     const newCustomer = addCustomer({
       name: newCustomerName.trim(),
       phone: newCustomerPhone.trim(),
-      email: newCustomerEmail.trim(),
+      email: newCustomerEmail.trim() || undefined,
+      altPhone: undefined,
+      organization: undefined,
+      addresses: [],
       totalCredit: 0,
     });
 
