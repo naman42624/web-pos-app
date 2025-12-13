@@ -427,6 +427,106 @@ export default function AddSale() {
                   </div>
                 </div>
               )}
+
+              {orderType === "delivery" && (
+                <div className="space-y-4 p-4 bg-amber-50 border border-amber-200 rounded-lg mt-4">
+                  <h3 className="text-base font-semibold text-slate-900 flex items-center gap-2 mb-4">
+                    <Truck className="w-5 h-5 text-amber-600" />
+                    Delivery Details
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        Receiver Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={deliveryDetails.receiverName}
+                        onChange={(e) => setDeliveryDetails({ ...deliveryDetails, receiverName: e.target.value })}
+                        placeholder="e.g., John Doe"
+                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        Receiver Phone No. <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        value={deliveryDetails.receiverPhone}
+                        onChange={(e) => setDeliveryDetails({ ...deliveryDetails, receiverPhone: e.target.value })}
+                        placeholder="e.g., 9876543210"
+                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      Receiver Address <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      value={deliveryDetails.receiverAddress}
+                      onChange={(e) => setDeliveryDetails({ ...deliveryDetails, receiverAddress: e.target.value })}
+                      placeholder="Enter complete delivery address"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Message (Optional)
+                    </label>
+                    <textarea
+                      value={deliveryDetails.message}
+                      onChange={(e) => setDeliveryDetails({ ...deliveryDetails, message: e.target.value })}
+                      placeholder="Add any special instructions or delivery notes"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div className="border-t border-amber-200 pt-4">
+                    <h4 className="text-sm font-semibold text-slate-900 mb-4">Sender Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                          <User className="w-4 h-4" />
+                          Sender Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={deliveryDetails.senderName}
+                          onChange={(e) => setDeliveryDetails({ ...deliveryDetails, senderName: e.target.value })}
+                          placeholder="e.g., Jane Smith"
+                          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                          <Phone className="w-4 h-4" />
+                          Sender Phone No. <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          value={deliveryDetails.senderPhone}
+                          onChange={(e) => setDeliveryDetails({ ...deliveryDetails, senderPhone: e.target.value })}
+                          placeholder="e.g., 9876543210"
+                          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Payment Mode Selection */}
