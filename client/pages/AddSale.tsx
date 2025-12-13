@@ -27,6 +27,14 @@ export default function AddSale() {
   const [orderType, setOrderType] = useState<"pickup" | "pickup_later" | "delivery">("pickup");
   const [pickupDate, setPickupDate] = useState("");
   const [pickupTime, setPickupTime] = useState("");
+  const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetails>({
+    receiverName: "",
+    receiverAddress: "",
+    receiverPhone: "",
+    message: "",
+    senderName: "",
+    senderPhone: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [newCustomerName, setNewCustomerName] = useState("");
