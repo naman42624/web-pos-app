@@ -93,6 +93,36 @@ export default function AddSale() {
     }
   };
 
+  const handleAddCustomer = () => {
+    if (!newCustomerName.trim()) {
+      alert("Please enter customer name");
+      return;
+    }
+
+    if (!newCustomerPhone.trim()) {
+      alert("Please enter phone number");
+      return;
+    }
+
+    if (!newCustomerEmail.trim()) {
+      alert("Please enter email address");
+      return;
+    }
+
+    const newCustomer = addCustomer({
+      name: newCustomerName.trim(),
+      phone: newCustomerPhone.trim(),
+      email: newCustomerEmail.trim(),
+      totalCredit: 0,
+    });
+
+    setSelectedCustomerId(newCustomer.id);
+    setNewCustomerName("");
+    setNewCustomerPhone("");
+    setNewCustomerEmail("");
+    setShowAddCustomerModal(false);
+  };
+
   return (
     <SharedLayout>
       <div className="space-y-8">
