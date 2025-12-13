@@ -131,6 +131,16 @@ export default function AddSale() {
       return;
     }
 
+    if ((orderType === "pickup_later" || orderType === "delivery") && !pickupDate) {
+      alert("Please select a date for " + (orderType === "pickup_later" ? "later pickup" : "delivery"));
+      return;
+    }
+
+    if ((orderType === "pickup_later" || orderType === "delivery") && !pickupTime) {
+      alert("Please select a time for " + (orderType === "pickup_later" ? "later pickup" : "delivery"));
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Use the first payment mode (or primary mode if multiple)
@@ -140,6 +150,9 @@ export default function AddSale() {
         paymentMode: primaryMode,
         customerId: selectedPaymentModes.has("credit") ? selectedCustomerId : undefined,
         total,
+        orderType,
+        pickupDate: (orderType === "pickup_later" || orderType === "delivery") ? pickupDate : undefined,
+        pickupTime: (orderType === "pickup_later" || orderType === "delivery") ? pickupTime : undefined,
       });
 
       setItems([]);
@@ -147,6 +160,9 @@ export default function AddSale() {
       setSelectedCustomerId("");
       setSelectedPaymentModes(new Set(["cash"]));
       setPaymentAmounts({ cash: "", upi: "", credit: "" });
+      setOrderType("pickup");
+      setPickupDate("");
+      setPickupTime("");
 
       setTimeout(() => {
         setIsLoading(false);
