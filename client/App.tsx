@@ -10,7 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import AddSale from "./pages/AddSale";
 import Customers from "./pages/Customers";
 import CustomerDetail from "./pages/CustomerDetail";
-import DeliveriesPickups from "./pages/DeliveriesPickups";
+import Deliveries from "./pages/Deliveries";
+import Pickups from "./pages/Pickups";
 import CreditRecords from "./pages/CreditRecords";
 import NotFound from "./pages/NotFound";
 
