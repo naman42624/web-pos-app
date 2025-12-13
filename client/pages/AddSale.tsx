@@ -72,6 +72,11 @@ export default function AddSale() {
   const isPaymentValid = () => {
     if (selectedPaymentModes.size === 0) return false;
     if (selectedPaymentModes.has("credit") && !selectedCustomerId) return false;
+
+    // If only one payment mode, it's valid
+    if (selectedPaymentModes.size === 1) return true;
+
+    // For multiple modes, amounts must be entered and sum to total
     const totalPayment = getTotalPaymentAmount();
     return Math.abs(totalPayment - total) < 0.01; // Allow for floating point precision
   };
