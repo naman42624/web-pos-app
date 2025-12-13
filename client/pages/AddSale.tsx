@@ -376,7 +376,7 @@ export default function AddSale() {
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      {orderType === "pickup_later" ? "Pickup Time" : "Delivery Time"} <span className="text-red-500">*</span>
+                      {orderType === "pickup_later" ? "Pickup Time" : "Delivery Time"}
                     </label>
                     <input
                       type="time"
