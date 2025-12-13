@@ -14,6 +14,9 @@ export interface Sale {
   customerId?: string;
   total: number;
   date: string;
+  orderType: "pickup" | "pickup_later" | "delivery";
+  pickupDate?: string; // ISO date string for later pickup or delivery
+  pickupTime?: string; // Time in HH:MM format
 }
 
 export interface Address {
