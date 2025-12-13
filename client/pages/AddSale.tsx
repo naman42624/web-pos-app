@@ -18,6 +18,7 @@ export default function AddSale() {
   const [itemPrice, setItemPrice] = useState("");
   const [paymentMode, setPaymentMode] = useState<PaymentMode>("cash");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
+  const [orderRemarks, setOrderRemarks] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
