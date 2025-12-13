@@ -52,11 +52,20 @@ export default function Customers() {
     <SharedLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Customers</h1>
-          <p className="text-slate-500 mt-2">
-            Manage customer information and view credit details
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Customers</h1>
+            <p className="text-slate-500 mt-2">
+              Manage customer information and view credit details
+            </p>
+          </div>
+          <button
+            onClick={() => setShowAddCustomerModal(true)}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            Add Customer
+          </button>
         </div>
 
         {/* Customers List */}
