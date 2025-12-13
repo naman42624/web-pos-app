@@ -29,6 +29,7 @@ export function App() {
               <Route path="/add-sale" element={<AddSale />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/customer/:id" element={<CustomerDetail />} />
+              <Route path="/deliveries-pickups" element={<DeliveriesPickups />} />
               <Route path="/credit-records" element={<CreditRecords />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
