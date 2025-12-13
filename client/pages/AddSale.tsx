@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
 import { SaleItem } from "@/hooks/usePOS";
-import { Trash2, Plus, Check, X } from "lucide-react";
+import { Trash2, Plus, Check, X, Calendar, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type PaymentMode = "cash" | "upi" | "credit";
