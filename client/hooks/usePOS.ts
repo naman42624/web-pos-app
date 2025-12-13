@@ -16,11 +16,23 @@ export interface Sale {
   date: string;
 }
 
+export interface Address {
+  id: string;
+  label: string; // e.g., "Home", "Office"
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
 export interface Customer {
   id: string;
   name: string;
   phone: string;
-  email: string;
+  altPhone?: string;
+  email?: string;
+  organization?: string;
+  addresses: Address[];
   totalCredit: number;
 }
 
