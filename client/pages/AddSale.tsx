@@ -20,6 +20,10 @@ export default function AddSale() {
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [orderRemarks, setOrderRemarks] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
+  const [newCustomerName, setNewCustomerName] = useState("");
+  const [newCustomerPhone, setNewCustomerPhone] = useState("");
+  const [newCustomerEmail, setNewCustomerEmail] = useState("");
 
   const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
