@@ -74,6 +74,10 @@ export default function AddSale() {
         total,
       });
 
+      setItems([]);
+      setOrderRemarks("");
+      setSelectedCustomerId("");
+
       setTimeout(() => {
         setIsLoading(false);
         navigate("/");
