@@ -32,6 +32,50 @@ export default function AddSale() {
 
   const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
+  const togglePaymentMode = (mode: PaymentMode) => {
+    const newModes = new Set(selectedPaymentModes);
+    if (newModes.has(mode)) {
+      if (newModes.size === 1) {
+        return; // At least one mode must be selected
+      }
+      newModes.delete(mode);
+      setPaymentAmounts({ ...paymentAmounts, [mode]: "" });
+    } else {
+      newModes.add(mode);
+    }
+    setSelectedPaymentModes(newModes);
+
+    if (mode !== "credit" && !newModes.has("credit")) {
+      setSelectedCustomerId("");
+    }
+  };
+
+  const updatePaymentAmount = (mode: PaymentMode, amount: string) => {
+    setPaymentAmounts({ ...paymentAmounts, [mode]: amount });
+  };
+
+  const getPaymentBreakdown = () => {
+    const breakdown: Record<PaymentMode, number> = { cash: 0, upi: 0, credit: 0 };
+    selectedPaymentModes.forEach((mode) => {
+      const amount = parseFloat(paymentAmounts[mode]) || 0;
+      breakdown[mode] = amount;
+    });
+    return breakdown;
+  };
+
+  const getTotalPaymentAmount = () => {
+    return Array.from(selectedPaymentModes).reduce((sum, mode) => {
+      return sum + (parseFloat(paymentAmounts[mode]) || 0);
+    }, 0);
+  };
+
+  const isPaymentValid = () => {
+    if (selectedPaymentModes.size === 0) return false;
+    if (selectedPaymentModes.has("credit") && !selectedCustomerId) return false;
+    const totalPayment = getTotalPaymentAmount();
+    return Math.abs(totalPayment - total) < 0.01; // Allow for floating point precision
+  };
+
   const addItem = () => {
     if (!itemName.trim() || !itemPrice || parseFloat(itemPrice) <= 0) {
       alert("Please enter valid item details");
