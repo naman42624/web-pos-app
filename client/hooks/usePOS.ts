@@ -50,6 +50,18 @@ const initialCustomers: Customer[] = [
     name: "Rajesh Kumar",
     phone: "9876543210",
     email: "rajesh@example.com",
+    altPhone: "9876543220",
+    organization: "Kumar Enterprises",
+    addresses: [
+      {
+        id: "1-1",
+        label: "Office",
+        street: "123 Business Street",
+        city: "Mumbai",
+        state: "Maharashtra",
+        zip: "400001",
+      },
+    ],
     totalCredit: 5000,
   },
   {
@@ -57,6 +69,18 @@ const initialCustomers: Customer[] = [
     name: "Priya Singh",
     phone: "9876543211",
     email: "priya@example.com",
+    altPhone: "9876543221",
+    organization: "Singh & Co.",
+    addresses: [
+      {
+        id: "2-1",
+        label: "Home",
+        street: "456 Residential Lane",
+        city: "Delhi",
+        state: "Delhi",
+        zip: "110001",
+      },
+    ],
     totalCredit: 3500,
   },
   {
@@ -64,6 +88,17 @@ const initialCustomers: Customer[] = [
     name: "Amit Patel",
     phone: "9876543212",
     email: "amit@example.com",
+    organization: "Patel Trading",
+    addresses: [
+      {
+        id: "3-1",
+        label: "Office",
+        street: "789 Commerce Plaza",
+        city: "Bangalore",
+        state: "Karnataka",
+        zip: "560001",
+      },
+    ],
     totalCredit: 2000,
   },
 ];
