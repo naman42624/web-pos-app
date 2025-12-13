@@ -194,8 +194,8 @@ export default function Customers() {
         {/* Add Customer Modal */}
         {showAddCustomerModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-8">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
+              <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4">
                 <h2 className="text-3xl font-bold text-slate-900">Add New Customer</h2>
                 <button
                   onClick={() => setShowAddCustomerModal(false)}
@@ -206,57 +206,182 @@ export default function Customers() {
               </div>
 
               <div className="space-y-6">
+                {/* Contact Information Section */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange(e, "name")}
-                    placeholder="e.g., John Doe"
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
-                    onKeyDown={(e) => e.key === "Enter" && handleAddCustomer()}
-                  />
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-3 border-b border-slate-200">
+                    Contact Information
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => handleInputChange(e, "name")}
+                        placeholder="e.g., John Doe"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                          Phone Number <span className="text-red-500">*</span>
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <div className="text-slate-400 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-sm">
+                            +91
+                          </div>
+                          <input
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) => handleInputChange(e, "phone")}
+                            placeholder="9876543210"
+                            className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
+                          />
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">10-digit mobile number</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                          Alternative Phone
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <div className="text-slate-400 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50 text-sm">
+                            +91
+                          </div>
+                          <input
+                            type="tel"
+                            value={formData.altPhone}
+                            onChange={(e) => handleInputChange(e, "altPhone")}
+                            placeholder="9876543210"
+                            className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange(e, "email")}
+                        placeholder="john@example.com"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
+                      />
+                    </div>
+                  </div>
                 </div>
 
+                {/* Business Information Section */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Phone Number *
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <div className="text-slate-400 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50">
-                      +91
-                    </div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-3 border-b border-slate-200">
+                    Business Information
+                  </h3>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Organization / Company Name
+                    </label>
                     <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange(e, "phone")}
-                      placeholder="e.g., 9876543210"
-                      className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
-                      onKeyDown={(e) => e.key === "Enter" && handleAddCustomer()}
+                      type="text"
+                      value={formData.organization}
+                      onChange={(e) => handleInputChange(e, "organization")}
+                      placeholder="e.g., Acme Corporation"
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
                     />
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">Enter 10-digit mobile number</p>
                 </div>
 
+                {/* Addresses Section */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange(e, "email")}
-                    placeholder="e.g., john@example.com"
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
-                    onKeyDown={(e) => e.key === "Enter" && handleAddCustomer()}
-                  />
-                  <p className="text-xs text-slate-500 mt-1">Use a valid email address</p>
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+                    <h3 className="text-lg font-semibold text-slate-900">
+                      Addresses
+                    </h3>
+                    <button
+                      onClick={handleAddAddress}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Address
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {formData.addresses.map((address) => (
+                      <div key={address.id} className="p-4 border border-slate-200 rounded-lg space-y-3">
+                        <div className="flex items-center justify-between">
+                          <input
+                            type="text"
+                            value={address.label}
+                            onChange={(e) =>
+                              handleAddressChange(address.id, "label", e.target.value)
+                            }
+                            placeholder="e.g., Home, Office"
+                            className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm font-semibold"
+                          />
+                          <button
+                            onClick={() => handleRemoveAddress(address.id)}
+                            className="ml-2 text-red-600 hover:text-red-700 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <input
+                          type="text"
+                          value={address.street}
+                          onChange={(e) =>
+                            handleAddressChange(address.id, "street", e.target.value)
+                          }
+                          placeholder="Street address"
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                        />
+
+                        <div className="grid grid-cols-3 gap-2">
+                          <input
+                            type="text"
+                            value={address.city}
+                            onChange={(e) =>
+                              handleAddressChange(address.id, "city", e.target.value)
+                            }
+                            placeholder="City"
+                            className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                          />
+                          <input
+                            type="text"
+                            value={address.state}
+                            onChange={(e) =>
+                              handleAddressChange(address.id, "state", e.target.value)
+                            }
+                            placeholder="State"
+                            className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                          />
+                          <input
+                            type="text"
+                            value={address.zip}
+                            onChange={(e) =>
+                              handleAddressChange(address.id, "zip", e.target.value)
+                            }
+                            placeholder="ZIP"
+                            className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-8">
+              <div className="flex gap-3 mt-8 sticky bottom-0 bg-white pt-4 border-t border-slate-200">
                 <button
                   onClick={() => setShowAddCustomerModal(false)}
                   className="flex-1 px-6 py-3 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors text-base"
