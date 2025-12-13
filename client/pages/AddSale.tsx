@@ -261,6 +261,20 @@ export default function AddSale() {
                   </select>
                 </div>
               )}
+
+              {/* Order Remarks */}
+              <div className="mt-6 pt-6 border-t border-slate-200">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Order Remarks
+                </label>
+                <textarea
+                  value={orderRemarks}
+                  onChange={(e) => setOrderRemarks(e.target.value)}
+                  placeholder="Add any special instructions or notes for this order..."
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                  rows={3}
+                />
+              </div>
             </div>
           </div>
 
