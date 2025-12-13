@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Users, Phone, Mail, CreditCard, Plus, X } from "lucide-react";
+import { Users, Phone, Mail, CreditCard, Plus, X, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Address } from "@/hooks/usePOS";
 
 export default function Customers() {
   const { customers, addCustomer } = usePOSContext();
@@ -11,7 +12,10 @@ export default function Customers() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    altPhone: "",
     email: "",
+    organization: "",
+    addresses: [] as Address[],
   });
 
   const handleInputChange = (
@@ -19,6 +23,41 @@ export default function Customers() {
     field: string
   ) => {
     setFormData({ ...formData, [field]: e.target.value });
+  };
+
+  const handleAddAddress = () => {
+    const newAddress: Address = {
+      id: `addr-${Date.now()}`,
+      label: "Address",
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+    };
+    setFormData({
+      ...formData,
+      addresses: [...formData.addresses, newAddress],
+    });
+  };
+
+  const handleRemoveAddress = (addressId: string) => {
+    setFormData({
+      ...formData,
+      addresses: formData.addresses.filter((addr) => addr.id !== addressId),
+    });
+  };
+
+  const handleAddressChange = (
+    addressId: string,
+    field: string,
+    value: string
+  ) => {
+    setFormData({
+      ...formData,
+      addresses: formData.addresses.map((addr) =>
+        addr.id === addressId ? { ...addr, [field]: value } : addr
+      ),
+    });
   };
 
   const handleAddCustomer = () => {
@@ -32,19 +71,24 @@ export default function Customers() {
       return;
     }
 
-    if (!formData.email.trim()) {
-      alert("Please enter email address");
-      return;
-    }
-
     addCustomer({
       name: formData.name.trim(),
       phone: formData.phone.trim(),
-      email: formData.email.trim(),
+      altPhone: formData.altPhone.trim() || undefined,
+      email: formData.email.trim() || undefined,
+      organization: formData.organization.trim() || undefined,
+      addresses: formData.addresses,
       totalCredit: 0,
     });
 
-    setFormData({ name: "", phone: "", email: "" });
+    setFormData({
+      name: "",
+      phone: "",
+      altPhone: "",
+      email: "",
+      organization: "",
+      addresses: [],
+    });
     setShowAddCustomerModal(false);
   };
 
