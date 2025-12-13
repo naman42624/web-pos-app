@@ -122,74 +122,100 @@ export default function Customers() {
           </button>
         </div>
 
+        {/* Search Bar */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name, phone number, or organization..."
+              className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base text-slate-900"
+            />
+          </div>
+        </div>
+
         {/* Customers List */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           {customers.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Name
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Phone
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Email
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Total Credit
-                    </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {customers.map((customer) => (
-                    <tr
-                      key={customer.id}
-                      className="hover:bg-slate-50 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-slate-900">
-                          {customer.name}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-slate-600">
-                          <Phone className="w-4 h-4" />
-                          {customer.phone}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-slate-600">
-                          <Mail className="w-4 h-4" />
-                          {customer.email}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="w-4 h-4 text-orange-600" />
-                          <span className="font-semibold text-slate-900">
-                            ₹{customer.totalCredit.toLocaleString("en-IN")}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <Link
-                          to={`/customer/${customer.id}`}
-                          className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+            <>
+              {filteredCustomers.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-50">
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                          Name
+                        </th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                          Phone
+                        </th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                          Email
+                        </th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                          Total Credit
+                        </th>
+                        <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {filteredCustomers.map((customer) => (
+                        <tr
+                          key={customer.id}
+                          className="hover:bg-slate-50 transition-colors"
                         >
-                          View Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          <td className="px-6 py-4">
+                            <p className="font-medium text-slate-900">
+                              {customer.name}
+                            </p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2 text-slate-600">
+                              <Phone className="w-4 h-4" />
+                              {customer.phone}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2 text-slate-600">
+                              <Mail className="w-4 h-4" />
+                              {customer.email}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <CreditCard className="w-4 h-4 text-orange-600" />
+                              <span className="font-semibold text-slate-900">
+                                ₹{customer.totalCredit.toLocaleString("en-IN")}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <Link
+                              to={`/customer/${customer.id}`}
+                              className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                            >
+                              View Details
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500 font-medium">No customers found</p>
+                  <p className="text-slate-400 text-sm mt-1">
+                    Try adjusting your search terms
+                  </p>
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-12">
               <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
