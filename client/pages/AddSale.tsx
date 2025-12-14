@@ -730,52 +730,66 @@ export default function AddSale() {
               {saleItems.length > 0 ? (
                 <div className="space-y-3">
                   {saleItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        {item.image ? (
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs text-slate-500">No img</span>
+                    <div key={item.id} className="border border-slate-200 rounded-lg overflow-hidden">
+                      <div className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs text-slate-500">No img</span>
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-slate-900">{item.name}</p>
+                            <p className="text-sm text-slate-500 mt-1">
+                              {item.quantity} × ₹{item.price.toFixed(2)}
+                            </p>
                           </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900">{item.name}</p>
-                          <p className="text-sm text-slate-500 mt-1">
-                            {item.quantity} × ₹{item.price.toFixed(2)}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              updateItemQuantity(
+                                item.id,
+                                parseInt(e.target.value) || 1
+                              )
+                            }
+                            min="1"
+                            className="w-16 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                          />
+                          <p className="font-bold text-slate-900 w-20 text-right">
+                            ₹{(item.quantity * item.price).toFixed(2)}
                           </p>
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="text-red-600 hover:text-red-700 transition-colors"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            updateItemQuantity(
-                              item.id,
-                              parseInt(e.target.value) || 1
-                            )
-                          }
-                          min="1"
-                          className="w-16 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                        />
-                        <p className="font-bold text-slate-900 w-20 text-right">
-                          ₹{(item.quantity * item.price).toFixed(2)}
-                        </p>
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="text-red-600 hover:text-red-700 transition-colors"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
+
+                      {/* Product Composition */}
+                      {item.composition && item.composition.length > 0 && (
+                        <div className="border-t border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs font-semibold text-slate-700 mb-2">Composition:</p>
+                          <div className="space-y-1">
+                            {item.composition.map((comp) => (
+                              <div key={comp.itemId} className="flex justify-between text-xs text-slate-600 px-2">
+                                <span>{getItemName(comp.itemId)} × {comp.quantity}</span>
+                                <span className="font-medium">₹{(getItemPrice(comp.itemId) * comp.quantity).toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
