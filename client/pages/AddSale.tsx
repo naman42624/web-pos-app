@@ -40,6 +40,7 @@ export default function AddSale() {
   });
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
   const [discountValue, setDiscountValue] = useState("");
+  const [deliveryCharges, setDeliveryCharges] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [newCustomerName, setNewCustomerName] = useState("");
