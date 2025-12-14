@@ -127,19 +127,20 @@ export default function AddSale() {
       price: parseFloat(itemPrice),
     };
 
-    setItems([...items, newItem]);
+    setSaleItems([...saleItems, newItem]);
     setItemName("");
     setItemQuantity("1");
     setItemPrice("");
+    setShowItemDropdown(false);
   };
 
   const removeItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id));
+    setSaleItems(saleItems.filter((item) => item.id !== id));
   };
 
   const updateItemQuantity = (id: string, quantity: number) => {
-    setItems(
-      items.map((item) =>
+    setSaleItems(
+      saleItems.map((item) =>
         item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
       )
     );
