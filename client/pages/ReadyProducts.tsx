@@ -228,12 +228,17 @@ export default function ReadyProducts() {
                       Composition ({product.items.length} items)
                     </p>
                     <div className="space-y-1">
-                      {product.items.map((pi) => (
-                        <div key={pi.itemId} className="flex justify-between text-xs text-slate-600">
-                          <span>{getItemName(pi.itemId)} × {pi.quantity}</span>
-                          <span className="font-medium">₹{(getItemPrice(pi.itemId) * pi.quantity).toFixed(2)}</span>
-                        </div>
-                      ))}
+                      {product.items.map((pi, idx) => {
+                        const isCustom = (pi as any).customName !== undefined;
+                        const itemName = isCustom ? (pi as any).customName : getItemName(pi.itemId);
+                        const itemPrice = isCustom ? (pi as any).customPrice : getItemPrice(pi.itemId);
+                        return (
+                          <div key={idx} className="flex justify-between text-xs text-slate-600">
+                            <span>{itemName} × {pi.quantity}</span>
+                            <span className="font-medium">₹{(itemPrice * pi.quantity).toFixed(2)}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 
