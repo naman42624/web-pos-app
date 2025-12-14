@@ -671,14 +671,15 @@ export default function AddSale() {
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
                           Product Price (₹)
+                          <span className="text-xs text-slate-500 font-normal ml-1">(Auto-calculated)</span>
                         </label>
                         <input
                           type="number"
                           value={customProductPrice}
-                          onChange={(e) => setCustomProductPrice(e.target.value)}
+                          readOnly
                           placeholder="0.00"
                           step="0.01"
-                          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                          className="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 text-slate-700 cursor-not-allowed"
                         />
                       </div>
                       <div>
