@@ -280,6 +280,37 @@ export default function Items() {
                     />
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Item Image
+                  </label>
+                  {formData.image && (
+                    <div className="mb-3 flex items-center justify-between">
+                      <img
+                        src={formData.image}
+                        alt="Preview"
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, image: "" })}
+                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Supported formats: JPG, PNG, GIF, WebP
+                  </p>
+                </div>
               </div>
 
               <div className="flex gap-3 mt-6">
