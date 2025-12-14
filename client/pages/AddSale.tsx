@@ -10,7 +10,7 @@ type PaymentMode = "cash" | "upi" | "credit";
 
 export default function AddSale() {
   const navigate = useNavigate();
-  const { addSale, customers, addCustomer, items: inventoryItems } = usePOSContext();
+  const { addSale, customers, addCustomer, items: inventoryItems, products: readyProducts } = usePOSContext();
 
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
   const [itemName, setItemName] = useState("");
