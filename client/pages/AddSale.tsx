@@ -203,6 +203,7 @@ export default function AddSale() {
       quantity: quantity,
       price: parseFloat(customProductPrice),
       image: undefined,
+      composition: customProductItems,
     };
 
     setSaleItems([...saleItems, newItem]);
