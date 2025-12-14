@@ -951,6 +951,15 @@ export default function AddSale() {
                   </div>
                 )}
 
+                {deliveryChargeAmount > 0 && (
+                  <div className="flex justify-between text-orange-700 bg-orange-50 px-3 py-2 rounded-lg">
+                    <span className="text-sm font-medium">Delivery Charges</span>
+                    <span className="font-semibold">
+                      +₹{deliveryChargeAmount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-lg pt-2">
                   <span className="font-bold text-slate-900">Total</span>
                   <span className="font-bold text-blue-700">
