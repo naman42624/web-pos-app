@@ -39,6 +39,7 @@ export interface Sale {
   discountType?: "percentage" | "fixed";
   discountValue?: number;
   discountAmount?: number;
+  deliveryCharges?: number; // Optional delivery charges for delivery orders
 }
 
 export interface Address {
