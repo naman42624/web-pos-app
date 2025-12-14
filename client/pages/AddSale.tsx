@@ -374,9 +374,9 @@ export default function AddSale() {
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-4">Items</h2>
 
-              {items.length > 0 ? (
+              {saleItems.length > 0 ? (
                 <div className="space-y-3">
-                  {items.map((item) => (
+                  {saleItems.map((item) => (
                     <div
                       key={item.id}
                       className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
