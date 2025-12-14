@@ -252,6 +252,7 @@ export default function AddSale() {
       });
       setDiscountType("percentage");
       setDiscountValue("");
+      setDeliveryCharges("");
 
       setTimeout(() => {
         setIsLoading(false);
