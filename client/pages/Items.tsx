@@ -82,7 +82,7 @@ export default function Items() {
   const closeModal = () => {
     setShowAddItemModal(false);
     setEditingId(null);
-    setFormData({ name: "", price: "", stock: "" });
+    setFormData({ name: "", price: "", stock: "", image: "" });
   };
 
   return (
