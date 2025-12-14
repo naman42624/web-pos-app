@@ -52,6 +52,7 @@ export default function Items() {
         name: formData.name.trim(),
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        image: formData.image || undefined,
       });
       setEditingId(null);
     } else {
@@ -59,10 +60,11 @@ export default function Items() {
         name: formData.name.trim(),
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        image: formData.image || undefined,
       });
     }
 
-    setFormData({ name: "", price: "", stock: "" });
+    setFormData({ name: "", price: "", stock: "", image: "" });
     setShowAddItemModal(false);
   };
 
