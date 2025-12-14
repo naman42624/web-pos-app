@@ -134,17 +134,44 @@ export default function ReadyProducts() {
     closeModal();
   };
 
-  const getItemName = (itemId: string) => {
-    return inventoryItems.find((item) => item.id === itemId)?.name || "Unknown";
+  const getItemName = (itemId?: string, customName?: string) => {
+    if (customName) return customName;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
   };
 
-  const getItemPrice = (itemId: string) => {
-    return inventoryItems.find((item) => item.id === itemId)?.price || 0;
+  const getItemPrice = (itemId?: string, customPrice?: number) => {
+    if (customPrice !== undefined) return customPrice;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.price || 0) : 0;
+  };
+
+  const addCustomItemToProduct = () => {
+    if (!customItemName.trim()) {
+      alert("Please enter item name");
+      return;
+    }
+
+    if (!customItemPrice || parseFloat(customItemPrice) <= 0) {
+      alert("Please enter a valid price");
+      return;
+    }
+
+    const newItem = {
+      customName: customItemName.trim(),
+      customPrice: parseFloat(customItemPrice),
+      quantity: 1,
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      selectedItems: [...prev.selectedItems, newItem],
+    }));
+    setCustomItemName("");
+    setCustomItemPrice("");
   };
 
   const calculateCompositionPrice = () => {
     return formData.selectedItems.reduce((sum, pi) => {
-      const itemPrice = getItemPrice(pi.itemId);
+      const itemPrice = getItemPrice(pi.itemId, pi.customPrice);
       return sum + itemPrice * pi.quantity;
     }, 0);
   };
