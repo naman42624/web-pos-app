@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Plus, X, Edit2, Trash2 } from "lucide-react";
+import { Plus, X, Edit2, Trash2, Image as ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Items() {
