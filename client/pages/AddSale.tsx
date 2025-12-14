@@ -169,12 +169,43 @@ export default function AddSale() {
     setCustomProductPrice(newTotal.toString());
   };
 
-  const getItemName = (itemId: string) => {
-    return inventoryItems.find((item) => item.id === itemId)?.name || "Unknown";
+  const getItemName = (itemId?: string, customName?: string) => {
+    if (customName) return customName;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
   };
 
-  const getItemPrice = (itemId: string) => {
-    return inventoryItems.find((item) => item.id === itemId)?.price || 0;
+  const getItemPrice = (itemId?: string, customPrice?: number) => {
+    if (customPrice !== undefined) return customPrice;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.price || 0) : 0;
+  };
+
+  const addCustomItemToProduct = () => {
+    if (!customItemName.trim()) {
+      alert("Please enter item name");
+      return;
+    }
+
+    if (!customItemPrice || parseFloat(customItemPrice) <= 0) {
+      alert("Please enter a valid price");
+      return;
+    }
+
+    const newItem = {
+      customName: customItemName.trim(),
+      customPrice: parseFloat(customItemPrice),
+      quantity: 1,
+    };
+
+    const newItems = [...customProductItems, newItem];
+    setCustomProductItems(newItems);
+    setCustomItemName("");
+    setCustomItemPrice("");
+
+    // Auto-update product price to composition total
+    const newTotal = newItems.reduce((sum, pi) => {
+      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+    }, 0);
+    setCustomProductPrice(newTotal.toString());
   };
 
   const getCustomProductTotalPrice = () => {
