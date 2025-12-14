@@ -147,7 +147,7 @@ export default function AddSale() {
   };
 
   const handleSaveSale = async () => {
-    if (items.length === 0) {
+    if (saleItems.length === 0) {
       alert("Please add at least one item");
       return;
     }
