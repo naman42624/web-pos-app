@@ -13,16 +13,22 @@ export default function AddSale() {
   const { addSale, customers, addCustomer, items: inventoryItems, products: readyProducts } = usePOSContext();
 
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
-  const [itemName, setItemName] = useState("");
-  const [itemQuantity, setItemQuantity] = useState("1");
-  const [itemPrice, setItemPrice] = useState("");
-  const [itemImage, setItemImage] = useState("");
-  const [showItemDropdown, setShowItemDropdown] = useState(false);
-  const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
+  const [addMode, setAddMode] = useState<"ready" | "custom">("ready");
+
+  // Ready product mode
   const [productName, setProductName] = useState("");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<typeof readyProducts>([]);
   const [productQuantity, setProductQuantity] = useState("1");
+
+  // Custom product mode
+  const [customProductName, setCustomProductName] = useState("");
+  const [customProductPrice, setCustomProductPrice] = useState("");
+  const [customProductQuantity, setCustomProductQuantity] = useState("1");
+  const [customProductItems, setCustomProductItems] = useState<Array<{ itemId: string; quantity: number }>>([]);
+  const [itemSearchTerm, setItemSearchTerm] = useState("");
+  const [showItemDropdown, setShowItemDropdown] = useState(false);
+  const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
   const [selectedPaymentModes, setSelectedPaymentModes] = useState<Set<PaymentMode>>(new Set(["cash"]));
   const [paymentAmounts, setPaymentAmounts] = useState<Record<PaymentMode, string>>({
     cash: "",
