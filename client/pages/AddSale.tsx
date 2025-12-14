@@ -900,11 +900,31 @@ export default function AddSale() {
                 )}
               </div>
 
-              <div className="pt-4 border-t-2 border-blue-300 flex justify-between text-lg">
-                <span className="font-bold text-slate-900">Total</span>
-                <span className="font-bold text-blue-700">
-                  ₹{total.toFixed(2)}
-                </span>
+              <div className="space-y-2 pt-4 border-t-2 border-blue-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Subtotal</span>
+                  <span className="font-medium text-slate-900">
+                    ₹{subtotal.toFixed(2)}
+                  </span>
+                </div>
+
+                {discountValue && (
+                  <div className="flex justify-between text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">
+                    <span className="text-sm font-medium">
+                      Discount ({discountType === "percentage" ? `${discountValue}%` : `₹${discountValue}`})
+                    </span>
+                    <span className="font-semibold">
+                      -₹{discountAmount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex justify-between text-lg pt-2">
+                  <span className="font-bold text-slate-900">Total</span>
+                  <span className="font-bold text-blue-700">
+                    ₹{total.toFixed(2)}
+                  </span>
+                </div>
               </div>
 
               <button
