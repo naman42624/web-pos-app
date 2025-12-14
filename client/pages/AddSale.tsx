@@ -643,6 +643,27 @@ export default function AddSale() {
                       </div>
                     </div>
                   </div>
+
+                  <div className="border-t border-amber-200 pt-4">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Delivery Charges (Optional)
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-600 font-medium">₹</span>
+                      <input
+                        type="number"
+                        value={deliveryCharges}
+                        onChange={(e) => setDeliveryCharges(e.target.value)}
+                        placeholder="e.g., 50"
+                        step="0.01"
+                        min="0"
+                        className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Leave blank if no delivery charges apply
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
