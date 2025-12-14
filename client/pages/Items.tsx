@@ -19,6 +19,18 @@ export default function Items() {
     setFormData({ ...formData, [field]: value });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setFormData({ ...formData, image: base64String });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddItem = () => {
     if (!formData.name.trim()) {
       alert("Please enter item name");
