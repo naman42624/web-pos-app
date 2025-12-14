@@ -30,6 +30,8 @@ export default function ReadyProducts() {
       selectedItems: [],
     });
     setSearchItem("");
+    setCustomItemName("");
+    setCustomItemPrice("");
     setEditingProductId(null);
     setShowItemDropdown(false);
   };
