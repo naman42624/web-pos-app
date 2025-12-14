@@ -29,6 +29,7 @@ export function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/add-sale" element={<AddSale />} />
+              <Route path="/items" element={<Items />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/customer/:id" element={<CustomerDetail />} />
               <Route path="/deliveries" element={<Deliveries />} />
