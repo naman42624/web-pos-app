@@ -64,6 +64,39 @@ export interface CreditRecord {
   saleId: string;
 }
 
+const initialItems: Item[] = [
+  {
+    id: "item-1",
+    name: "Chai",
+    price: 20,
+    stock: 50,
+  },
+  {
+    id: "item-2",
+    name: "Samosa",
+    price: 15,
+    stock: 30,
+  },
+  {
+    id: "item-3",
+    name: "Juice",
+    price: 40,
+    stock: 25,
+  },
+  {
+    id: "item-4",
+    name: "Biscuits",
+    price: 10,
+    stock: 100,
+  },
+  {
+    id: "item-5",
+    name: "Coffee",
+    price: 30,
+    stock: 40,
+  },
+];
+
 const initialCustomers: Customer[] = [
   {
     id: "1",
