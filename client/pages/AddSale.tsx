@@ -63,6 +63,7 @@ export default function AddSale() {
   const selectInventoryItem = (item: any) => {
     setItemName(item.name);
     setItemPrice(item.price.toString());
+    setItemImage(item.image || "");
     setShowItemDropdown(false);
   };
 
