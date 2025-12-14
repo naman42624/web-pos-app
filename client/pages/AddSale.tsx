@@ -19,6 +19,10 @@ export default function AddSale() {
   const [itemImage, setItemImage] = useState("");
   const [showItemDropdown, setShowItemDropdown] = useState(false);
   const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
+  const [productName, setProductName] = useState("");
+  const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState<typeof readyProducts>([]);
+  const [productQuantity, setProductQuantity] = useState("1");
   const [selectedPaymentModes, setSelectedPaymentModes] = useState<Set<PaymentMode>>(new Set(["cash"]));
   const [paymentAmounts, setPaymentAmounts] = useState<Record<PaymentMode, string>>({
     cash: "",
