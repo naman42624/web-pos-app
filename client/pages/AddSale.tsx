@@ -145,7 +145,13 @@ export default function AddSale() {
   };
 
   const removeItemFromCustomProduct = (itemId: string) => {
-    setCustomProductItems(customProductItems.filter((pi) => pi.itemId !== itemId));
+    const newItems = customProductItems.filter((pi) => pi.itemId !== itemId);
+    setCustomProductItems(newItems);
+    // Auto-update product price to composition total
+    const newTotal = newItems.reduce((sum, pi) => {
+      return sum + getItemPrice(pi.itemId) * pi.quantity;
+    }, 0);
+    setCustomProductPrice(newTotal.toString());
   };
 
   const updateCustomProductItemQuantity = (itemId: string, quantity: number) => {
