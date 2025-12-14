@@ -400,11 +400,24 @@ export default function AddSale() {
                       key={item.id}
                       className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                     >
-                      <div className="flex-1">
-                        <p className="font-medium text-slate-900">{item.name}</p>
-                        <p className="text-sm text-slate-500 mt-1">
-                          {item.quantity} × ₹{item.price.toFixed(2)}
-                        </p>
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs text-slate-500">No img</span>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-slate-900">{item.name}</p>
+                          <p className="text-sm text-slate-500 mt-1">
+                            {item.quantity} × ₹{item.price.toFixed(2)}
+                          </p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <input
