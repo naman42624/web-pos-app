@@ -25,10 +25,12 @@ export default function AddSale() {
   const [customProductName, setCustomProductName] = useState("");
   const [customProductPrice, setCustomProductPrice] = useState("");
   const [customProductQuantity, setCustomProductQuantity] = useState("1");
-  const [customProductItems, setCustomProductItems] = useState<Array<{ itemId: string; quantity: number }>>([]);
+  const [customProductItems, setCustomProductItems] = useState<Array<{ itemId?: string; customName?: string; customPrice?: number; quantity: number }>>([]);
   const [itemSearchTerm, setItemSearchTerm] = useState("");
   const [showItemDropdown, setShowItemDropdown] = useState(false);
   const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
+  const [customItemName, setCustomItemName] = useState("");
+  const [customItemPrice, setCustomItemPrice] = useState("");
 
   // Payment and order
   const [selectedPaymentModes, setSelectedPaymentModes] = useState<Set<PaymentMode>>(new Set(["cash"]));
