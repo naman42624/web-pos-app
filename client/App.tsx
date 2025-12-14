@@ -9,6 +9,7 @@ import { POSProvider } from "@/contexts/POSContext";
 import Dashboard from "./pages/Dashboard";
 import AddSale from "./pages/AddSale";
 import Items from "./pages/Items";
+import ReadyProducts from "./pages/ReadyProducts";
 import Customers from "./pages/Customers";
 import CustomerDetail from "./pages/CustomerDetail";
 import Deliveries from "./pages/Deliveries";
