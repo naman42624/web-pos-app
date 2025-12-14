@@ -155,11 +155,15 @@ export default function AddSale() {
   };
 
   const updateCustomProductItemQuantity = (itemId: string, quantity: number) => {
-    setCustomProductItems(
-      customProductItems.map((pi) =>
-        pi.itemId === itemId ? { ...pi, quantity: Math.max(1, quantity) } : pi
-      )
+    const newItems = customProductItems.map((pi) =>
+      pi.itemId === itemId ? { ...pi, quantity: Math.max(1, quantity) } : pi
     );
+    setCustomProductItems(newItems);
+    // Auto-update product price to composition total
+    const newTotal = newItems.reduce((sum, pi) => {
+      return sum + getItemPrice(pi.itemId) * pi.quantity;
+    }, 0);
+    setCustomProductPrice(newTotal.toString());
   };
 
   const getItemName = (itemId: string) => {
