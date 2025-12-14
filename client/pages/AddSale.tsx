@@ -147,24 +147,24 @@ export default function AddSale() {
     setCustomProductPrice(newTotal.toString());
   };
 
-  const removeItemFromCustomProduct = (itemId: string) => {
-    const newItems = customProductItems.filter((pi) => pi.itemId !== itemId);
+  const removeItemFromCustomProduct = (index: number) => {
+    const newItems = customProductItems.filter((_, i) => i !== index);
     setCustomProductItems(newItems);
     // Auto-update product price to composition total
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId) * pi.quantity;
+      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
 
-  const updateCustomProductItemQuantity = (itemId: string, quantity: number) => {
-    const newItems = customProductItems.map((pi) =>
-      pi.itemId === itemId ? { ...pi, quantity: Math.max(1, quantity) } : pi
+  const updateCustomProductItemQuantity = (index: number, quantity: number) => {
+    const newItems = customProductItems.map((pi, i) =>
+      i === index ? { ...pi, quantity: Math.max(1, quantity) } : pi
     );
     setCustomProductItems(newItems);
     // Auto-update product price to composition total
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId) * pi.quantity;
+      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
