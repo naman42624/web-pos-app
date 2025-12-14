@@ -88,6 +88,47 @@ export default function AddSale() {
     setShowItemDropdown(false);
   };
 
+  const handleProductNameChange = (value: string) => {
+    setProductName(value);
+    if (value.trim()) {
+      const filtered = readyProducts.filter((product) =>
+        product.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+      setShowProductDropdown(true);
+    } else {
+      setFilteredProducts([]);
+      setShowProductDropdown(false);
+    }
+  };
+
+  const selectReadyProduct = (product: any) => {
+    setProductName(product.name);
+    setShowProductDropdown(false);
+  };
+
+  const addProduct = () => {
+    const product = readyProducts.find((p) => p.name === productName);
+    if (!product) {
+      alert("Please select a valid product");
+      return;
+    }
+
+    const quantity = parseInt(productQuantity) || 1;
+    const newItem: SaleItem = {
+      id: `product-${Date.now()}`,
+      name: product.name,
+      quantity: quantity,
+      price: product.price,
+      image: product.image || undefined,
+    };
+
+    setSaleItems([...saleItems, newItem]);
+    setProductName("");
+    setProductQuantity("1");
+    setShowProductDropdown(false);
+  };
+
   const togglePaymentMode = (mode: PaymentMode) => {
     const newModes = new Set(selectedPaymentModes);
     if (newModes.has(mode)) {
