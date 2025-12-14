@@ -1,5 +1,18 @@
 import { useState } from "react";
 
+export interface ProductItem {
+  itemId: string; // Reference to an existing Item
+  quantity: number;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+  items: ProductItem[]; // Composition of items
+}
+
 export interface Item {
   id: string;
   name: string;
