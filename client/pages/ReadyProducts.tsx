@@ -414,18 +414,50 @@ export default function ReadyProducts() {
                     )}
                   </div>
 
+                  {/* Add Custom Item */}
+                  <div className="border border-slate-300 rounded-lg p-3 bg-slate-50">
+                    <p className="text-sm font-semibold text-slate-700 mb-3">Or Add Custom Item</p>
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={customItemName}
+                        onChange={(e) => setCustomItemName(e.target.value)}
+                        placeholder="Item name (e.g., Special Sauce)"
+                        className="w-full px-3 py-2 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <input
+                            type="number"
+                            value={customItemPrice}
+                            onChange={(e) => setCustomItemPrice(e.target.value)}
+                            placeholder="Price (₹)"
+                            step="0.01"
+                            className="w-full px-3 py-2 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                          />
+                        </div>
+                        <button
+                          onClick={addCustomItemToProduct}
+                          className="px-3 py-2 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition-colors"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Selected Items */}
                   {formData.selectedItems.length > 0 ? (
                     <div className="space-y-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
-                      {formData.selectedItems.map((pi) => (
+                      {formData.selectedItems.map((pi, index) => (
                         <div
-                          key={pi.itemId}
+                          key={index}
                           className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg"
                         >
                           <div className="flex-1">
-                            <p className="font-medium text-slate-900">{getItemName(pi.itemId)}</p>
+                            <p className="font-medium text-slate-900">{getItemName(pi.itemId, pi.customName)}</p>
                             <p className="text-sm text-slate-600">
-                              ₹{getItemPrice(pi.itemId).toFixed(2)} each
+                              ₹{getItemPrice(pi.itemId, pi.customPrice).toFixed(2)} each
                             </p>
                           </div>
                           <div className="flex items-center gap-3">
@@ -433,16 +465,16 @@ export default function ReadyProducts() {
                               type="number"
                               value={pi.quantity}
                               onChange={(e) =>
-                                updateItemQuantity(pi.itemId, parseInt(e.target.value) || 1)
+                                updateItemQuantity(index, parseInt(e.target.value) || 1)
                               }
                               min="1"
                               className="w-16 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             />
                             <p className="font-medium text-slate-900 w-20 text-right">
-                              ₹{(getItemPrice(pi.itemId) * pi.quantity).toFixed(2)}
+                              ₹{(getItemPrice(pi.itemId, pi.customPrice) * pi.quantity).toFixed(2)}
                             </p>
                             <button
-                              onClick={() => removeItemFromProduct(pi.itemId)}
+                              onClick={() => removeItemFromProduct(index)}
                               className="text-red-600 hover:text-red-700 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -453,7 +485,7 @@ export default function ReadyProducts() {
                     </div>
                   ) : (
                     <p className="text-sm text-slate-500 p-4 bg-slate-50 rounded-lg text-center">
-                      No items added yet. Search and add items above.
+                      No items added yet. Search and add items above or add custom items.
                     </p>
                   )}
                 </div>
