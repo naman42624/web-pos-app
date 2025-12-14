@@ -3,9 +3,19 @@ import { usePOSContext } from "@/contexts/POSContext";
 import { Package, Clock, Calendar } from "lucide-react";
 
 export default function Pickups() {
-  const { sales } = usePOSContext();
+  const { sales, items: inventoryItems } = usePOSContext();
 
   const pickupOrders = sales.filter((sale) => sale.orderType === "pickup_later");
+
+  const getItemName = (itemId?: string, customName?: string) => {
+    if (customName) return customName;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
+  };
+
+  const getItemPrice = (itemId?: string, customPrice?: number) => {
+    if (customPrice !== undefined) return customPrice;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.price || 0) : 0;
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-IN", {
