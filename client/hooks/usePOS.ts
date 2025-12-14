@@ -223,11 +223,41 @@ export function usePOS() {
       .length;
   };
 
+  const addItem = (item: Omit<Item, "id">) => {
+    const newItem: Item = {
+      ...item,
+      id: `item-${Date.now()}`,
+    };
+    setItems([...items, newItem]);
+    return newItem;
+  };
+
+  const updateItem = (id: string, item: Partial<Item>) => {
+    setItems(items.map((i) => (i.id === id ? { ...i, ...item } : i)));
+  };
+
+  const deleteItem = (id: string) => {
+    setItems(items.filter((i) => i.id !== id));
+  };
+
+  const updateItemStock = (itemId: string, quantity: number) => {
+    setItems(
+      items.map((i) =>
+        i.id === itemId ? { ...i, stock: Math.max(0, i.stock - quantity) } : i
+      )
+    );
+  };
+
   return {
     sales,
+    items,
     customers,
     creditRecords,
     addSale,
+    addItem,
+    updateItem,
+    deleteItem,
+    updateItemStock,
     addCustomer,
     getCustomerByIds,
     getCreditRecordsByCustomer,
