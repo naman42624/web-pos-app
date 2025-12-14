@@ -27,6 +27,7 @@ export interface SaleItem {
   quantity: number;
   price: number;
   image?: string; // Optional image from inventory item
+  composition?: Array<{ itemId: string; quantity: number }>; // Product composition if created from items
 }
 
 export interface DeliveryDetails {
