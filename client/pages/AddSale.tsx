@@ -127,12 +127,14 @@ export default function AddSale() {
       name: itemName.trim(),
       quantity: parseInt(itemQuantity) || 1,
       price: parseFloat(itemPrice),
+      image: itemImage || undefined,
     };
 
     setSaleItems([...saleItems, newItem]);
     setItemName("");
     setItemQuantity("1");
     setItemPrice("");
+    setItemImage("");
     setShowItemDropdown(false);
   };
 
