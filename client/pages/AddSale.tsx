@@ -227,6 +227,7 @@ export default function AddSale() {
         discountType: discountValue ? discountType : undefined,
         discountValue: discountValue ? parseFloat(discountValue) : undefined,
         discountAmount: discountValue ? discountAmount : undefined,
+        deliveryCharges: orderType === "delivery" && deliveryCharges ? parseFloat(deliveryCharges) : undefined,
       });
 
       setSaleItems([]);
