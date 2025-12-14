@@ -311,19 +311,34 @@ export default function AddSale() {
                             key={item.id}
                             type="button"
                             onClick={() => selectInventoryItem(item)}
-                            className="w-full text-left px-4 py-2 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                            className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
                           >
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium text-slate-900">
-                                {item.name}
-                              </span>
-                              <span className="text-sm text-slate-600">
-                                ₹{item.price.toFixed(2)}
-                              </span>
+                            <div className="flex items-center gap-3">
+                              {item.image ? (
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs text-slate-500">No img</span>
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-medium text-slate-900 truncate">
+                                    {item.name}
+                                  </span>
+                                  <span className="text-sm text-slate-600 ml-2 flex-shrink-0">
+                                    ₹{item.price.toFixed(2)}
+                                  </span>
+                                </div>
+                                <span className="text-xs text-slate-500">
+                                  Stock: {item.stock}
+                                </span>
+                              </div>
                             </div>
-                            <span className="text-xs text-slate-500">
-                              Stock: {item.stock}
-                            </span>
                           </button>
                         ))}
                       </div>
