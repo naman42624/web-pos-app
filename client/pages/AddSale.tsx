@@ -801,7 +801,7 @@ export default function AddSale() {
 
               <button
                 onClick={handleSaveSale}
-                disabled={isLoading || items.length === 0 || !isPaymentValid()}
+                disabled={isLoading || saleItems.length === 0 || !isPaymentValid()}
                 className={cn(
                   "w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2",
                   isLoading || items.length === 0 || !isPaymentValid()
