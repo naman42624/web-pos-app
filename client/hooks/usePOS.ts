@@ -5,6 +5,7 @@ export interface Item {
   name: string;
   price: number;
   stock: number;
+  image?: string; // Base64 encoded image data
 }
 
 export interface SaleItem {
