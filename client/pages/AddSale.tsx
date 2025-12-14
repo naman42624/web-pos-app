@@ -714,7 +714,7 @@ export default function AddSale() {
               <h2 className="text-lg font-bold text-slate-900">Summary</h2>
 
               <div className="space-y-3 border-b border-blue-200 pb-6">
-                {items.map((item) => (
+                {saleItems.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-slate-600">
                       {item.name} × {item.quantity}
