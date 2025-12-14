@@ -12,6 +12,7 @@ export default function Items() {
     name: "",
     price: "",
     stock: "",
+    image: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
