@@ -158,6 +158,7 @@ const initialCustomers: Customer[] = [
 
 export function usePOS() {
   const [sales, setSales] = useState<Sale[]>([]);
+  const [items, setItems] = useState<Item[]>(initialItems);
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [creditRecords, setCreditRecords] = useState<CreditRecord[]>([]);
 
