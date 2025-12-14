@@ -99,7 +99,7 @@ export default function Items() {
           <button
             onClick={() => {
               setEditingId(null);
-              setFormData({ name: "", price: "", stock: "" });
+              setFormData({ name: "", price: "", stock: "", image: "" });
               setShowAddItemModal(true);
             }}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
