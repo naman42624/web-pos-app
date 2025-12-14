@@ -14,11 +14,13 @@ export default function ReadyProducts() {
     name: "",
     price: "",
     image: "",
-    selectedItems: [] as ProductItem[],
+    selectedItems: [] as Array<{ itemId?: string; customName?: string; customPrice?: number; quantity: number }>,
   });
   const [searchItem, setSearchItem] = useState("");
   const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
   const [showItemDropdown, setShowItemDropdown] = useState(false);
+  const [customItemName, setCustomItemName] = useState("");
+  const [customItemPrice, setCustomItemPrice] = useState("");
 
   const resetForm = () => {
     setFormData({
