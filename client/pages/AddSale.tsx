@@ -46,7 +46,20 @@ export default function AddSale() {
   const [newCustomerPhone, setNewCustomerPhone] = useState("");
   const [newCustomerEmail, setNewCustomerEmail] = useState("");
 
-  const total = saleItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const subtotal = saleItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+  const calculateDiscount = () => {
+    if (!discountValue) return 0;
+    const discount = parseFloat(discountValue);
+    if (discountType === "percentage") {
+      return (subtotal * discount) / 100;
+    } else {
+      return Math.min(discount, subtotal); // Can't discount more than subtotal
+    }
+  };
+
+  const discountAmount = calculateDiscount();
+  const total = Math.max(0, subtotal - discountAmount);
 
   const handleItemNameChange = (value: string) => {
     setItemName(value);
