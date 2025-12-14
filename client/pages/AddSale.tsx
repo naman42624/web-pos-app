@@ -247,6 +247,8 @@ export default function AddSale() {
         senderName: "",
         senderPhone: "",
       });
+      setDiscountType("percentage");
+      setDiscountValue("");
 
       setTimeout(() => {
         setIsLoading(false);
