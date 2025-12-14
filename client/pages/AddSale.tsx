@@ -60,7 +60,8 @@ export default function AddSale() {
   };
 
   const discountAmount = calculateDiscount();
-  const total = Math.max(0, subtotal - discountAmount);
+  const deliveryChargeAmount = orderType === "delivery" && deliveryCharges ? parseFloat(deliveryCharges) : 0;
+  const total = Math.max(0, subtotal - discountAmount + deliveryChargeAmount);
 
   const handleItemNameChange = (value: string) => {
     setItemName(value);
