@@ -43,7 +43,27 @@ export default function AddSale() {
   const [newCustomerPhone, setNewCustomerPhone] = useState("");
   const [newCustomerEmail, setNewCustomerEmail] = useState("");
 
-  const total = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const total = saleItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+  const handleItemNameChange = (value: string) => {
+    setItemName(value);
+    if (value.trim()) {
+      const filtered = inventoryItems.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredItems(filtered);
+      setShowItemDropdown(true);
+    } else {
+      setFilteredItems([]);
+      setShowItemDropdown(false);
+    }
+  };
+
+  const selectInventoryItem = (item: any) => {
+    setItemName(item.name);
+    setItemPrice(item.price.toString());
+    setShowItemDropdown(false);
+  };
 
   const togglePaymentMode = (mode: PaymentMode) => {
     const newModes = new Set(selectedPaymentModes);
