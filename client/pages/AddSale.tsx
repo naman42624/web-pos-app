@@ -847,12 +847,17 @@ export default function AddSale() {
                         <div className="border-t border-slate-200 bg-slate-50 p-3">
                           <p className="text-xs font-semibold text-slate-700 mb-2">Composition:</p>
                           <div className="space-y-1">
-                            {item.composition.map((comp) => (
-                              <div key={comp.itemId} className="flex justify-between text-xs text-slate-600 px-2">
-                                <span>{getItemName(comp.itemId)} × {comp.quantity}</span>
-                                <span className="font-medium">₹{(getItemPrice(comp.itemId) * comp.quantity).toFixed(2)}</span>
-                              </div>
-                            ))}
+                            {item.composition.map((comp, idx) => {
+                              const isCustom = (comp as any).customName !== undefined;
+                              const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
+                              const itemPrice = isCustom ? (comp as any).customPrice : getItemPrice(comp.itemId);
+                              return (
+                                <div key={idx} className="flex justify-between text-xs text-slate-600 px-2">
+                                  <span>{itemName} × {comp.quantity}</span>
+                                  <span className="font-medium">₹{(itemPrice * comp.quantity).toFixed(2)}</span>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
