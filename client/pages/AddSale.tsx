@@ -748,6 +748,58 @@ export default function AddSale() {
                 </div>
               )}
 
+              {/* Discount Section */}
+              <div className="mt-6 pt-6 border-t border-slate-200">
+                <label className="block text-sm font-medium text-slate-700 mb-4 font-semibold">
+                  Discount (Optional)
+                </label>
+
+                <div className="flex gap-3 mb-4">
+                  <button
+                    onClick={() => setDiscountType("percentage")}
+                    className={cn(
+                      "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
+                      discountType === "percentage"
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                    )}
+                  >
+                    % Percentage
+                  </button>
+                  <button
+                    onClick={() => setDiscountType("fixed")}
+                    className={cn(
+                      "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
+                      discountType === "fixed"
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                    )}
+                  >
+                    ₹ Fixed Amount
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    {discountType === "percentage" ? "Discount (%)" : "Discount (₹)"}
+                  </label>
+                  <input
+                    type="number"
+                    value={discountValue}
+                    onChange={(e) => setDiscountValue(e.target.value)}
+                    placeholder={discountType === "percentage" ? "e.g., 10" : "e.g., 100"}
+                    step={discountType === "percentage" ? "0.1" : "0.01"}
+                    min="0"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                  {discountValue && (
+                    <p className="text-sm text-slate-600 mt-2">
+                      Discount Amount: ₹{discountAmount.toFixed(2)}
+                    </p>
+                  )}
+                </div>
+              </div>
+
               {/* Order Remarks */}
               <div className="mt-6 pt-6 border-t border-slate-200">
                 <label className="block text-sm font-medium text-slate-700 mb-2">
