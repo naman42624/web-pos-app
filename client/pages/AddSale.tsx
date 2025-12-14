@@ -108,6 +108,7 @@ export default function AddSale() {
       quantity: quantity,
       price: product.price,
       image: product.image || undefined,
+      composition: product.items,
     };
 
     setSaleItems([...saleItems, newItem]);
