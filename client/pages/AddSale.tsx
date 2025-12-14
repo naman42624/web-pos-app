@@ -352,10 +352,110 @@ export default function AddSale() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Add Product Form */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">
+                Add Ready Products
+              </h2>
+
+              <div className="space-y-4">
+                <div className="relative">
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Product Name
+                  </label>
+                  <input
+                    type="text"
+                    value={productName}
+                    onChange={(e) => handleProductNameChange(e.target.value)}
+                    onFocus={() => {
+                      if (productName.trim()) {
+                        const filtered = readyProducts.filter((product) =>
+                          product.name.toLowerCase().includes(productName.toLowerCase())
+                        );
+                        setFilteredProducts(filtered);
+                        setShowProductDropdown(true);
+                      }
+                    }}
+                    placeholder="Search ready products..."
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    onKeyDown={(e) => e.key === "Enter" && addProduct()}
+                  />
+                  {showProductDropdown && filteredProducts.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-10">
+                      <div className="max-h-48 overflow-y-auto">
+                        {filteredProducts.map((product) => (
+                          <button
+                            key={product.id}
+                            type="button"
+                            onClick={() => selectReadyProduct(product)}
+                            className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                          >
+                            <div className="flex items-center gap-3">
+                              {product.image ? (
+                                <img
+                                  src={product.image}
+                                  alt={product.name}
+                                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs text-slate-500">No img</span>
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-medium text-slate-900 truncate">
+                                    {product.name}
+                                  </span>
+                                  <span className="text-sm text-slate-600 ml-2 flex-shrink-0">
+                                    ₹{product.price.toFixed(2)}
+                                  </span>
+                                </div>
+                                <span className="text-xs text-slate-500">
+                                  {product.items.length} items
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    value={productQuantity}
+                    onChange={(e) => setProductQuantity(e.target.value)}
+                    min="1"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                <button
+                  onClick={addProduct}
+                  disabled={!productName || !readyProducts.find((p) => p.name === productName)}
+                  className={cn(
+                    "w-full font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2",
+                    !productName || !readyProducts.find((p) => p.name === productName)
+                      ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                      : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
+                  )}
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Product
+                </button>
+              </div>
+            </div>
+
             {/* Add Item Form */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
-                Add Items
+                Add Individual Items
               </h2>
 
               <div className="space-y-4">
