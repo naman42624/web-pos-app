@@ -113,7 +113,7 @@ export default function AddSale() {
     setShowProductDropdown(false);
   };
 
-  const addProduct = () => {
+  const handleAddReadyProduct = () => {
     const product = readyProducts.find((p) => p.name === productName);
     if (!product) {
       alert("Please select a valid product");
@@ -133,6 +133,87 @@ export default function AddSale() {
     setProductName("");
     setProductQuantity("1");
     setShowProductDropdown(false);
+  };
+
+  const handleItemSearchChange = (value: string) => {
+    setItemSearchTerm(value);
+    if (value.trim()) {
+      const filtered = inventoryItems.filter(
+        (item) =>
+          item.name.toLowerCase().includes(value.toLowerCase()) &&
+          !customProductItems.some((pi) => pi.itemId === item.id)
+      );
+      setFilteredItems(filtered);
+      setShowItemDropdown(true);
+    } else {
+      setFilteredItems([]);
+      setShowItemDropdown(false);
+    }
+  };
+
+  const addItemToCustomProduct = (item: typeof inventoryItems[0]) => {
+    setCustomProductItems([...customProductItems, { itemId: item.id, quantity: 1 }]);
+    setItemSearchTerm("");
+    setShowItemDropdown(false);
+  };
+
+  const removeItemFromCustomProduct = (itemId: string) => {
+    setCustomProductItems(customProductItems.filter((pi) => pi.itemId !== itemId));
+  };
+
+  const updateCustomProductItemQuantity = (itemId: string, quantity: number) => {
+    setCustomProductItems(
+      customProductItems.map((pi) =>
+        pi.itemId === itemId ? { ...pi, quantity: Math.max(1, quantity) } : pi
+      )
+    );
+  };
+
+  const getItemName = (itemId: string) => {
+    return inventoryItems.find((item) => item.id === itemId)?.name || "Unknown";
+  };
+
+  const getItemPrice = (itemId: string) => {
+    return inventoryItems.find((item) => item.id === itemId)?.price || 0;
+  };
+
+  const getCustomProductTotalPrice = () => {
+    return customProductItems.reduce((sum, pi) => {
+      return sum + getItemPrice(pi.itemId) * pi.quantity;
+    }, 0);
+  };
+
+  const handleAddCustomProduct = () => {
+    if (!customProductName.trim()) {
+      alert("Please enter product name");
+      return;
+    }
+
+    if (!customProductPrice || parseFloat(customProductPrice) <= 0) {
+      alert("Please enter a valid price");
+      return;
+    }
+
+    if (customProductItems.length === 0) {
+      alert("Please add at least one item to the product");
+      return;
+    }
+
+    const quantity = parseInt(customProductQuantity) || 1;
+    const newItem: SaleItem = {
+      id: `product-${Date.now()}`,
+      name: customProductName.trim(),
+      quantity: quantity,
+      price: parseFloat(customProductPrice),
+      image: undefined,
+    };
+
+    setSaleItems([...saleItems, newItem]);
+    setCustomProductName("");
+    setCustomProductPrice("");
+    setCustomProductQuantity("1");
+    setCustomProductItems([]);
+    setItemSearchTerm("");
   };
 
   const togglePaymentMode = (mode: PaymentMode) => {
