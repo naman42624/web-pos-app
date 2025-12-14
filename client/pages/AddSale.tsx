@@ -222,6 +222,9 @@ export default function AddSale() {
         pickupDate: (orderType === "pickup_later" || orderType === "delivery") ? pickupDate : undefined,
         pickupTime: (orderType === "pickup_later" || orderType === "delivery") ? pickupTime : undefined,
         deliveryDetails: orderType === "delivery" ? deliveryDetails : undefined,
+        discountType: discountValue ? discountType : undefined,
+        discountValue: discountValue ? parseFloat(discountValue) : undefined,
+        discountAmount: discountValue ? discountAmount : undefined,
       });
 
       setSaleItems([]);
