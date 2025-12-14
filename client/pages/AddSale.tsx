@@ -195,7 +195,7 @@ export default function AddSale() {
       // Use the first payment mode (or primary mode if multiple)
       const primaryMode = Array.from(selectedPaymentModes)[0];
       addSale({
-        items,
+        items: saleItems,
         paymentMode: primaryMode,
         customerId: selectedPaymentModes.has("credit") ? selectedCustomerId : undefined,
         total,
@@ -205,7 +205,7 @@ export default function AddSale() {
         deliveryDetails: orderType === "delivery" ? deliveryDetails : undefined,
       });
 
-      setItems([]);
+      setSaleItems([]);
       setOrderRemarks("");
       setSelectedCustomerId("");
       setSelectedPaymentModes(new Set(["cash"]));
