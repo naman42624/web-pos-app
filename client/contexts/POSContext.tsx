@@ -5,18 +5,29 @@ import {
   Customer,
   CreditRecord,
   SaleItem,
+  Product,
+  Item,
 } from "@/hooks/usePOS";
 
 interface POSContextType {
   sales: Sale[];
   customers: Customer[];
   creditRecords: CreditRecord[];
+  items: Item[];
+  products: Product[];
   addSale: (sale: Omit<Sale, "id" | "date">) => Sale;
   addCustomer: (customer: Omit<Customer, "id">) => Customer;
   getCustomerByIds: (ids: string[]) => Customer[];
   getCreditRecordsByCustomer: (customerId: string) => CreditRecord[];
   getTodaySalesTotal: () => number;
   getTodayTransactionCount: () => number;
+  addItem: (item: Omit<Item, "id">) => Item;
+  updateItem: (id: string, item: Partial<Item>) => void;
+  deleteItem: (id: string) => void;
+  updateItemStock: (itemId: string, quantity: number) => void;
+  addProduct: (product: Omit<Product, "id">) => Product;
+  updateProduct: (id: string, product: Partial<Product>) => void;
+  deleteProduct: (id: string) => void;
 }
 
 const POSContext = createContext<POSContextType | undefined>(undefined);
