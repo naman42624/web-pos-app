@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useMemo } from "react";
 import {
   usePOS,
   Sale,
@@ -35,8 +35,51 @@ const POSContext = createContext<POSContextType | undefined>(undefined);
 export function POSProvider({ children }: { children: ReactNode }) {
   const pos = usePOS();
 
+  const value = useMemo(
+    () => ({
+      sales: pos.sales,
+      items: pos.items,
+      customers: pos.customers,
+      creditRecords: pos.creditRecords,
+      products: pos.products,
+      addSale: pos.addSale,
+      addItem: pos.addItem,
+      updateItem: pos.updateItem,
+      deleteItem: pos.deleteItem,
+      updateItemStock: pos.updateItemStock,
+      addCustomer: pos.addCustomer,
+      getCustomerByIds: pos.getCustomerByIds,
+      getCreditRecordsByCustomer: pos.getCreditRecordsByCustomer,
+      getTodaySalesTotal: pos.getTodaySalesTotal,
+      getTodayTransactionCount: pos.getTodayTransactionCount,
+      addProduct: pos.addProduct,
+      updateProduct: pos.updateProduct,
+      deleteProduct: pos.deleteProduct,
+    }),
+    [
+      pos.sales,
+      pos.items,
+      pos.customers,
+      pos.creditRecords,
+      pos.products,
+      pos.addSale,
+      pos.addItem,
+      pos.updateItem,
+      pos.deleteItem,
+      pos.updateItemStock,
+      pos.addCustomer,
+      pos.getCustomerByIds,
+      pos.getCreditRecordsByCustomer,
+      pos.getTodaySalesTotal,
+      pos.getTodayTransactionCount,
+      pos.addProduct,
+      pos.updateProduct,
+      pos.deleteProduct,
+    ]
+  );
+
   return (
-    <POSContext.Provider value={pos}>
+    <POSContext.Provider value={value}>
       {children}
     </POSContext.Provider>
   );
