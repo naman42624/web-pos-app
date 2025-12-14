@@ -133,9 +133,15 @@ export default function AddSale() {
   };
 
   const addItemToCustomProduct = (item: typeof inventoryItems[0]) => {
-    setCustomProductItems([...customProductItems, { itemId: item.id, quantity: 1 }]);
+    const newItems = [...customProductItems, { itemId: item.id, quantity: 1 }];
+    setCustomProductItems(newItems);
     setItemSearchTerm("");
     setShowItemDropdown(false);
+    // Auto-update product price to composition total
+    const newTotal = newItems.reduce((sum, pi) => {
+      return sum + getItemPrice(pi.itemId) * pi.quantity;
+    }, 0);
+    setCustomProductPrice(newTotal.toString());
   };
 
   const removeItemFromCustomProduct = (itemId: string) => {
