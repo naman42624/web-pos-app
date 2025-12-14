@@ -74,6 +74,7 @@ export default function Items() {
       name: item.name,
       price: item.price.toString(),
       stock: item.stock.toString(),
+      image: item.image || "",
     });
     setShowAddItemModal(true);
   };
