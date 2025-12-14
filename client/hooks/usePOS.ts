@@ -36,6 +36,9 @@ export interface Sale {
   pickupDate?: string; // ISO date string for later pickup or delivery
   pickupTime?: string; // Time in HH:MM format
   deliveryDetails?: DeliveryDetails;
+  discountType?: "percentage" | "fixed";
+  discountValue?: number;
+  discountAmount?: number;
 }
 
 export interface Address {
