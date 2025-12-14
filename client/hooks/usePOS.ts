@@ -13,6 +13,7 @@ export interface SaleItem {
   name: string;
   quantity: number;
   price: number;
+  image?: string; // Optional image from inventory item
 }
 
 export interface DeliveryDetails {
