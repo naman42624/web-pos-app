@@ -180,6 +180,7 @@ export function usePOS() {
   const [items, setItems] = useState<Item[]>(initialItems);
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [creditRecords, setCreditRecords] = useState<CreditRecord[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const addSale = (sale: Omit<Sale, "id" | "date">) => {
     const newSale: Sale = {
@@ -267,11 +268,29 @@ export function usePOS() {
     );
   };
 
+  const addProduct = (product: Omit<Product, "id">) => {
+    const newProduct: Product = {
+      ...product,
+      id: `product-${Date.now()}`,
+    };
+    setProducts([...products, newProduct]);
+    return newProduct;
+  };
+
+  const updateProduct = (id: string, product: Partial<Product>) => {
+    setProducts(products.map((p) => (p.id === id ? { ...p, ...product } : p)));
+  };
+
+  const deleteProduct = (id: string) => {
+    setProducts(products.filter((p) => p.id !== id));
+  };
+
   return {
     sales,
     items,
     customers,
     creditRecords,
+    products,
     addSale,
     addItem,
     updateItem,
@@ -282,5 +301,8 @@ export function usePOS() {
     getCreditRecordsByCustomer,
     getTodaySalesTotal,
     getTodayTransactionCount,
+    addProduct,
+    updateProduct,
+    deleteProduct,
   };
 }
