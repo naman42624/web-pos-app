@@ -648,6 +648,38 @@ export default function AddSale() {
                       )}
                     </div>
 
+                    {/* Add Custom Item */}
+                    <div className="border border-slate-300 rounded-lg p-3 bg-slate-50">
+                      <p className="text-sm font-semibold text-slate-700 mb-3">Or Add Custom Item</p>
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          value={customItemName}
+                          onChange={(e) => setCustomItemName(e.target.value)}
+                          placeholder="Item name (e.g., Special Sauce)"
+                          className="w-full px-3 py-2 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        />
+                        <div className="flex gap-2">
+                          <div className="flex-1">
+                            <input
+                              type="number"
+                              value={customItemPrice}
+                              onChange={(e) => setCustomItemPrice(e.target.value)}
+                              placeholder="Price (₹)"
+                              step="0.01"
+                              className="w-full px-3 py-2 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            />
+                          </div>
+                          <button
+                            onClick={addCustomItemToProduct}
+                            className="px-3 py-2 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition-colors"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Selected Items in Custom Product */}
                     {customProductItems.length > 0 && (
                       <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
@@ -655,17 +687,17 @@ export default function AddSale() {
                           Product Composition
                         </p>
                         <div className="space-y-2">
-                          {customProductItems.map((pi) => (
+                          {customProductItems.map((pi, index) => (
                             <div
-                              key={pi.itemId}
+                              key={index}
                               className="flex items-center justify-between p-2 bg-white border border-slate-200 rounded"
                             >
                               <div className="flex-1">
                                 <p className="text-sm font-medium text-slate-900">
-                                  {getItemName(pi.itemId)}
+                                  {getItemName(pi.itemId, pi.customName)}
                                 </p>
                                 <p className="text-xs text-slate-600">
-                                  ₹{getItemPrice(pi.itemId).toFixed(2)} each
+                                  ₹{getItemPrice(pi.itemId, pi.customPrice).toFixed(2)} each
                                 </p>
                               </div>
                               <div className="flex items-center gap-2">
@@ -674,7 +706,7 @@ export default function AddSale() {
                                   value={pi.quantity}
                                   onChange={(e) =>
                                     updateCustomProductItemQuantity(
-                                      pi.itemId,
+                                      index,
                                       parseInt(e.target.value) || 1
                                     )
                                   }
@@ -682,10 +714,10 @@ export default function AddSale() {
                                   className="w-12 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                                 />
                                 <p className="text-sm font-medium text-slate-900 w-16 text-right">
-                                  ₹{(getItemPrice(pi.itemId) * pi.quantity).toFixed(2)}
+                                  ₹{(getItemPrice(pi.itemId, pi.customPrice) * pi.quantity).toFixed(2)}
                                 </p>
                                 <button
-                                  onClick={() => removeItemFromCustomProduct(pi.itemId)}
+                                  onClick={() => removeItemFromCustomProduct(index)}
                                   className="text-red-600 hover:text-red-700 transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4" />
