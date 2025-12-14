@@ -73,15 +73,33 @@ export default function Deliveries() {
                   </div>
 
                   {/* Items Summary */}
-                  <div className="mb-4 p-4 bg-slate-50 rounded-lg">
-                    <p className="text-sm font-semibold text-slate-900 mb-2">Items:</p>
-                    <div className="space-y-1">
-                      {order.items.map((item) => (
-                        <p key={item.id} className="text-sm text-slate-600">
-                          • {item.name} × {item.quantity} @ ₹{item.price.toFixed(2)} each
+                  <div className="mb-4 space-y-3">
+                    {order.items.map((item) => (
+                      <div key={item.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <p className="text-sm font-semibold text-slate-900 mb-2">
+                          {item.name} × {item.quantity} @ ₹{item.price.toFixed(2)} each
                         </p>
-                      ))}
-                    </div>
+
+                        {/* Product Composition */}
+                        {item.composition && item.composition.length > 0 && (
+                          <div className="ml-4 mt-2 pt-2 border-t border-slate-300">
+                            <p className="text-xs font-semibold text-slate-700 mb-2">Composition:</p>
+                            <div className="space-y-1">
+                              {item.composition.map((comp, idx) => {
+                                const isCustom = (comp as any).customName !== undefined;
+                                const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
+                                const itemPrice = isCustom ? (comp as any).customPrice : getItemPrice(comp.itemId);
+                                return (
+                                  <p key={idx} className="text-xs text-slate-600 ml-2">
+                                    • {itemName} × {comp.quantity} @ ₹{itemPrice.toFixed(2)} each
+                                  </p>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
 
                   {/* Schedule Info */}
