@@ -10,12 +10,14 @@ type PaymentMode = "cash" | "upi" | "credit";
 
 export default function AddSale() {
   const navigate = useNavigate();
-  const { addSale, customers, addCustomer } = usePOSContext();
+  const { addSale, customers, addCustomer, items: inventoryItems } = usePOSContext();
 
-  const [items, setItems] = useState<SaleItem[]>([]);
+  const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
   const [itemName, setItemName] = useState("");
   const [itemQuantity, setItemQuantity] = useState("1");
   const [itemPrice, setItemPrice] = useState("");
+  const [showItemDropdown, setShowItemDropdown] = useState(false);
+  const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
   const [selectedPaymentModes, setSelectedPaymentModes] = useState<Set<PaymentMode>>(new Set(["cash"]));
   const [paymentAmounts, setPaymentAmounts] = useState<Record<PaymentMode, string>>({
     cash: "",
