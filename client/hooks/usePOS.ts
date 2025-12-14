@@ -1,5 +1,12 @@
 import { useState } from "react";
 
+export interface Item {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+}
+
 export interface SaleItem {
   id: string;
   name: string;
