@@ -210,7 +210,7 @@ export default function AddSale() {
 
   const getCustomProductTotalPrice = () => {
     return customProductItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId) * pi.quantity;
+      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
     }, 0);
   };
 
