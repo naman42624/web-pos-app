@@ -210,6 +210,10 @@ export default function AddSale() {
       });
 
       setSaleItems([]);
+      setItemName("");
+      setItemQuantity("1");
+      setItemPrice("");
+      setItemImage("");
       setOrderRemarks("");
       setSelectedCustomerId("");
       setSelectedPaymentModes(new Set(["cash"]));
