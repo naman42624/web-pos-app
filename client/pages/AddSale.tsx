@@ -282,18 +282,53 @@ export default function AddSale() {
               </h2>
 
               <div className="space-y-4">
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Item Name
                   </label>
                   <input
                     type="text"
                     value={itemName}
-                    onChange={(e) => setItemName(e.target.value)}
+                    onChange={(e) => handleItemNameChange(e.target.value)}
+                    onFocus={() => {
+                      if (itemName.trim()) {
+                        const filtered = inventoryItems.filter((item) =>
+                          item.name.toLowerCase().includes(itemName.toLowerCase())
+                        );
+                        setFilteredItems(filtered);
+                        setShowItemDropdown(true);
+                      }
+                    }}
                     placeholder="e.g., Chai, Samosa, Juice..."
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     onKeyDown={(e) => e.key === "Enter" && addItem()}
                   />
+                  {showItemDropdown && filteredItems.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-10">
+                      <div className="max-h-48 overflow-y-auto">
+                        {filteredItems.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => selectInventoryItem(item)}
+                            className="w-full text-left px-4 py-2 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-slate-900">
+                                {item.name}
+                              </span>
+                              <span className="text-sm text-slate-600">
+                                ₹{item.price.toFixed(2)}
+                              </span>
+                            </div>
+                            <span className="text-xs text-slate-500">
+                              Stock: {item.stock}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
