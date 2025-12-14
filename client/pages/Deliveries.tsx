@@ -4,9 +4,19 @@ import { Truck, Clock, MapPin, Phone, User, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Deliveries() {
-  const { sales } = usePOSContext();
+  const { sales, items: inventoryItems } = usePOSContext();
 
   const deliveryOrders = sales.filter((sale) => sale.orderType === "delivery");
+
+  const getItemName = (itemId?: string, customName?: string) => {
+    if (customName) return customName;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
+  };
+
+  const getItemPrice = (itemId?: string, customPrice?: number) => {
+    if (customPrice !== undefined) return customPrice;
+    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.price || 0) : 0;
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-IN", {
