@@ -117,6 +117,9 @@ export default function Items() {
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50">
                     <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                      Image
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
                       Item Name
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
@@ -136,6 +139,19 @@ export default function Items() {
                       key={item.id}
                       className="hover:bg-slate-50 transition-colors"
                     >
+                      <td className="px-6 py-4">
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-12 h-12 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center">
+                            <ImageIcon className="w-6 h-6 text-slate-400" />
+                          </div>
+                        )}
+                      </td>
                       <td className="px-6 py-4">
                         <p className="font-medium text-slate-900">{item.name}</p>
                       </td>
