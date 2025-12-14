@@ -86,18 +86,18 @@ export default function ReadyProducts() {
     setShowItemDropdown(false);
   };
 
-  const removeItemFromProduct = (itemId: string) => {
+  const removeItemFromProduct = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      selectedItems: prev.selectedItems.filter((pi) => pi.itemId !== itemId),
+      selectedItems: prev.selectedItems.filter((_, i) => i !== index),
     }));
   };
 
-  const updateItemQuantity = (itemId: string, quantity: number) => {
+  const updateItemQuantity = (index: number, quantity: number) => {
     setFormData((prev) => ({
       ...prev,
-      selectedItems: prev.selectedItems.map((pi) =>
-        pi.itemId === itemId ? { ...pi, quantity: Math.max(1, quantity) } : pi
+      selectedItems: prev.selectedItems.map((pi, i) =>
+        i === index ? { ...pi, quantity: Math.max(1, quantity) } : pi
       ),
     }));
   };
