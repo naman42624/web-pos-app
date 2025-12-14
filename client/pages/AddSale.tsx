@@ -838,9 +838,16 @@ export default function AddSale() {
                 <div className="flex justify-between">
                   <span className="text-slate-600">Subtotal</span>
                   <span className="font-medium text-slate-900">
-                    ₹{total.toFixed(2)}
+                    ₹{subtotal.toFixed(2)}
                   </span>
                 </div>
+
+                {discountValue && (
+                  <div className="flex justify-between text-amber-600 text-sm">
+                    <span>Discount ({discountType === "percentage" ? `${discountValue}%` : `₹${discountValue}`})</span>
+                    <span className="font-medium">-₹{discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
 
                 {selectedPaymentModes.size === 1 ? (
                   <div className="flex justify-between">
