@@ -125,32 +125,44 @@ export default function Pickups() {
 
                   {/* Items Summary */}
                   <div className="mb-4 space-y-3">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                        <p className="text-sm font-semibold text-slate-900 mb-2">
-                          {item.name} × {item.quantity} @ ₹{item.price.toFixed(2)} each
-                        </p>
-
-                        {/* Product Composition */}
-                        {item.composition && item.composition.length > 0 && (
-                          <div className="ml-4 mt-2 pt-2 border-t border-slate-300">
-                            <p className="text-xs font-semibold text-slate-700 mb-2">Composition:</p>
-                            <div className="space-y-1">
-                              {item.composition.map((comp, idx) => {
-                                const isCustom = (comp as any).customName !== undefined;
-                                const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
-                                const itemPrice = isCustom ? (comp as any).customPrice : getItemPrice(comp.itemId);
-                                return (
-                                  <p key={idx} className="text-xs text-slate-600 ml-2">
-                                    • {itemName} × {comp.quantity} @ ₹{itemPrice.toFixed(2)} each
-                                  </p>
-                                );
-                              })}
+                    {order.items.map((item) => {
+                      const itemStatus = getItemStatus(item, order.pickupDate);
+                      const StatusIcon = itemStatus.icon;
+                      return (
+                        <div key={item.id} className={`p-4 rounded-lg border ${itemStatus.color}`}>
+                          <div className="flex items-start justify-between mb-2">
+                            <p className="text-sm font-semibold text-slate-900">
+                              {item.name} × {item.quantity} @ ₹{item.price.toFixed(2)} each
+                            </p>
+                            <div className="flex items-center gap-2 px-2 py-1 bg-white rounded border">
+                              <StatusIcon className="w-4 h-4" />
+                              <span className={`text-xs font-semibold ${itemStatus.badge}`}>
+                                {itemStatus.status}
+                              </span>
                             </div>
                           </div>
-                        )}
-                      </div>
-                    ))}
+
+                          {/* Product Composition */}
+                          {item.composition && item.composition.length > 0 && (
+                            <div className="ml-4 mt-2 pt-2 border-t border-current border-opacity-30">
+                              <p className="text-xs font-semibold mb-2 opacity-80">Composition:</p>
+                              <div className="space-y-1">
+                                {item.composition.map((comp, idx) => {
+                                  const isCustom = (comp as any).customName !== undefined;
+                                  const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
+                                  const itemPrice = isCustom ? (comp as any).customPrice : getItemPrice(comp.itemId);
+                                  return (
+                                    <p key={idx} className="text-xs opacity-75 ml-2">
+                                      • {itemName} × {comp.quantity} @ ₹{itemPrice.toFixed(2)} each
+                                    </p>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Schedule Info */}
