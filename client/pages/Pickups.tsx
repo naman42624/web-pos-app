@@ -1,9 +1,9 @@
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Package, Clock, Calendar } from "lucide-react";
+import { Package, Clock, Calendar, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function Pickups() {
-  const { sales, items: inventoryItems } = usePOSContext();
+  const { sales, items: inventoryItems, products: readyProducts } = usePOSContext();
 
   const pickupOrders = sales.filter((sale) => sale.orderType === "pickup_later");
 
@@ -29,6 +29,58 @@ export default function Pickups() {
     if (!timeString) return "Not specified";
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
+  };
+
+  const isReadyProduct = (composition?: any[]) => {
+    if (!composition || composition.length === 0) return false;
+    return readyProducts.some((product) => {
+      if (product.items.length !== composition.length) return false;
+      return product.items.every((pItem) =>
+        composition.some((cItem) => cItem.itemId === pItem.itemId && cItem.quantity === pItem.quantity)
+      );
+    });
+  };
+
+  const isPickupToday = (pickupDate?: string) => {
+    if (!pickupDate) return false;
+    const today = new Date().toDateString();
+    const pickup = new Date(pickupDate).toDateString();
+    return today === pickup;
+  };
+
+  const getItemStatus = (item: any, pickupDate?: string) => {
+    const isReady = isReadyProduct(item.composition);
+    const isToday = isPickupToday(pickupDate);
+
+    if (isReady && isToday) {
+      return {
+        status: "Ready to be Picked",
+        icon: CheckCircle,
+        color: "bg-green-100 text-green-800 border-green-200",
+        badge: "text-green-700",
+      };
+    } else if (isReady) {
+      return {
+        status: "Ready Product - Scheduled",
+        icon: AlertCircle,
+        color: "bg-blue-100 text-blue-800 border-blue-200",
+        badge: "text-blue-700",
+      };
+    } else if (isToday) {
+      return {
+        status: "Scheduled for Today",
+        icon: AlertCircle,
+        color: "bg-amber-100 text-amber-800 border-amber-200",
+        badge: "text-amber-700",
+      };
+    } else {
+      return {
+        status: "Pending Pickup",
+        icon: AlertCircle,
+        color: "bg-slate-100 text-slate-800 border-slate-200",
+        badge: "text-slate-700",
+      };
+    }
   };
 
   return (
