@@ -61,10 +61,10 @@ export default function Pickups() {
       };
     } else if (isReady) {
       return {
-        status: "Ready Product - Scheduled",
+        status: "Product Not Ready",
         icon: AlertCircle,
-        color: "bg-blue-100 text-blue-800 border-blue-200",
-        badge: "text-blue-700",
+        color: "bg-red-100 text-red-800 border-red-200",
+        badge: "text-red-700",
       };
     } else if (isToday) {
       return {
