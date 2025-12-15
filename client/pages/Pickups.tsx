@@ -200,9 +200,15 @@ export default function Pickups() {
                       <p className="text-sm text-slate-600 capitalize mb-1">
                         Payment: {order.paymentMode}
                       </p>
-                      <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                        Pending Pickup
-                      </div>
+                      {order.items.some((item) => getItemStatus(item, order.pickupDate).status === "Ready to be Picked") ? (
+                        <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
+                          Ready to be Picked
+                        </div>
+                      ) : (
+                        <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                          Pending Pickup
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
