@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export interface ProductItem {
-  itemId: string; // Reference to an existing Item
+  itemId?: string;
+  customName?: string;
+  customPrice?: number;
   quantity: number;
 }
 
@@ -10,7 +13,7 @@ export interface Product {
   name: string;
   price: number;
   image?: string;
-  items: ProductItem[]; // Composition of items
+  items: ProductItem[];
 }
 
 export interface Item {
@@ -18,7 +21,7 @@ export interface Item {
   name: string;
   price: number;
   stock: number;
-  image?: string; // Base64 encoded image data
+  image?: string;
 }
 
 export interface SaleItem {
@@ -26,8 +29,8 @@ export interface SaleItem {
   name: string;
   quantity: number;
   price: number;
-  image?: string; // Optional image from inventory item
-  composition?: Array<{ itemId: string; quantity: number }>; // Product composition if created from items
+  image?: string;
+  composition?: Array<{ itemId?: string; customName?: string; customPrice?: number; quantity: number }>;
 }
 
 export interface DeliveryDetails {
@@ -47,18 +50,18 @@ export interface Sale {
   total: number;
   date: string;
   orderType: "pickup" | "pickup_later" | "delivery";
-  pickupDate?: string; // ISO date string for later pickup or delivery
-  pickupTime?: string; // Time in HH:MM format
+  pickupDate?: string;
+  pickupTime?: string;
   deliveryDetails?: DeliveryDetails;
   discountType?: "percentage" | "fixed";
   discountValue?: number;
   discountAmount?: number;
-  deliveryCharges?: number; // Optional delivery charges for delivery orders
+  deliveryCharges?: number;
 }
 
 export interface Address {
   id: string;
-  label: string; // e.g., "Home", "Office"
+  label: string;
   street: string;
   city: string;
   state: string;
@@ -84,141 +87,329 @@ export interface CreditRecord {
   saleId: string;
 }
 
-const initialItems: Item[] = [
-  {
-    id: "item-1",
-    name: "Chai",
-    price: 20,
-    stock: 50,
-  },
-  {
-    id: "item-2",
-    name: "Samosa",
-    price: 15,
-    stock: 30,
-  },
-  {
-    id: "item-3",
-    name: "Juice",
-    price: 40,
-    stock: 25,
-  },
-  {
-    id: "item-4",
-    name: "Biscuits",
-    price: 10,
-    stock: 100,
-  },
-  {
-    id: "item-5",
-    name: "Coffee",
-    price: 30,
-    stock: 40,
-  },
-];
-
-const initialCustomers: Customer[] = [
-  {
-    id: "1",
-    name: "Rajesh Kumar",
-    phone: "9876543210",
-    email: "rajesh@example.com",
-    altPhone: "9876543220",
-    organization: "Kumar Enterprises",
-    addresses: [
-      {
-        id: "1-1",
-        label: "Office",
-        street: "123 Business Street",
-        city: "Mumbai",
-        state: "Maharashtra",
-        zip: "400001",
-      },
-    ],
-    totalCredit: 5000,
-  },
-  {
-    id: "2",
-    name: "Priya Singh",
-    phone: "9876543211",
-    email: "priya@example.com",
-    altPhone: "9876543221",
-    organization: "Singh & Co.",
-    addresses: [
-      {
-        id: "2-1",
-        label: "Home",
-        street: "456 Residential Lane",
-        city: "Delhi",
-        state: "Delhi",
-        zip: "110001",
-      },
-    ],
-    totalCredit: 3500,
-  },
-  {
-    id: "3",
-    name: "Amit Patel",
-    phone: "9876543212",
-    email: "amit@example.com",
-    organization: "Patel Trading",
-    addresses: [
-      {
-        id: "3-1",
-        label: "Office",
-        street: "789 Commerce Plaza",
-        city: "Bangalore",
-        state: "Karnataka",
-        zip: "560001",
-      },
-    ],
-    totalCredit: 2000,
-  },
-];
-
 export function usePOS() {
   const [sales, setSales] = useState<Sale[]>([]);
-  const [items, setItems] = useState<Item[]>(initialItems);
-  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  const [items, setItems] = useState<Item[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [creditRecords, setCreditRecords] = useState<CreditRecord[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const addSale = (sale: Omit<Sale, "id" | "date">) => {
-    const newSale: Sale = {
-      ...sale,
-      id: `sale-${Date.now()}`,
-      date: new Date().toISOString(),
+  // Initial load of all data
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([
+          loadItems(),
+          loadProducts(),
+          loadCustomers(),
+          loadSales(),
+          loadCreditRecords(),
+        ]);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setSales([...sales, newSale]);
+    loadData();
+  }, []);
 
-    if (sale.paymentMode === "credit" && sale.customerId) {
-      const creditRecord: CreditRecord = {
-        id: `credit-${Date.now()}`,
-        customerId: sale.customerId,
-        amount: sale.total,
-        date: new Date().toISOString(),
-        saleId: newSale.id,
-      };
-      setCreditRecords([...creditRecords, creditRecord]);
-
-      setCustomers(
-        customers.map((c) =>
-          c.id === sale.customerId
-            ? { ...c, totalCredit: c.totalCredit + sale.total }
-            : c
-        )
-      );
+  // Load Items
+  const loadItems = async () => {
+    const { data, error } = await supabase.from("items").select("*");
+    if (error) {
+      console.error("Error loading items:", error);
+      return;
     }
-
-    return newSale;
+    setItems(
+      data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        price: parseFloat(item.price),
+        stock: item.stock,
+        image: item.image,
+      }))
+    );
   };
 
-  const addCustomer = (customer: Omit<Customer, "id">) => {
-    const newCustomer: Customer = {
-      ...customer,
-      id: `customer-${Date.now()}`,
+  const addItem = async (item: Omit<Item, "id">) => {
+    const { data, error } = await supabase
+      .from("items")
+      .insert([
+        {
+          name: item.name,
+          price: item.price,
+          stock: item.stock,
+          image: item.image,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding item:", error);
+      throw error;
+    }
+
+    const newItem = {
+      id: data.id,
+      name: data.name,
+      price: parseFloat(data.price),
+      stock: data.stock,
+      image: data.image,
     };
+
+    setItems([...items, newItem]);
+    return newItem;
+  };
+
+  const updateItem = async (id: string, item: Partial<Item>) => {
+    const { error } = await supabase
+      .from("items")
+      .update({
+        ...(item.name && { name: item.name }),
+        ...(item.price !== undefined && { price: item.price }),
+        ...(item.stock !== undefined && { stock: item.stock }),
+        ...(item.image !== undefined && { image: item.image }),
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating item:", error);
+      throw error;
+    }
+
+    setItems(items.map((i) => (i.id === id ? { ...i, ...item } : i)));
+  };
+
+  const deleteItem = async (id: string) => {
+    const { error } = await supabase.from("items").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting item:", error);
+      throw error;
+    }
+
+    setItems(items.filter((i) => i.id !== id));
+  };
+
+  const updateItemStock = async (itemId: string, quantity: number) => {
+    const item = items.find((i) => i.id === itemId);
+    if (!item) return;
+
+    const newStock = Math.max(0, item.stock - quantity);
+    await updateItem(itemId, { stock: newStock });
+  };
+
+  // Load Products
+  const loadProducts = async () => {
+    const { data, error } = await supabase.from("products").select("*");
+    if (error) {
+      console.error("Error loading products:", error);
+      return;
+    }
+
+    const productsWithItems = await Promise.all(
+      data.map(async (product: any) => {
+        const { data: itemsData } = await supabase
+          .from("product_items")
+          .select("*")
+          .eq("product_id", product.id);
+
+        return {
+          id: product.id,
+          name: product.name,
+          price: parseFloat(product.price),
+          image: product.image,
+          items: itemsData
+            ? itemsData.map((pi: any) => ({
+                itemId: pi.item_id,
+                customName: pi.custom_name,
+                customPrice: pi.custom_price ? parseFloat(pi.custom_price) : undefined,
+                quantity: pi.quantity,
+              }))
+            : [],
+        };
+      })
+    );
+
+    setProducts(productsWithItems);
+  };
+
+  const addProduct = async (product: Omit<Product, "id">) => {
+    const { data, error } = await supabase
+      .from("products")
+      .insert([
+        {
+          name: product.name,
+          price: product.price,
+          image: product.image,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding product:", error);
+      throw error;
+    }
+
+    const productId = data.id;
+
+    // Insert product items
+    if (product.items && product.items.length > 0) {
+      const { error: itemsError } = await supabase.from("product_items").insert(
+        product.items.map((pi) => ({
+          product_id: productId,
+          item_id: pi.itemId,
+          custom_name: pi.customName,
+          custom_price: pi.customPrice,
+          quantity: pi.quantity,
+        }))
+      );
+
+      if (itemsError) {
+        console.error("Error adding product items:", itemsError);
+        throw itemsError;
+      }
+    }
+
+    const newProduct = {
+      id: productId,
+      name: data.name,
+      price: parseFloat(data.price),
+      image: data.image,
+      items: product.items,
+    };
+
+    setProducts([...products, newProduct]);
+    return newProduct;
+  };
+
+  const updateProduct = async (id: string, product: Partial<Product>) => {
+    const { error } = await supabase
+      .from("products")
+      .update({
+        ...(product.name && { name: product.name }),
+        ...(product.price !== undefined && { price: product.price }),
+        ...(product.image !== undefined && { image: product.image }),
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating product:", error);
+      throw error;
+    }
+
+    if (product.items) {
+      // Delete existing items
+      await supabase.from("product_items").delete().eq("product_id", id);
+
+      // Insert new items
+      if (product.items.length > 0) {
+        await supabase.from("product_items").insert(
+          product.items.map((pi) => ({
+            product_id: id,
+            item_id: pi.itemId,
+            custom_name: pi.customName,
+            custom_price: pi.customPrice,
+            quantity: pi.quantity,
+          }))
+        );
+      }
+    }
+
+    setProducts(
+      products.map((p) => (p.id === id ? { ...p, ...product } : p))
+    );
+  };
+
+  const deleteProduct = async (id: string) => {
+    const { error } = await supabase.from("products").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting product:", error);
+      throw error;
+    }
+
+    setProducts(products.filter((p) => p.id !== id));
+  };
+
+  // Load Customers
+  const loadCustomers = async () => {
+    const { data, error } = await supabase.from("customers").select("*");
+    if (error) {
+      console.error("Error loading customers:", error);
+      return;
+    }
+
+    const customersWithAddresses = await Promise.all(
+      data.map(async (customer: any) => {
+        const { data: addressesData } = await supabase
+          .from("addresses")
+          .select("*")
+          .eq("customer_id", customer.id);
+
+        return {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          altPhone: customer.alt_phone,
+          email: customer.email,
+          organization: customer.organization,
+          addresses: addressesData
+            ? addressesData.map((addr: any) => ({
+                id: addr.id,
+                label: addr.label,
+                street: addr.street,
+                city: addr.city,
+                state: addr.state,
+                zip: addr.zip,
+              }))
+            : [],
+          totalCredit: parseFloat(customer.total_credit),
+        };
+      })
+    );
+
+    setCustomers(customersWithAddresses);
+  };
+
+  const addCustomer = async (customer: Omit<Customer, "id">) => {
+    const { data, error } = await supabase
+      .from("customers")
+      .insert([
+        {
+          name: customer.name,
+          phone: customer.phone,
+          alt_phone: customer.altPhone,
+          email: customer.email,
+          organization: customer.organization,
+          total_credit: 0,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding customer:", error);
+      throw error;
+    }
+
+    const newCustomer: Customer = {
+      id: data.id,
+      name: data.name,
+      phone: data.phone,
+      altPhone: data.alt_phone,
+      email: data.email,
+      organization: data.organization,
+      addresses: [],
+      totalCredit: 0,
+    };
+
     setCustomers([...customers, newCustomer]);
     return newCustomer;
   };
@@ -229,6 +420,215 @@ export function usePOS() {
 
   const getCreditRecordsByCustomer = (customerId: string) => {
     return creditRecords.filter((c) => c.customerId === customerId);
+  };
+
+  // Load Sales
+  const loadSales = async () => {
+    const { data, error } = await supabase.from("sales").select("*");
+    if (error) {
+      console.error("Error loading sales:", error);
+      return;
+    }
+
+    const salesWithItems = await Promise.all(
+      data.map(async (sale: any) => {
+        const { data: itemsData } = await supabase
+          .from("sale_items")
+          .select("*")
+          .eq("sale_id", sale.id);
+
+        const saleItems = await Promise.all(
+          itemsData
+            ? itemsData.map(async (si: any) => {
+                const { data: compData } = await supabase
+                  .from("sale_item_composition")
+                  .select("*")
+                  .eq("sale_item_id", si.id);
+
+                return {
+                  id: si.id,
+                  name: si.name,
+                  quantity: si.quantity,
+                  price: parseFloat(si.price),
+                  image: si.image,
+                  composition: compData
+                    ? compData.map((c: any) => ({
+                        itemId: c.item_id,
+                        customName: c.custom_name,
+                        customPrice: c.custom_price ? parseFloat(c.custom_price) : undefined,
+                        quantity: c.quantity,
+                      }))
+                    : undefined,
+                };
+              })
+            : []
+        );
+
+        return {
+          id: sale.id,
+          items: saleItems,
+          paymentMode: sale.payment_mode,
+          customerId: sale.customer_id,
+          total: parseFloat(sale.total),
+          date: sale.date,
+          orderType: sale.order_type,
+          pickupDate: sale.pickup_date,
+          pickupTime: sale.pickup_time,
+          discountType: sale.discount_type,
+          discountValue: sale.discount_value ? parseFloat(sale.discount_value) : undefined,
+          discountAmount: sale.discount_amount ? parseFloat(sale.discount_amount) : undefined,
+          deliveryCharges: sale.delivery_charges ? parseFloat(sale.delivery_charges) : undefined,
+          deliveryDetails: sale.delivery_receiver_name
+            ? {
+                receiverName: sale.delivery_receiver_name,
+                receiverAddress: sale.delivery_receiver_address,
+                receiverPhone: sale.delivery_receiver_phone,
+                message: sale.delivery_message,
+                senderName: sale.delivery_sender_name,
+                senderPhone: sale.delivery_sender_phone,
+              }
+            : undefined,
+        };
+      })
+    );
+
+    setSales(salesWithItems);
+  };
+
+  const addSale = async (sale: Omit<Sale, "id" | "date">) => {
+    const { data, error } = await supabase
+      .from("sales")
+      .insert([
+        {
+          total: sale.total,
+          payment_mode: sale.paymentMode,
+          customer_id: sale.customerId,
+          order_type: sale.orderType,
+          pickup_date: sale.pickupDate,
+          pickup_time: sale.pickupTime,
+          discount_type: sale.discountType,
+          discount_value: sale.discountValue,
+          discount_amount: sale.discountAmount,
+          delivery_charges: sale.deliveryCharges,
+          delivery_receiver_name: sale.deliveryDetails?.receiverName,
+          delivery_receiver_address: sale.deliveryDetails?.receiverAddress,
+          delivery_receiver_phone: sale.deliveryDetails?.receiverPhone,
+          delivery_message: sale.deliveryDetails?.message,
+          delivery_sender_name: sale.deliveryDetails?.senderName,
+          delivery_sender_phone: sale.deliveryDetails?.senderPhone,
+          date: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding sale:", error);
+      throw error;
+    }
+
+    const saleId = data.id;
+
+    // Insert sale items
+    if (sale.items && sale.items.length > 0) {
+      const { data: itemsData } = await supabase
+        .from("sale_items")
+        .insert(
+          sale.items.map((si) => ({
+            sale_id: saleId,
+            name: si.name,
+            quantity: si.quantity,
+            price: si.price,
+            image: si.image,
+          }))
+        )
+        .select();
+
+      // Insert sale item compositions
+      if (itemsData && sale.items.some((si) => si.composition)) {
+        for (let i = 0; i < sale.items.length; i++) {
+          if (sale.items[i].composition && sale.items[i].composition!.length > 0) {
+            await supabase.from("sale_item_composition").insert(
+              sale.items[i].composition!.map((comp) => ({
+                sale_item_id: itemsData[i].id,
+                item_id: comp.itemId,
+                custom_name: comp.customName,
+                custom_price: comp.customPrice,
+                quantity: comp.quantity,
+              }))
+            );
+          }
+        }
+      }
+    }
+
+    // Handle credit records
+    if (sale.paymentMode === "credit" && sale.customerId) {
+      const { error: creditError } = await supabase.from("credit_records").insert([
+        {
+          customer_id: sale.customerId,
+          amount: sale.total,
+          sale_id: saleId,
+          date: new Date().toISOString(),
+        },
+      ]);
+
+      if (creditError) {
+        console.error("Error adding credit record:", creditError);
+      }
+
+      // Update customer total credit
+      const customer = customers.find((c) => c.id === sale.customerId);
+      if (customer) {
+        await supabase
+          .from("customers")
+          .update({ total_credit: customer.totalCredit + sale.total })
+          .eq("id", sale.customerId);
+      }
+    }
+
+    await loadSales();
+    await loadCreditRecords();
+    if (sale.customerId) await loadCustomers();
+
+    const newSale: Sale = {
+      id: saleId,
+      items: sale.items,
+      paymentMode: sale.paymentMode,
+      customerId: sale.customerId,
+      total: sale.total,
+      date: new Date().toISOString(),
+      orderType: sale.orderType,
+      pickupDate: sale.pickupDate,
+      pickupTime: sale.pickupTime,
+      discountType: sale.discountType,
+      discountValue: sale.discountValue,
+      discountAmount: sale.discountAmount,
+      deliveryCharges: sale.deliveryCharges,
+      deliveryDetails: sale.deliveryDetails,
+    };
+
+    setSales([...sales, newSale]);
+    return newSale;
+  };
+
+  // Load Credit Records
+  const loadCreditRecords = async () => {
+    const { data, error } = await supabase.from("credit_records").select("*");
+    if (error) {
+      console.error("Error loading credit records:", error);
+      return;
+    }
+
+    setCreditRecords(
+      data.map((record: any) => ({
+        id: record.id,
+        customerId: record.customer_id,
+        amount: parseFloat(record.amount),
+        date: record.date,
+        saleId: record.sale_id,
+      }))
+    );
   };
 
   const getTodaySalesTotal = () => {
@@ -244,54 +644,13 @@ export function usePOS() {
       .length;
   };
 
-  const addItem = (item: Omit<Item, "id">) => {
-    const newItem: Item = {
-      ...item,
-      id: `item-${Date.now()}`,
-    };
-    setItems([...items, newItem]);
-    return newItem;
-  };
-
-  const updateItem = (id: string, item: Partial<Item>) => {
-    setItems(items.map((i) => (i.id === id ? { ...i, ...item } : i)));
-  };
-
-  const deleteItem = (id: string) => {
-    setItems(items.filter((i) => i.id !== id));
-  };
-
-  const updateItemStock = (itemId: string, quantity: number) => {
-    setItems(
-      items.map((i) =>
-        i.id === itemId ? { ...i, stock: Math.max(0, i.stock - quantity) } : i
-      )
-    );
-  };
-
-  const addProduct = (product: Omit<Product, "id">) => {
-    const newProduct: Product = {
-      ...product,
-      id: `product-${Date.now()}`,
-    };
-    setProducts([...products, newProduct]);
-    return newProduct;
-  };
-
-  const updateProduct = (id: string, product: Partial<Product>) => {
-    setProducts(products.map((p) => (p.id === id ? { ...p, ...product } : p)));
-  };
-
-  const deleteProduct = (id: string) => {
-    setProducts(products.filter((p) => p.id !== id));
-  };
-
   return {
     sales,
     items,
     customers,
     creditRecords,
     products,
+    loading,
     addSale,
     addItem,
     updateItem,
