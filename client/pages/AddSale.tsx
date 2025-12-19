@@ -174,9 +174,11 @@ export default function AddSale() {
     return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
   };
 
-  const getItemPrice = (itemId?: string, customPrice?: number) => {
-    if (customPrice !== undefined) return customPrice;
-    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.price || 0) : 0;
+  const getItemPrice = (itemId?: string, customPrice?: number): number => {
+    if (customPrice !== undefined && customPrice !== null) return customPrice;
+    if (!itemId) return 0;
+    const item = inventoryItems.find((item) => item.id === itemId);
+    return item?.price || 0;
   };
 
   const addCustomItemToProduct = () => {
