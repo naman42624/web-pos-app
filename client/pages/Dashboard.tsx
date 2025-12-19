@@ -7,11 +7,25 @@ import {
   Users,
   CreditCard,
   ArrowRight,
+  Loader,
 } from "lucide-react";
 
 export default function Dashboard() {
-  const { sales, customers, creditRecords, getTodaySalesTotal, getTodayTransactionCount } =
+  const { sales, customers, creditRecords, getTodaySalesTotal, getTodayTransactionCount, loading } =
     usePOSContext();
+
+  if (loading) {
+    return (
+      <SharedLayout>
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+          <div className="text-center">
+            <Loader className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+            <p className="text-slate-600 font-medium">Loading your data...</p>
+          </div>
+        </div>
+      </SharedLayout>
+    );
+  }
 
   const todayTotal = getTodaySalesTotal();
   const todayCount = getTodayTransactionCount();
