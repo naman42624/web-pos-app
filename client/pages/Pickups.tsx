@@ -152,10 +152,12 @@ export default function Pickups() {
                                 {item.composition.map((comp, idx) => {
                                   const isCustom = (comp as any).customName !== undefined;
                                   const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
-                                  const itemPrice = isCustom ? (comp as any).customPrice : getItemPrice(comp.itemId);
+                                  const itemPrice = isCustom
+                                    ? ((comp as any).customPrice || 0)
+                                    : getItemPrice(comp.itemId, undefined);
                                   return (
                                     <p key={idx} className="text-xs opacity-75 ml-2">
-                                      • {itemName} × {comp.quantity} @ ₹{itemPrice.toFixed(2)} each
+                                      • {itemName} × {comp.quantity} @ ₹{(itemPrice || 0).toFixed(2)} each
                                     </p>
                                   );
                                 })}
