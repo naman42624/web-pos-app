@@ -233,11 +233,13 @@ export default function ReadyProducts() {
                       {product.items.map((pi, idx) => {
                         const isCustom = (pi as any).customName !== undefined;
                         const itemName = isCustom ? (pi as any).customName : getItemName(pi.itemId);
-                        const itemPrice = isCustom ? (pi as any).customPrice : getItemPrice(pi.itemId);
+                        const itemPrice = isCustom
+                          ? ((pi as any).customPrice || 0)
+                          : getItemPrice(pi.itemId, undefined);
                         return (
                           <div key={idx} className="flex justify-between text-xs text-slate-600">
                             <span>{itemName} × {pi.quantity}</span>
-                            <span className="font-medium">₹{(itemPrice * pi.quantity).toFixed(2)}</span>
+                            <span className="font-medium">₹{((itemPrice || 0) * pi.quantity).toFixed(2)}</span>
                           </div>
                         );
                       })}
