@@ -11,8 +11,14 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
-  const { sales, customers, creditRecords, getTodaySalesTotal, getTodayTransactionCount, loading } =
-    usePOSContext();
+  const {
+    sales,
+    customers,
+    creditRecords,
+    getTodaySalesTotal,
+    getTodayTransactionCount,
+    loading,
+  } = usePOSContext();
 
   if (loading) {
     return (
@@ -60,7 +66,9 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm font-medium">Today's Sales</p>
+                <p className="text-slate-500 text-sm font-medium">
+                  Today's Sales
+                </p>
                 <p className="text-3xl font-bold text-slate-900 mt-2">
                   ₹{todayTotal.toLocaleString("en-IN")}
                 </p>
@@ -107,7 +115,9 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm font-medium">Credit Issued</p>
+                <p className="text-slate-500 text-sm font-medium">
+                  Credit Issued
+                </p>
                 <p className="text-3xl font-bold text-slate-900 mt-2">
                   ₹{totalCredit.toLocaleString("en-IN")}
                 </p>
@@ -140,7 +150,8 @@ export default function Dashboard() {
                 >
                   <div>
                     <p className="font-medium text-slate-900">
-                      {sale.items.length} item{sale.items.length !== 1 ? "s" : ""}
+                      {sale.items.length} item
+                      {sale.items.length !== 1 ? "s" : ""}
                     </p>
                     <p className="text-sm text-slate-500 mt-1">
                       {new Date(sale.date).toLocaleTimeString("en-IN", {

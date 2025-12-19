@@ -30,7 +30,12 @@ export interface SaleItem {
   quantity: number;
   price: number;
   image?: string;
-  composition?: Array<{ itemId?: string; customName?: string; customPrice?: number; quantity: number }>;
+  composition?: Array<{
+    itemId?: string;
+    customName?: string;
+    customPrice?: number;
+    quantity: number;
+  }>;
 }
 
 export interface DeliveryDetails {
@@ -131,7 +136,7 @@ export function usePOS() {
         price: parseFloat(item.price),
         stock: item.stock,
         image: item.image,
-      }))
+      })),
     );
   };
 
@@ -228,12 +233,14 @@ export function usePOS() {
             ? itemsData.map((pi: any) => ({
                 itemId: pi.item_id,
                 customName: pi.custom_name,
-                customPrice: pi.custom_price ? parseFloat(pi.custom_price) : undefined,
+                customPrice: pi.custom_price
+                  ? parseFloat(pi.custom_price)
+                  : undefined,
                 quantity: pi.quantity,
               }))
             : [],
         };
-      })
+      }),
     );
 
     setProducts(productsWithItems);
@@ -268,7 +275,7 @@ export function usePOS() {
           custom_name: pi.customName,
           custom_price: pi.customPrice,
           quantity: pi.quantity,
-        }))
+        })),
       );
 
       if (itemsError) {
@@ -317,14 +324,12 @@ export function usePOS() {
             custom_name: pi.customName,
             custom_price: pi.customPrice,
             quantity: pi.quantity,
-          }))
+          })),
         );
       }
     }
 
-    setProducts(
-      products.map((p) => (p.id === id ? { ...p, ...product } : p))
-    );
+    setProducts(products.map((p) => (p.id === id ? { ...p, ...product } : p)));
   };
 
   const deleteProduct = async (id: string) => {
@@ -372,7 +377,7 @@ export function usePOS() {
             : [],
           totalCredit: parseFloat(customer.total_credit),
         };
-      })
+      }),
     );
 
     setCustomers(customersWithAddresses);
@@ -455,13 +460,15 @@ export function usePOS() {
                     ? compData.map((c: any) => ({
                         itemId: c.item_id,
                         customName: c.custom_name,
-                        customPrice: c.custom_price ? parseFloat(c.custom_price) : undefined,
+                        customPrice: c.custom_price
+                          ? parseFloat(c.custom_price)
+                          : undefined,
                         quantity: c.quantity,
                       }))
                     : undefined,
                 };
               })
-            : []
+            : [],
         );
 
         return {
@@ -475,9 +482,15 @@ export function usePOS() {
           pickupDate: sale.pickup_date,
           pickupTime: sale.pickup_time,
           discountType: sale.discount_type,
-          discountValue: sale.discount_value ? parseFloat(sale.discount_value) : undefined,
-          discountAmount: sale.discount_amount ? parseFloat(sale.discount_amount) : undefined,
-          deliveryCharges: sale.delivery_charges ? parseFloat(sale.delivery_charges) : undefined,
+          discountValue: sale.discount_value
+            ? parseFloat(sale.discount_value)
+            : undefined,
+          discountAmount: sale.discount_amount
+            ? parseFloat(sale.discount_amount)
+            : undefined,
+          deliveryCharges: sale.delivery_charges
+            ? parseFloat(sale.delivery_charges)
+            : undefined,
           deliveryDetails: sale.delivery_receiver_name
             ? {
                 receiverName: sale.delivery_receiver_name,
@@ -489,7 +502,7 @@ export function usePOS() {
               }
             : undefined,
         };
-      })
+      }),
     );
 
     setSales(salesWithItems);
@@ -540,14 +553,17 @@ export function usePOS() {
             quantity: si.quantity,
             price: si.price,
             image: si.image,
-          }))
+          })),
         )
         .select();
 
       // Insert sale item compositions
       if (itemsData && sale.items.some((si) => si.composition)) {
         for (let i = 0; i < sale.items.length; i++) {
-          if (sale.items[i].composition && sale.items[i].composition!.length > 0) {
+          if (
+            sale.items[i].composition &&
+            sale.items[i].composition!.length > 0
+          ) {
             await supabase.from("sale_item_composition").insert(
               sale.items[i].composition!.map((comp) => ({
                 sale_item_id: itemsData[i].id,
@@ -555,7 +571,7 @@ export function usePOS() {
                 custom_name: comp.customName,
                 custom_price: comp.customPrice,
                 quantity: comp.quantity,
-              }))
+              })),
             );
           }
         }
@@ -564,14 +580,16 @@ export function usePOS() {
 
     // Handle credit records
     if (sale.paymentMode === "credit" && sale.customerId) {
-      const { error: creditError } = await supabase.from("credit_records").insert([
-        {
-          customer_id: sale.customerId,
-          amount: sale.total,
-          sale_id: saleId,
-          date: new Date().toISOString(),
-        },
-      ]);
+      const { error: creditError } = await supabase
+        .from("credit_records")
+        .insert([
+          {
+            customer_id: sale.customerId,
+            amount: sale.total,
+            sale_id: saleId,
+            date: new Date().toISOString(),
+          },
+        ]);
 
       if (creditError) {
         console.error("Error adding credit record:", creditError);
@@ -627,7 +645,7 @@ export function usePOS() {
         amount: parseFloat(record.amount),
         date: record.date,
         saleId: record.sale_id,
-      }))
+      })),
     );
   };
 
