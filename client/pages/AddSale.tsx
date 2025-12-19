@@ -852,11 +852,13 @@ export default function AddSale() {
                             {item.composition.map((comp, idx) => {
                               const isCustom = (comp as any).customName !== undefined;
                               const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
-                              const itemPrice = isCustom ? (comp as any).customPrice : getItemPrice(comp.itemId);
+                              const itemPrice = isCustom
+                                ? ((comp as any).customPrice || 0)
+                                : getItemPrice(comp.itemId, undefined);
                               return (
                                 <div key={idx} className="flex justify-between text-xs text-slate-600 px-2">
                                   <span>{itemName} × {comp.quantity}</span>
-                                  <span className="font-medium">₹{(itemPrice * comp.quantity).toFixed(2)}</span>
+                                  <span className="font-medium">₹{((itemPrice || 0) * comp.quantity).toFixed(2)}</span>
                                 </div>
                               );
                             })}
