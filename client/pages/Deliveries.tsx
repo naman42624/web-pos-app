@@ -351,9 +351,7 @@ export default function Deliveries() {
     groupedByStatus.hasOwnProperty(status),
   );
 
-  const menuBarStatuses = MENU_BAR_STATUSES.filter((status) =>
-    groupedByStatus.hasOwnProperty(status),
-  );
+  const menuBarStatuses = MENU_BAR_STATUSES;
 
   const filteredOrders = selectedStatus
     ? groupedByStatus[selectedStatus] || []
