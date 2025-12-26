@@ -10,11 +10,26 @@ import {
   Printer,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useMemo } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Deliveries() {
   const { sales, items: inventoryItems, updateSaleStatus } = usePOSContext();
 
-  const deliveryOrders = sales.filter((sale) => sale.orderType === "delivery");
+  const today = new Date().toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(today);
+
+  const deliveryOrders = useMemo(() => {
+    const allDeliveries = sales.filter((sale) => sale.orderType === "delivery");
+
+    if (!selectedDate) return allDeliveries;
+
+    return allDeliveries.filter((sale) => {
+      const saleDate = new Date(sale.date).toISOString().split("T")[0];
+      return saleDate === selectedDate;
+    });
+  }, [sales, selectedDate]);
 
   const getItemName = (itemId?: string, customName?: string) => {
     if (customName) return customName;
