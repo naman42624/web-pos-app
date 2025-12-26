@@ -264,6 +264,73 @@ export default function CustomerDetail() {
           </div>
         </div>
       </div>
+
+      {/* Payment Dialog */}
+      <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Record Payment</DialogTitle>
+            <DialogDescription>
+              Enter the amount received from the customer
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="amount" className="text-base font-semibold">
+                Amount to Record
+              </Label>
+              <div className="flex items-center mt-2">
+                <span className="text-xl font-semibold text-slate-700 mr-2">₹</span>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={amountInput}
+                  onChange={(e) => handleAmountChange(e.target.value)}
+                  placeholder="Enter amount"
+                  className="text-lg"
+                  autoFocus
+                />
+              </div>
+              {amountError && (
+                <p className="text-red-600 text-sm mt-2">{amountError}</p>
+              )}
+              {paymentDialogData && (
+                <p className="text-sm text-slate-500 mt-2">
+                  Total outstanding: ₹
+                  {paymentDialogData.totalAmount.toLocaleString("en-IN")}
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={closePaymentDialog}
+              disabled={recordingPayment !== null}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleConfirmPayment}
+              disabled={recordingPayment !== null || !amountInput}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {recordingPayment ? (
+                <>
+                  <Loader className="w-4 h-4 animate-spin mr-2" />
+                  Recording...
+                </>
+              ) : (
+                "Record Payment"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SharedLayout>
   );
 }
