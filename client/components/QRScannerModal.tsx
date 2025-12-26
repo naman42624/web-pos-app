@@ -18,16 +18,24 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
   const qrReaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (scanMode === "camera" && !scannerActive && qrReaderRef.current) {
-      initializeScanner();
-    }
+    let isMounted = true;
 
-    return () => {
-      if (scanMode === "camera" && scannerRef.current) {
-        scannerRef.current.clear().catch(() => {});
+    const setupScanner = async () => {
+      if (scanMode === "camera" && !scannerActive && qrReaderRef.current) {
+        await initializeScanner();
       }
     };
-  }, [scanMode, scannerActive]);
+
+    setupScanner();
+
+    return () => {
+      isMounted = false;
+      if (scanMode === "camera" && scannerRef.current) {
+        scannerRef.current.clear().catch(() => {});
+        setScannerActive(false);
+      }
+    };
+  }, [scanMode]);
 
   const initializeScanner = async () => {
     if (!qrReaderRef.current) return;
