@@ -102,6 +102,10 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
           return;
         }
 
+        // Show scanning indicator
+        lastDetectionRef.current = Date.now();
+        setIsScanning(true);
+
         console.log("QR Code detected by scanner:", decodedText);
         try {
           const data = decodeQRData(decodedText);
@@ -117,15 +121,18 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
                 .then(() => {
                   console.log("Scanner stopped successfully");
                   setScannerActive(false);
+                  setIsScanning(false);
                   onScan(data);
                 })
                 .catch((err) => {
                   console.error("Error stopping scanner:", err);
                   setScannerActive(false);
+                  setIsScanning(false);
                   onScan(data);
                 });
             } else {
               setScannerActive(false);
+              setIsScanning(false);
               onScan(data);
             }
           } else {
@@ -134,10 +141,12 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
               decodedText.substring(0, 50),
             );
             setError("Invalid QR code. Please scan a valid product QR code.");
+            setIsScanning(false);
           }
         } catch (err) {
           console.error("Error decoding QR:", err);
           setError("Failed to decode QR code. Please try again.");
+          setIsScanning(false);
         }
       };
 
