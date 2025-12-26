@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck, Box, Package } from "lucide-react";
+import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck, Box, Package, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface SharedLayoutProps {
   children: React.ReactNode;
@@ -8,6 +10,7 @@ interface SharedLayoutProps {
 
 export function SharedLayout({ children }: SharedLayoutProps) {
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { path: "/", label: "Dashboard", icon: BarChart3 },
@@ -22,58 +25,82 @@ export function SharedLayout({ children }: SharedLayoutProps) {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const NavContent = () => (
+    <div className="p-4 sm:p-6 space-y-2">
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const active = isActive(item.path);
+        return (
+          <Link
+            key={item.path}
+            to={item.path}
+            onClick={() => setMobileMenuOpen(false)}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200",
+              active
+                ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600"
+                : "text-slate-700 hover:bg-slate-50"
+            )}
+          >
+            <Icon className="w-5 h-5 flex-shrink-0" />
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       {/* Header */}
       <header className="border-b border-slate-200 bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg">
+        <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg flex-shrink-0">
               <ShoppingCart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900">POS System</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 truncate">POS System</h1>
           </div>
-          <p className="text-sm text-slate-500">
-            {new Date().toLocaleDateString("en-IN", {
-              weekday: "short",
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs sm:text-sm text-slate-500 whitespace-nowrap">
+              {new Date().toLocaleDateString("en-IN", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+            {/* Mobile Menu Trigger */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <button className="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+                  <Menu className="w-6 h-6" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-0">
+                <div className="flex flex-col h-full">
+                  <div className="border-b border-slate-200 p-4">
+                    <h2 className="font-bold text-slate-900">Navigation</h2>
+                  </div>
+                  <NavContent />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
 
       {/* Main Layout */}
       <div className="flex min-h-[calc(100vh-64px)]">
-        {/* Sidebar Navigation */}
-        <nav className="w-64 border-r border-slate-200 bg-white shadow-sm">
-          <div className="p-6 space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.path);
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200",
-                    active
-                      ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600"
-                      : "text-slate-700 hover:bg-slate-50"
-                  )}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
+        {/* Desktop Sidebar Navigation */}
+        <nav className="hidden md:block w-64 border-r border-slate-200 bg-white shadow-sm">
+          <NavContent />
         </nav>
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          <div className="max-w-7xl mx-auto p-6 lg:p-8">{children}</div>
+          <div className="w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+            <div className="mx-auto max-w-7xl">{children}</div>
+          </div>
         </main>
       </div>
     </div>
