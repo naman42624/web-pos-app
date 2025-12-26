@@ -473,7 +473,7 @@ export default function Deliveries() {
 
   const handleStatusChange = async (
     saleId: string,
-    newStatus: "pending" | "pick_up_ready" | "in_transit" | "delivered",
+    newStatus: "pending" | "pick_up_ready" | "in_transit" | "delivered" | "cancelled" | "delivery_attempted_once" | "delivery_attempted_twice",
   ) => {
     try {
       await updateSaleStatus(saleId, newStatus);
