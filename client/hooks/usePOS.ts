@@ -643,12 +643,12 @@ export function usePOS() {
     saleId: string,
     status:
       | "pending"
-      | "confirmed"
+      | "pick_up_ready"
       | "in_transit"
       | "delivered"
-      | "pick_up_ready"
-      | "picked_up"
-      | "cancelled",
+      | "cancelled"
+      | "delivery_attempted_once"
+      | "delivery_attempted_twice",
   ) => {
     const { error } = await supabase
       .from("sales")
