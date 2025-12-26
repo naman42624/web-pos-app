@@ -65,9 +65,13 @@ export default function QuickSale() {
   const [scannedProduct, setScannedProduct] = useState<QRCodeData | null>(null);
   const [showScannedConfirm, setShowScannedConfirm] = useState(false);
   const [creditCustomerSearch, setCreditCustomerSearch] = useState("");
-  const [filteredCustomers, setFilteredCustomers] = useState<typeof customers>([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<
+    typeof customers
+  >([]);
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
+    null,
+  );
 
   const subtotal = saleItems.reduce(
     (sum, item) => sum + item.quantity * item.price,
