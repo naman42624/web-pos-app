@@ -60,7 +60,7 @@ export default function ReadyProducts() {
   const openEditModal = (product: Product) => {
     setFormData({
       name: product.name,
-      price: product.price.toString(),
+      price: (product.price || 0).toString(),
       image: product.image || "",
       selectedItems: product.items,
     });
