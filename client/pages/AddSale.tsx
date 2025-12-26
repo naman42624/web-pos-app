@@ -101,6 +101,7 @@ export default function AddSale() {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [scannedProduct, setScannedProduct] = useState<QRCodeData | null>(null);
   const [showScannedConfirm, setShowScannedConfirm] = useState(false);
+  const [isCapturingCustomer, setIsCapturingCustomer] = useState(false);
 
   const subtotal = saleItems.reduce(
     (sum, item) => sum + item.quantity * item.price,
