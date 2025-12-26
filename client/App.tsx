@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { POSProvider } from "@/contexts/POSContext";
 import Dashboard from "./pages/Dashboard";
 import AddSale from "./pages/AddSale";
+import QuickSale from "./pages/QuickSale";
 import Items from "./pages/Items";
 import ReadyProducts from "./pages/ReadyProducts";
 import Customers from "./pages/Customers";
