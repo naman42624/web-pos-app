@@ -134,12 +134,12 @@ export function QRCodeModal({
 
   // Auto-print on mount if autoprint prop is true
   useEffect(() => {
-    if (autoprint && qrDataUrl) {
+    if (autoprint && qrDataUrlRef.current) {
       setTimeout(() => {
         handlePrint();
       }, 500);
     }
-  }, [autoprint, qrDataUrl]);
+  }, [autoprint]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
