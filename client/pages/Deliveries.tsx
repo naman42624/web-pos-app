@@ -638,6 +638,13 @@ export default function Deliveries() {
                                       In Transit
                                     </option>
                                     <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="delivery_attempted_once">
+                                      Delivery Attempted Once
+                                    </option>
+                                    <option value="delivery_attempted_twice">
+                                      Delivery Attempted Twice
+                                    </option>
                                   </select>
                                 </div>
                                 <p className="text-xs sm:text-sm text-slate-500">
