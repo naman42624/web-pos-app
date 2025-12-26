@@ -111,7 +111,7 @@ export function QRCodeModal({
             </head>
             <body>
               <div class="qr-container">
-                <img src="${qrDataUrl}" alt="QR Code" />
+                <img src="${qrDataUrlRef.current}" alt="QR Code" />
               </div>
               <div class="product-info">
                 <h2>${product.name}</h2>
