@@ -946,13 +946,59 @@ export default function QuickSale() {
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Customer Name <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    value={creditCustomerName}
-                    onChange={(e) => setCreditCustomerName(e.target.value)}
-                    placeholder="Enter customer name for credit"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={creditCustomerSearch}
+                      onChange={(e) =>
+                        handleCreditCustomerSearch(e.target.value)
+                      }
+                      onFocus={() => {
+                        if (creditCustomerSearch.trim()) {
+                          const filtered = customers.filter((customer) =>
+                            customer.name
+                              .toLowerCase()
+                              .includes(creditCustomerSearch.toLowerCase()),
+                          );
+                          setFilteredCustomers(filtered);
+                          setShowCustomerDropdown(true);
+                        }
+                      }}
+                      placeholder="Search or enter customer name"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                    {showCustomerDropdown && filteredCustomers.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto">
+                        {filteredCustomers.map((customer) => (
+                          <button
+                            key={customer.id}
+                            type="button"
+                            onClick={() =>
+                              handleSelectCreditCustomer(
+                                customer.id,
+                                customer.name,
+                              )
+                            }
+                            className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-slate-900">
+                                {customer.name}
+                              </span>
+                              <span className="text-sm text-slate-500">
+                                {customer.phone || "No phone"}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {selectedCustomerId && (
+                    <p className="text-sm text-green-700 mt-2">
+                      ✓ Customer selected
+                    </p>
+                  )}
                 </div>
               )}
 
