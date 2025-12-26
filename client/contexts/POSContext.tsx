@@ -1,9 +1,6 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { usePOS } from "@/hooks/usePOS";
-
-type POSContextType = ReturnType<typeof usePOS>;
-
-const POSContext = createContext<POSContextType | undefined>(undefined);
+import { POSContext } from "./usePOSContext";
 
 export function POSProvider({ children }: { children: ReactNode }) {
   const pos = usePOS();
@@ -13,12 +10,4 @@ export function POSProvider({ children }: { children: ReactNode }) {
       {children}
     </POSContext.Provider>
   );
-}
-
-export function usePOSContext() {
-  const context = useContext(POSContext);
-  if (!context) {
-    throw new Error("usePOSContext must be used within POSProvider");
-  }
-  return context;
 }
