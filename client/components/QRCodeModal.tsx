@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import * as QRCode from "qrcode";
 import { X, Download, Printer } from "lucide-react";
 import { Product } from "@/hooks/usePOS";
@@ -18,8 +18,10 @@ export function QRCodeModal({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
-  const qrData = generateQRCodeData(product);
-  const encodedData = encodeQRData(qrData);
+  const encodedData = useMemo(() => {
+    const qrData = generateQRCodeData(product);
+    return encodeQRData(qrData);
+  }, [product.id]);
 
   useEffect(() => {
     if (canvasRef.current) {
