@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Camera, AlertCircle } from "lucide-react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeScanType } from "html5-qrcode";
 import { decodeQRData, QRCodeData } from "@/utils/qrcode";
 
 interface QRScannerModalProps {
