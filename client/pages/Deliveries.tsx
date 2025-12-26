@@ -146,7 +146,6 @@ export default function Deliveries() {
         (item) => `
       <div style="margin-bottom: 12px; padding: 10px; border-bottom: 1px solid #e2e8f0;">
         <div style="font-weight: 600; margin-bottom: 4px;">${item.name} × ${item.quantity}</div>
-        <div style="font-size: 14px; color: #666;">₹${item.price.toFixed(2)} each</div>
         ${
           item.composition && item.composition.length > 0
             ? `
@@ -155,8 +154,7 @@ export default function Deliveries() {
               .map((comp) => {
                 const isCustom = (comp as any).customName !== undefined;
                 const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
-                const itemPrice = isCustom ? (comp as any).customPrice || 0 : getItemPrice(comp.itemId);
-                return `• ${itemName} × ${comp.quantity} @ ₹${(itemPrice || 0).toFixed(2)}`;
+                return `• ${itemName} × ${comp.quantity}`;
               })
               .join("<br>")}
           </div>
@@ -233,16 +231,6 @@ export default function Deliveries() {
           `
               : ""
           }
-
-          <div class="total-row">
-            Total Amount: ₹${order.total.toLocaleString("en-IN")}
-          </div>
-
-          <div class="section">
-            <div class="section-title">PAYMENT</div>
-            <div class="detail-row"><span class="label">Mode:</span> ${order.paymentMode}</div>
-            <div class="detail-row"><span class="label">Status:</span> Pending</div>
-          </div>
 
           <div class="footer">
             <div>Please verify items and delivery details before leaving.</div>
