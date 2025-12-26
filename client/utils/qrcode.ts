@@ -33,7 +33,10 @@ export function encodeQRData(data: QRCodeData): string {
 
 export function decodeQRData(encodedData: string): QRCodeData | null {
   try {
-    console.log("Attempting to decode QR data:", encodedData.substring(0, 100) + "...");
+    console.log(
+      "Attempting to decode QR data:",
+      encodedData.substring(0, 100) + "...",
+    );
     const data = JSON.parse(encodedData);
     console.log("Successfully parsed JSON, data type:", data.type);
     if (data.type === "product") {
@@ -43,7 +46,12 @@ export function decodeQRData(encodedData: string): QRCodeData | null {
     console.log("Invalid data type, expected 'product' but got:", data.type);
     return null;
   } catch (error) {
-    console.error("Error decoding QR data:", error, "Raw data:", encodedData.substring(0, 100) + "...");
+    console.error(
+      "Error decoding QR data:",
+      error,
+      "Raw data:",
+      encodedData.substring(0, 100) + "...",
+    );
     return null;
   }
 }

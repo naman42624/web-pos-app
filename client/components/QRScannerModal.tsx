@@ -24,13 +24,20 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     let cameraInitTimer: NodeJS.Timeout;
 
     const setupScanner = async () => {
-      if (scanMode === "camera" && !scannerActive && qrReaderRef.current && isMounted) {
+      if (
+        scanMode === "camera" &&
+        !scannerActive &&
+        qrReaderRef.current &&
+        isMounted
+      ) {
         await initializeScanner();
 
         // Set a timeout to check if camera is actually ready
         cameraInitTimer = setTimeout(() => {
           if (isMounted && !isCameraReady) {
-            console.warn("Camera initialization timeout - camera may not have started");
+            console.warn(
+              "Camera initialization timeout - camera may not have started",
+            );
           }
         }, 5000);
 
@@ -52,11 +59,14 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       scanCompleteRef.current = false;
       if (scanMode === "camera" && scannerRef.current) {
         try {
-          scannerRef.current.stop().then(() => {
-            console.log("Scanner stopped during cleanup");
-          }).catch((e) => {
-            console.debug("Error during scanner cleanup:", e);
-          });
+          scannerRef.current
+            .stop()
+            .then(() => {
+              console.log("Scanner stopped during cleanup");
+            })
+            .catch((e) => {
+              console.debug("Error during scanner cleanup:", e);
+            });
         } catch (e) {
           console.debug("Error during scanner cleanup:", e);
         }
