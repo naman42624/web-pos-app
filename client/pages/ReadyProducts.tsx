@@ -260,21 +260,34 @@ export default function ReadyProducts() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-3">
-                    <button
-                      onClick={() => openEditModal(product)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium rounded-lg transition-colors text-sm"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      Edit
-                    </button>
+                  <div className="flex flex-col gap-2 pt-3">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedProductForQR(product);
+                          setShowQRModal(true);
+                          setAutoprint(false);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 font-medium rounded-lg transition-colors text-xs sm:text-sm"
+                      >
+                        <QrCode className="w-4 h-4" />
+                        QR
+                      </button>
+                      <button
+                        onClick={() => openEditModal(product)}
+                        className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium rounded-lg transition-colors text-xs sm:text-sm"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        Edit
+                      </button>
+                    </div>
                     <button
                       onClick={() => {
                         if (confirm(`Delete product "${product.name}"?`)) {
                           deleteProduct(product.id);
                         }
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-700 hover:bg-red-100 font-medium rounded-lg transition-colors text-sm"
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-700 hover:bg-red-100 font-medium rounded-lg transition-colors text-xs sm:text-sm"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete
