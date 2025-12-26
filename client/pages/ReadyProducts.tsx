@@ -429,15 +429,58 @@ export default function ReadyProducts() {
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
                     Product Image (Optional)
                   </label>
-                  <textarea
-                    value={formData.image}
-                    onChange={(e) =>
-                      setFormData({ ...formData, image: e.target.value })
-                    }
-                    placeholder="Paste base64 encoded image data here..."
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
-                    rows={3}
-                  />
+                  <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors group">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const base64 = event.target?.result as string;
+                            setFormData({ ...formData, image: base64 });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="hidden"
+                      id="product-image-upload"
+                    />
+                    {formData.image ? (
+                      <label htmlFor="product-image-upload" className="cursor-pointer block">
+                        <div className="mb-3">
+                          <img
+                            src={formData.image}
+                            alt="Product preview"
+                            className="w-32 h-32 object-cover rounded-lg mx-auto"
+                          />
+                        </div>
+                        <p className="text-sm font-medium text-blue-600 group-hover:text-blue-700">
+                          Click to change image
+                        </p>
+                      </label>
+                    ) : (
+                      <label htmlFor="product-image-upload" className="cursor-pointer block">
+                        <div className="text-4xl mb-2">📷</div>
+                        <p className="text-sm font-medium text-slate-700 mb-1">
+                          Click to upload image
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          PNG, JPG, GIF up to 5MB
+                        </p>
+                      </label>
+                    )}
+                  </div>
+                  {formData.image && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, image: "" })}
+                      className="mt-2 text-sm text-red-600 hover:text-red-700 font-medium"
+                    >
+                      Remove image
+                    </button>
+                  )}
                 </div>
 
                 {/* Items Section */}
