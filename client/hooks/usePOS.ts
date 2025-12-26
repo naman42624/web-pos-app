@@ -511,6 +511,7 @@ export function usePOS() {
               }
             : undefined,
           status: sale.status || "pending",
+          paymentStatus: sale.payment_status || "pending",
         };
       }),
     );
