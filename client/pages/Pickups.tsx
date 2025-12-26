@@ -111,7 +111,8 @@ export default function Pickups() {
     try {
       await updateSaleStatus(saleId, newStatus as any);
     } catch (error) {
-      console.error("Failed to update status:", error);
+      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+      console.error("Failed to update status:", errorMsg);
     }
   };
 
