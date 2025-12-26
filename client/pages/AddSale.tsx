@@ -1737,7 +1737,8 @@ export default function AddSale() {
               </h2>
 
               {/* Product Image */}
-              {scannedProduct && readyProducts && (
+              {scannedProduct &&
+                readyProducts &&
                 (() => {
                   const product = readyProducts.find(
                     (p) => p.id === scannedProduct.id,
@@ -1760,8 +1761,7 @@ export default function AddSale() {
                       )}
                     </div>
                   );
-                })()
-              )}
+                })()}
 
               <div className="space-y-4 mb-6 p-4 bg-slate-50 rounded-lg">
                 <div>
