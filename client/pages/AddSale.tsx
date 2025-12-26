@@ -443,7 +443,7 @@ export default function AddSale() {
           {/* Form Section */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Unified Add Product/Items Form */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
                 Add Items to Sale
               </h2>
