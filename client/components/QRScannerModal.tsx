@@ -159,7 +159,21 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
 
       if (stream && stream.length > 0) {
         console.log("Available cameras:", stream);
-        const cameraId = stream[0].id;
+
+        // Prefer back/rear camera on mobile devices
+        let cameraId = stream[0].id;
+        const backCamera = stream.find((camera) =>
+          camera.label.toLowerCase().includes("back") ||
+          camera.label.toLowerCase().includes("rear") ||
+          camera.label.toLowerCase().includes("environment")
+        );
+
+        if (backCamera) {
+          console.log("Using back camera:", backCamera.label);
+          cameraId = backCamera.id;
+        } else {
+          console.log("Back camera not found, using first camera:", stream[0].label);
+        }
 
         await scanner.start(
           cameraId,
