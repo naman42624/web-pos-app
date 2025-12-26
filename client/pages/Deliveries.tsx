@@ -834,29 +834,17 @@ export default function Deliveries() {
                               </div>
                             </div>
 
-                            {/* Print Buttons */}
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() =>
-                                  handlePrintCustomerSlip(order, orderNumber)
-                                }
-                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg transition-colors text-sm"
-                                title="Print customer copy"
-                              >
-                                <Printer className="w-4 h-4" />
-                                Print (Customer)
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handlePrintDispatchSlip(order, orderNumber)
-                                }
-                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 font-medium rounded-lg transition-colors text-sm"
-                                title="Print dispatch copy"
-                              >
-                                <Printer className="w-4 h-4" />
-                                Print (Dispatch)
-                              </button>
-                            </div>
+                            {/* Print Button */}
+                            <button
+                              onClick={() =>
+                                handlePrintDeliverySlip(order, orderNumber)
+                              }
+                              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg transition-colors text-sm"
+                              title="Print delivery slip with both customer and dispatch copies"
+                            >
+                              <Printer className="w-4 h-4" />
+                              Print Delivery Slip
+                            </button>
                           </div>
                         </div>
                       </div>
