@@ -1,0 +1,176 @@
+import { useRef } from "react";
+import QRCode from "qrcode.react";
+import { X, Download, Printer } from "lucide-react";
+import { Product } from "@/hooks/usePOS";
+import { generateQRCodeData, encodeQRData } from "@/utils/qrcode";
+
+interface QRCodeModalProps {
+  product: Product;
+  onClose: () => void;
+  autoprint?: boolean;
+}
+
+export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModalProps) {
+  const qrRef = useRef<any>(null);
+
+  const qrData = generateQRCodeData(product);
+  const encodedData = encodeQRData(qrData);
+
+  const handleDownload = () => {
+    if (qrRef.current) {
+      const canvas = qrRef.current.querySelector("canvas");
+      const url = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `qr-${product.name.replace(/\s+/g, "-")}.png`;
+      link.click();
+    }
+  };
+
+  const handlePrint = () => {
+    if (qrRef.current) {
+      const canvas = qrRef.current.querySelector("canvas");
+      const url = canvas.toDataURL("image/png");
+
+      const printWindow = window.open("", "", "height=400,width=400");
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Print QR Code - ${product.name}</title>
+              <style>
+                body {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                  margin: 0;
+                  padding: 20px;
+                  font-family: Arial, sans-serif;
+                  background: white;
+                }
+                .qr-container {
+                  text-align: center;
+                  margin: 20px 0;
+                }
+                .qr-container img {
+                  max-width: 400px;
+                  width: 100%;
+                  border: 2px solid #333;
+                  padding: 10px;
+                }
+                .product-info {
+                  margin-top: 20px;
+                  text-align: center;
+                }
+                .product-info h2 {
+                  margin: 10px 0;
+                  font-size: 24px;
+                }
+                .product-info p {
+                  margin: 5px 0;
+                  font-size: 16px;
+                  color: #666;
+                }
+                @media print {
+                  body {
+                    padding: 0;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <div class="qr-container">
+                <img src="${url}" alt="QR Code" />
+              </div>
+              <div class="product-info">
+                <h2>${product.name}</h2>
+                <p>Price: ₹${product.price.toFixed(2)}</p>
+                <p>Generated: ${new Date().toLocaleDateString("en-IN")}</p>
+              </div>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        setTimeout(() => {
+          printWindow.print();
+          if (autoprint) {
+            printWindow.close();
+          }
+        }, 250);
+      }
+    }
+  };
+
+  // Auto-print on mount if autoprint prop is true
+  if (autoprint) {
+    setTimeout(() => {
+      handlePrint();
+    }, 500);
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-slate-900">Product QR Code</h2>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Product Info */}
+        <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+          <h3 className="font-semibold text-slate-900 mb-2">{product.name}</h3>
+          <p className="text-sm text-slate-600">
+            Price: <span className="font-semibold text-slate-900">₹{product.price.toFixed(2)}</span>
+          </p>
+          <p className="text-sm text-slate-600 mt-1">
+            Items in composition: <span className="font-semibold text-slate-900">{product.items.length}</span>
+          </p>
+        </div>
+
+        {/* QR Code */}
+        <div ref={qrRef} className="flex justify-center mb-6 p-4 bg-white border-2 border-slate-200 rounded-lg">
+          <QRCode
+            value={encodedData}
+            size={280}
+            level="H"
+            includeMargin={true}
+            quietZone={10}
+          />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={handleDownload}
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            Download
+          </button>
+          <button
+            onClick={handlePrint}
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          >
+            <Printer className="w-4 h-4" />
+            Print
+          </button>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-4 px-4 py-2 border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
