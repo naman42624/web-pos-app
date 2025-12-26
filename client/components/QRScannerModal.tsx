@@ -1,0 +1,201 @@
+import { useState, useRef, useEffect } from "react";
+import { X, Camera, AlertCircle } from "lucide-react";
+import { Html5QrcodeScanner } from "html5-qrcode";
+import { decodeQRData, QRCodeData } from "@/utils/qrcode";
+
+interface QRScannerModalProps {
+  onScan: (data: QRCodeData) => void;
+  onClose: () => void;
+}
+
+export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
+  const [scanMode, setScanMode] = useState<"manual" | "camera">("manual");
+  const [manualInput, setManualInput] = useState("");
+  const [error, setError] = useState("");
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const [scannerActive, setScannerActive] = useState(false);
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const qrReaderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scanMode === "camera" && !scannerActive && qrReaderRef.current) {
+      initializeScanner();
+    }
+
+    return () => {
+      if (scanMode === "camera" && scannerRef.current) {
+        scannerRef.current.clear().catch(() => {});
+      }
+    };
+  }, [scanMode, scannerActive]);
+
+  const initializeScanner = () => {
+    if (!qrReaderRef.current) return;
+
+    try {
+      const scanner = new Html5QrcodeScanner(
+        qrReaderRef.current.id,
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+          aspectRatio: 1.0,
+        },
+        false
+      );
+
+      scanner.render(
+        (decodedText) => {
+          try {
+            const data = decodeQRData(decodedText);
+            if (data && data.type === "product") {
+              scanner.clear().catch(() => {});
+              onScan(data);
+            } else {
+              setError("Invalid QR code. Please scan a valid product QR code.");
+            }
+          } catch (err) {
+            setError("Failed to decode QR code. Please try again.");
+          }
+        },
+        () => {
+          // Error handler - just continue scanning
+        }
+      );
+
+      scannerRef.current = scanner;
+      setScannerActive(true);
+      setIsCameraReady(true);
+      setError("");
+    } catch (err: any) {
+      setError(`Camera not available: ${err.message}`);
+      setIsCameraReady(false);
+    }
+  };
+
+  const handleManualInput = () => {
+    if (!manualInput.trim()) {
+      setError("Please enter or paste QR data");
+      return;
+    }
+
+    const data = decodeQRData(manualInput);
+    if (data && data.type === "product") {
+      onScan(data);
+    } else {
+      setError("Invalid QR data. Please check and try again.");
+    }
+  };
+
+  const handleSwitchMode = (mode: "manual" | "camera") => {
+    if (scannerRef.current && scanMode === "camera") {
+      scannerRef.current.clear().catch(() => {});
+      setScannerActive(false);
+    }
+    setError("");
+    setScanMode(mode);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-slate-900">Scan Product QR</h2>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Mode Toggle */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => handleSwitchMode("manual")}
+            className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
+              scanMode === "manual"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+            }`}
+          >
+            Manual Entry
+          </button>
+          <button
+            onClick={() => handleSwitchMode("camera")}
+            className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
+              scanMode === "camera"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+            }`}
+          >
+            Camera Scan
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex gap-2">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Manual Input Mode */}
+        {scanMode === "manual" && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Paste QR Data
+              </label>
+              <textarea
+                value={manualInput}
+                onChange={(e) => setManualInput(e.target.value)}
+                placeholder="Paste the QR code data here..."
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm resize-none"
+                rows={5}
+              />
+            </div>
+            <button
+              onClick={handleManualInput}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              Scan QR
+            </button>
+          </div>
+        )}
+
+        {/* Camera Scan Mode */}
+        {scanMode === "camera" && (
+          <div className="space-y-4">
+            {!isCameraReady && (
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
+                <Camera className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                <p className="text-sm text-slate-600 mb-2">Initializing camera...</p>
+                <p className="text-xs text-slate-500">
+                  Please allow camera access when prompted
+                </p>
+              </div>
+            )}
+            <div
+              id="qr-reader"
+              ref={qrReaderRef}
+              className="w-full rounded-lg overflow-hidden"
+            />
+            {isCameraReady && (
+              <p className="text-xs text-slate-500 text-center">
+                Point your camera at the product QR code
+              </p>
+            )}
+          </div>
+        )}
+
+        <button
+          onClick={onClose}
+          className="w-full mt-4 px-4 py-2 border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
