@@ -602,13 +602,13 @@ export default function Deliveries() {
         {/* Orders List */}
         <div className="space-y-6 sm:space-y-8">
           {deliveryOrders.length > 0 ? (
-            sortedGroupKeys.map((dateGroup) => (
-              <div key={dateGroup}>
+            sortedStatusKeys.map((status) => (
+              <div key={status}>
                 <h2 className="text-lg font-bold text-slate-900 mb-3 sm:mb-4">
-                  Deliveries for {dateGroup}
+                  {getStatusLabel(status)}
                 </h2>
                 <div className="space-y-3 sm:space-y-4">
-                  {groupedOrders[dateGroup].map((order, index) => {
+                  {groupedByStatus[status].map((order, index) => {
                     const orderNumber = getOrderNumber(
                       order.id,
                       deliveryOrders.findIndex((o) => o.id === order.id),
