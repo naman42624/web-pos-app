@@ -118,7 +118,7 @@ export default function ReadyProducts() {
     }));
   };
 
-  const handleSaveProduct = () => {
+  const handleSaveProduct = async () => {
     if (!formData.name.trim()) {
       alert("Please enter product name");
       return;
@@ -142,10 +142,10 @@ export default function ReadyProducts() {
     };
 
     if (editingProductId) {
-      updateProduct(editingProductId, productData);
+      await updateProduct(editingProductId, productData);
       closeModal();
     } else {
-      const newProduct = addProduct(productData);
+      const newProduct = await addProduct(productData);
       closeModal();
 
       // Auto-print QR code for new products
