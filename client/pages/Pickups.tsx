@@ -104,6 +104,32 @@ export default function Pickups() {
     }
   };
 
+  const handleStatusChange = async (
+    saleId: string,
+    newStatus: "pending" | "confirmed" | "pick_up_ready" | "picked_up" | "cancelled",
+  ) => {
+    try {
+      await updateSaleStatus(saleId, newStatus as any);
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
+
+  const getStatusColor = (status?: string) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "pick_up_ready":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "picked_up":
+        return "bg-indigo-100 text-indigo-700 border-indigo-200";
+      case "cancelled":
+        return "bg-red-100 text-red-700 border-red-200";
+      default:
+        return "bg-amber-100 text-amber-700 border-amber-200";
+    }
+  };
+
   const getDateGroup = (dateString: string | undefined) => {
     if (!dateString) return "No Date";
 
