@@ -93,6 +93,17 @@ export default function Deliveries() {
             <div style="font-size: 11px; color: #666; margin-top: 4px;">${formatDate(order.date)}</div>
           </div>
 
+          ${
+            order.pickupDate
+              ? `
+            <div class="section">
+              <div class="section-title">DELIVERY SCHEDULE</div>
+              <div class="detail-row"><span class="label">Date:</span> ${formatDate(order.pickupDate)}</div>
+            </div>
+          `
+              : ""
+          }
+
           <div class="section items">
             <div class="section-title">ITEMS</div>
             ${customerItemsHTML}
@@ -117,17 +128,6 @@ export default function Deliveries() {
             <div class="section">
               <div class="section-title">FROM</div>
               <div class="detail-row">${order.deliveryDetails.senderName}</div>
-            </div>
-          `
-              : ""
-          }
-
-          ${
-            order.pickupDate
-              ? `
-            <div class="section">
-              <div class="section-title">DELIVERY SCHEDULE</div>
-              <div class="detail-row"><span class="label">Date:</span> ${formatDate(order.pickupDate)}</div>
             </div>
           `
               : ""
@@ -224,6 +224,18 @@ export default function Deliveries() {
             <div style="font-size: 11px; color: #666; margin-top: 4px;">${formatDate(order.date)}</div>
           </div>
 
+          ${
+            order.pickupDate || order.pickupTime
+              ? `
+            <div class="section">
+              <div class="section-title">DELIVERY SCHEDULE</div>
+              ${order.pickupDate ? `<div class="detail-row"><span class="label">Date:</span> ${formatDate(order.pickupDate)}</div>` : ""}
+              ${order.pickupTime ? `<div class="detail-row"><span class="label">Time:</span> ${formatTime(order.pickupTime)}</div>` : ""}
+            </div>
+          `
+              : ""
+          }
+
           <div class="section items">
             <div class="section-title">ITEMS TO DELIVER</div>
             ${itemsHTML}
@@ -242,18 +254,6 @@ export default function Deliveries() {
               <div class="detail-row"><span class="label">Name:</span> ${order.deliveryDetails.senderName}</div>
               <div class="detail-row"><span class="label">Phone:</span> ${order.deliveryDetails.senderPhone}</div>
               ${order.deliveryDetails.message ? `<div class="detail-row"><span class="label">Message:</span> "${order.deliveryDetails.message}"</div>` : ""}
-            </div>
-          `
-              : ""
-          }
-
-          ${
-            order.pickupDate || order.pickupTime
-              ? `
-            <div class="section">
-              <div class="section-title">DELIVERY SCHEDULE</div>
-              ${order.pickupDate ? `<div class="detail-row"><span class="label">Date:</span> ${formatDate(order.pickupDate)}</div>` : ""}
-              ${order.pickupTime ? `<div class="detail-row"><span class="label">Time:</span> ${formatTime(order.pickupTime)}</div>` : ""}
             </div>
           `
               : ""
