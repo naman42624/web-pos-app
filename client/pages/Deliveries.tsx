@@ -100,9 +100,15 @@ export default function Deliveries() {
         </div>
 
         {/* Orders List */}
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-6 sm:space-y-8">
           {deliveryOrders.length > 0 ? (
-            deliveryOrders.map((order) => (
+            sortedGroupKeys.map((dateGroup) => (
+              <div key={dateGroup}>
+                <h2 className="text-lg font-bold text-slate-900 mb-3 sm:mb-4">
+                  Deliveries for {dateGroup}
+                </h2>
+                <div className="space-y-3 sm:space-y-4">
+                  {groupedOrders[dateGroup].map((order) => (
               <div
                 key={order.id}
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
@@ -297,6 +303,9 @@ export default function Deliveries() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+                ))}
                 </div>
               </div>
             ))
