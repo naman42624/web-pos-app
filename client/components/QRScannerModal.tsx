@@ -9,7 +9,7 @@ interface QRScannerModalProps {
 }
 
 export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
-  const [scanMode, setScanMode] = useState<"manual" | "camera">("manual");
+  const [scanMode, setScanMode] = useState<"manual" | "camera">("camera");
   const [manualInput, setManualInput] = useState("");
   const [error, setError] = useState("");
   const [isCameraReady, setIsCameraReady] = useState(false);
