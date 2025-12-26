@@ -58,11 +58,13 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       const scanner = new Html5QrcodeScanner(
         "qr-reader",
         {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
+          fps: 15,
+          qrbox: { width: 300, height: 300 },
           aspectRatio: 1.0,
           rememberLastUsedCamera: true,
           showTorchButtonIfSupported: true,
+          disableFlip: false,
+          supportedScanTypes: ["image", "video"],
         },
         false,
       );
