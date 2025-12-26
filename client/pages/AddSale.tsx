@@ -313,11 +313,11 @@ export default function AddSale() {
     setCustomProductItems([]);
     setItemSearchTerm("");
 
-    // Show customer modal after first product is added
+    // Show phone lookup modal after first product is added
     if (saleItems.length === 0 && !selectedCustomerId) {
       setTimeout(() => {
-        setIsCapturingCustomer(false);
-        setShowAddCustomerModal(true);
+        setIsCapturingCustomer(true);
+        setShowPhoneLookupModal(true);
       }, 300);
     }
   };
