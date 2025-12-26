@@ -34,26 +34,38 @@ export function QRCodeModal({
 
     hasRenderedRef.current = product.id;
 
-    QRCode.toCanvas(
-      canvasRef.current,
-      encodedData,
-      {
-        errorCorrectionLevel: "H",
-        type: "image/png",
-        quality: 0.95,
-        margin: 1,
-        width: 300,
-      },
-      (error) => {
-        if (error) {
-          console.error("QR Code generation error:", error);
-        } else {
-          const url = canvasRef.current?.toDataURL("image/png");
-          if (url) setQrDataUrl(url);
-        }
-      },
-    );
-  }, [encodedData, product.id]);
+    const generateQR = async () => {
+      return new Promise<string>((resolve, reject) => {
+        QRCode.toCanvas(
+          canvasRef.current!,
+          encodedData,
+          {
+            errorCorrectionLevel: "H",
+            type: "image/png",
+            quality: 0.95,
+            margin: 1,
+            width: 300,
+          },
+          (error) => {
+            if (error) {
+              reject(error);
+            } else {
+              const url = canvasRef.current?.toDataURL("image/png");
+              resolve(url || "");
+            }
+          },
+        );
+      });
+    };
+
+    generateQR()
+      .then((url) => {
+        if (url) setQrDataUrl(url);
+      })
+      .catch((error) => {
+        console.error("QR Code generation error:", error);
+      });
+  }, [encodedData]);
 
   const handleDownload = () => {
     if (qrDataUrl) {
