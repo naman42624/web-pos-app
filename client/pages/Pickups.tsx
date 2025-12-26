@@ -14,6 +14,7 @@ export default function Pickups() {
     sales,
     items: inventoryItems,
     products: readyProducts,
+    updateSaleStatus,
   } = usePOSContext();
 
   const pickupOrders = sales.filter(
