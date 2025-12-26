@@ -502,6 +502,7 @@ export function usePOS() {
                 senderPhone: sale.delivery_sender_phone,
               }
             : undefined,
+          status: sale.status || "pending",
         };
       }),
     );
