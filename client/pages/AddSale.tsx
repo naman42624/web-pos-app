@@ -1683,6 +1683,32 @@ export default function AddSale() {
                   </div>
                 )}
 
+                {selectedCustomerId && (
+                  <div className="pt-2 border-t border-blue-200 mt-2">
+                    <p className="text-xs text-slate-500 font-medium mb-2">
+                      Customer
+                    </p>
+                    {(() => {
+                      const customer = customers.find(
+                        (c) => c.id === selectedCustomerId,
+                      );
+                      return customer ? (
+                        <div className="text-sm text-slate-700 bg-white rounded px-3 py-2 space-y-1">
+                          <p className="font-medium">{customer.name}</p>
+                          <p className="text-xs text-slate-600">
+                            {customer.phone}
+                          </p>
+                          {customer.email && (
+                            <p className="text-xs text-slate-600">
+                              {customer.email}
+                            </p>
+                          )}
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                )}
+
                 {orderRemarks && (
                   <div className="pt-2 border-t border-blue-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-1">
