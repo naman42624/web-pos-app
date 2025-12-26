@@ -67,19 +67,30 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       );
 
       const successCallback = (decodedText: string) => {
+        // Prevent multiple triggers
+        if (scanCompleteRef.current) {
+          console.log("Scan already complete, ignoring additional detection");
+          return;
+        }
+
         console.log("QR Code detected:", decodedText);
         try {
           const data = decodeQRData(decodedText);
           console.log("Decoded data:", data);
           if (data && data.type === "product") {
             console.log("Valid product QR detected, calling onScan");
-            scanner.clear().catch((err) => {
-              console.error("Error clearing scanner:", err);
-            });
+            scanCompleteRef.current = true;
+
+            // Clear scanner before calling onScan
+            if (scanner) {
+              scanner.clear().catch((err) => {
+                console.error("Error clearing scanner:", err);
+              });
+            }
             setScannerActive(false);
             onScan(data);
           } else {
-            console.warn("Invalid QR code data type");
+            console.warn("Invalid QR code data type:", decodedText);
             setError("Invalid QR code. Please scan a valid product QR code.");
           }
         } catch (err) {
