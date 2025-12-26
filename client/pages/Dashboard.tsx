@@ -130,41 +130,41 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Sales */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-slate-900">Recent Sales</h2>
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Recent Sales</h2>
             <Link
               to="/add-sale"
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
+              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1 w-fit"
             >
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {recentSales.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {recentSales.map((sale) => (
                 <div
                   key={sale.id}
-                  className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                 >
-                  <div>
-                    <p className="font-medium text-slate-900">
+                  <div className="min-w-0">
+                    <p className="font-medium text-slate-900 text-sm sm:text-base">
                       {sale.items.length} item
                       {sale.items.length !== 1 ? "s" : ""}
                     </p>
-                    <p className="text-sm text-slate-500 mt-1">
+                    <p className="text-xs sm:text-sm text-slate-500 mt-1">
                       {new Date(sale.date).toLocaleTimeString("en-IN", {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-slate-900">
+                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:text-right gap-4">
+                    <p className="font-bold text-slate-900 text-sm sm:text-base">
                       ₹{sale.total.toLocaleString("en-IN")}
                     </p>
-                    <p className="text-sm text-slate-500 mt-1 capitalize">
+                    <p className="text-xs sm:text-sm text-slate-500 capitalize whitespace-nowrap">
                       {sale.paymentMode}
                     </p>
                   </div>
@@ -172,10 +172,10 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-medium">No sales yet</p>
-              <p className="text-slate-400 text-sm mt-1">
+            <div className="text-center py-8 sm:py-12">
+              <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-3 sm:mb-4" />
+              <p className="text-slate-500 font-medium text-sm sm:text-base">No sales yet</p>
+              <p className="text-slate-400 text-xs sm:text-sm mt-1">
                 Start by creating your first sale
               </p>
             </div>
