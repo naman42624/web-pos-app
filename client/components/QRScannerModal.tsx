@@ -48,31 +48,42 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
           rememberLastUsedCamera: true,
+          showTorchButtonIfSupported: true,
         },
         false,
       );
 
-      // Wait for scanner to render and start
-      await scanner.render(
-        (decodedText) => {
-          try {
-            const data = decodeQRData(decodedText);
-            if (data && data.type === "product") {
-              scanner.clear().catch(() => {});
-              setScannerActive(false);
-              onScan(data);
-            } else {
-              setError("Invalid QR code. Please scan a valid product QR code.");
-            }
-          } catch (err) {
-            setError("Failed to decode QR code. Please try again.");
+      const successCallback = (decodedText: string) => {
+        console.log("QR Code detected:", decodedText);
+        try {
+          const data = decodeQRData(decodedText);
+          console.log("Decoded data:", data);
+          if (data && data.type === "product") {
+            console.log("Valid product QR detected, calling onScan");
+            scanner.clear().catch((err) => {
+              console.error("Error clearing scanner:", err);
+            });
+            setScannerActive(false);
+            onScan(data);
+          } else {
+            console.warn("Invalid QR code data type");
+            setError("Invalid QR code. Please scan a valid product QR code.");
           }
-        },
-        (errorMessage) => {
-          // Suppress error messages during scanning
+        } catch (err) {
+          console.error("Error decoding QR:", err);
+          setError("Failed to decode QR code. Please try again.");
+        }
+      };
+
+      const errorCallback = (errorMessage: string) => {
+        // Only log errors that are not "No QR code detected" to avoid spam
+        if (!errorMessage.includes("No QR code detected")) {
           console.debug("Scan error:", errorMessage);
-        },
-      );
+        }
+      };
+
+      // render() does not return a promise, it sets up the scanner asynchronously
+      scanner.render(successCallback, errorCallback);
 
       scannerRef.current = scanner;
       setScannerActive(true);
