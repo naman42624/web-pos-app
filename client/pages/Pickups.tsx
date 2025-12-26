@@ -169,12 +169,7 @@ export default function Pickups() {
     }
   };
 
-  const STATUS_ORDER = [
-    "pending",
-    "pick_up_ready",
-    "picked_up",
-    "cancelled",
-  ];
+  const STATUS_ORDER = ["pending", "pick_up_ready", "picked_up", "cancelled"];
 
   const MENU_BAR_STATUSES = [
     "pending",
