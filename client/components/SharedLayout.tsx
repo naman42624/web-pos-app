@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck, Box, Package, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface SharedLayoutProps {
   children: React.ReactNode;
@@ -69,24 +68,23 @@ export function SharedLayout({ children }: SharedLayoutProps) {
                 day: "numeric",
               })}
             </p>
-            {/* Mobile Menu Trigger */}
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild className="md:hidden">
-                <button className="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
-                  <Menu className="w-6 h-6" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0">
-                <div className="flex flex-col h-full">
-                  <div className="border-b border-slate-200 p-4">
-                    <h2 className="font-bold text-slate-900">Navigation</h2>
-                  </div>
-                  <NavContent />
-                </div>
-              </SheetContent>
-            </Sheet>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <nav className="md:hidden border-t border-slate-200 bg-white">
+            <NavContent />
+          </nav>
+        )}
       </header>
 
       {/* Main Layout */}
