@@ -523,14 +523,6 @@ export default function AddSale() {
       setSaleItems(newSaleItems);
       setScannedProduct(null);
       setShowScannedConfirm(false);
-
-      // Show phone lookup modal after first product is added
-      if (saleItems.length === 0 && !selectedCustomerId) {
-        setTimeout(() => {
-          setIsCapturingCustomer(true);
-          setShowPhoneLookupModal(true);
-        }, 300);
-      }
     }
   };
 
