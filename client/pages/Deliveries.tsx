@@ -414,12 +414,25 @@ export default function Deliveries() {
               onChange={(e) => setSelectedStatus(e.target.value || null)}
               className="px-3 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">All Statuses</option>
-              {sortedStatusKeys.map((status) => (
-                <option key={status} value={status}>
-                  {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
-                </option>
-              ))}
+              <option value="">View All Statuses</option>
+              <optgroup label="Main Statuses">
+                {menuBarStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                  </option>
+                ))}
+              </optgroup>
+              {sortedStatusKeys.some(s => !menuBarStatuses.includes(s)) && (
+                <optgroup label="Other Statuses">
+                  {sortedStatusKeys
+                    .filter(s => !menuBarStatuses.includes(s))
+                    .map((status) => (
+                      <option key={status} value={status}>
+                        {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                      </option>
+                    ))}
+                </optgroup>
+              )}
             </select>
           </div>
         </div>
