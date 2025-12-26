@@ -632,6 +632,27 @@ export function usePOS() {
     return newSale;
   };
 
+  const updateSaleStatus = async (
+    saleId: string,
+    status: "pending" | "confirmed" | "in_transit" | "delivered" | "pick_up_ready" | "cancelled",
+  ) => {
+    const { error } = await supabase
+      .from("sales")
+      .update({ status })
+      .eq("id", saleId);
+
+    if (error) {
+      console.error("Error updating sale status:", error);
+      throw error;
+    }
+
+    setSales(
+      sales.map((sale) =>
+        sale.id === saleId ? { ...sale, status } : sale,
+      ),
+    );
+  };
+
   // Load Credit Records
   const loadCreditRecords = async () => {
     const { data, error } = await supabase.from("credit_records").select("*");
