@@ -1688,11 +1688,9 @@ export default function AddSale() {
                 </button>
               </div>
 
-              {isCapturingCustomer && (
-                <p className="text-sm text-slate-600 mb-4">
-                  Please enter customer details to complete and save the sale.
-                </p>
-              )}
+              <p className="text-sm text-slate-600 mb-4">
+                Please enter customer details. You can update these later if needed.
+              </p>
 
               <div className="space-y-4">
                 <div>
