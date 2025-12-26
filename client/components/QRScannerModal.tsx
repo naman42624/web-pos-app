@@ -39,6 +39,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     return () => {
       isMounted = false;
       clearTimeout(scannerInitTimer);
+      scanCompleteRef.current = false;
       if (scanMode === "camera" && scannerRef.current) {
         try {
           scannerRef.current.clear().catch(() => {});
