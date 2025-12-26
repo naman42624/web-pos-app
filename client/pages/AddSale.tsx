@@ -510,6 +510,10 @@ export default function AddSale() {
       setDiscountValue("");
       setDeliveryCharges("");
       setAddMode("ready");
+      setPhoneLookupInput("");
+      setMatchingCustomers([]);
+      setShowNewCustomerForm(false);
+      setIsCapturingCustomer(false);
 
       navigate("/sales");
     } catch (error) {
