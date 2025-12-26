@@ -5,9 +5,5 @@ import { POSContext } from "./usePOSContext";
 export function POSProvider({ children }: { children: ReactNode }) {
   const pos = usePOS();
 
-  return (
-    <POSContext.Provider value={pos}>
-      {children}
-    </POSContext.Provider>
-  );
+  return <POSContext.Provider value={pos}>{children}</POSContext.Provider>;
 }

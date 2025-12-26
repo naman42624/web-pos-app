@@ -1,13 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import {
-  ArrowLeft,
-  Phone,
-  Mail,
-  CreditCard,
-  AlertCircle,
-} from "lucide-react";
+import { ArrowLeft, Phone, Mail, CreditCard, AlertCircle } from "lucide-react";
 
 export default function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +22,9 @@ export default function CustomerDetail() {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-3xl font-bold text-slate-900">Customer Not Found</h1>
+            <h1 className="text-3xl font-bold text-slate-900">
+              Customer Not Found
+            </h1>
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
@@ -59,9 +55,7 @@ export default function CustomerDetail() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-3xl font-bold text-slate-900">
-            {customer.name}
-          </h1>
+          <h1 className="text-3xl font-bold text-slate-900">{customer.name}</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -121,7 +115,9 @@ export default function CustomerDetail() {
                     className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                   >
                     <div>
-                      <p className="font-medium text-slate-900">Sale {record.saleId}</p>
+                      <p className="font-medium text-slate-900">
+                        Sale {record.saleId}
+                      </p>
                       <p className="text-sm text-slate-500 mt-1">
                         {new Date(record.date).toLocaleDateString("en-IN", {
                           year: "numeric",
