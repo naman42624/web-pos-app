@@ -1498,6 +1498,57 @@ export default function AddSale() {
             </div>
           </div>
         )}
+
+        {/* QR Scanner Modal */}
+        {showQRScanner && (
+          <QRScannerModal
+            onScan={handleQRScanned}
+            onClose={() => setShowQRScanner(false)}
+          />
+        )}
+
+        {/* Scanned Product Confirmation Dialog */}
+        {showScannedConfirm && scannedProduct && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">Add Scanned Product?</h2>
+
+              <div className="space-y-4 mb-6 p-4 bg-slate-50 rounded-lg">
+                <div>
+                  <p className="text-sm text-slate-600">Product</p>
+                  <p className="text-lg font-semibold text-slate-900">{scannedProduct.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-600">Price</p>
+                  <p className="text-lg font-semibold text-blue-600">₹{scannedProduct.price.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-600">Items in Composition</p>
+                  <p className="text-lg font-semibold text-slate-900">{scannedProduct.items.length}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowScannedConfirm(false);
+                    setScannedProduct(null);
+                  }}
+                  className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddScannedProduct}
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Check className="w-4 h-4" />
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </SharedLayout>
   );
