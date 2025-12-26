@@ -527,68 +527,50 @@ export default function Deliveries() {
 
   const getStatusLabel = (status?: string) => {
     switch (status) {
-      case "confirmed":
-        return "Confirmed";
+      case "pending":
+        return "Pending";
+      case "pick_up_ready":
+        return "Ready for Pickup";
       case "in_transit":
         return "In Transit";
       case "delivered":
         return "Delivered";
-      case "pick_up_ready":
-        return "Pick Up Ready";
       case "cancelled":
         return "Cancelled";
+      case "delivery_attempted_once":
+        return "Delivery Attempted Once";
+      case "delivery_attempted_twice":
+        return "Delivery Attempted Twice";
       default:
         return "Pending";
     }
   };
 
-  const getDateGroup = (dateString: string | undefined) => {
-    if (!dateString) return "No Date";
+  const STATUS_ORDER = [
+    "pending",
+    "pick_up_ready",
+    "in_transit",
+    "delivery_attempted_once",
+    "delivery_attempted_twice",
+    "delivered",
+    "cancelled",
+  ];
 
-    const deliveryDate = new Date(dateString);
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const isToday = deliveryDate.toDateString() === today.toDateString();
-    const isTomorrow = deliveryDate.toDateString() === tomorrow.toDateString();
-
-    if (isToday) return "Today";
-    if (isTomorrow) return "Tomorrow";
-    return formatDate(dateString);
-  };
-
-  const groupedOrders = deliveryOrders.reduce(
+  const groupedByStatus = deliveryOrders.reduce(
     (groups, order) => {
-      const dateGroup = getDateGroup(order.pickupDate);
-      if (!groups[dateGroup]) {
-        groups[dateGroup] = [];
+      const status = order.status || "pending";
+      if (!groups[status]) {
+        groups[status] = [];
       }
-      groups[dateGroup].push(order);
+      groups[status].push(order);
       return groups;
     },
     {} as Record<string, typeof deliveryOrders>,
   );
 
-  const sortedGroupKeys = Object.keys(groupedOrders).sort((a, b) => {
-    if (a === "No Date") return 1;
-    if (b === "No Date") return -1;
-
-    const aDate =
-      a === "Today"
-        ? new Date()
-        : a === "Tomorrow"
-          ? new Date(new Date().setDate(new Date().getDate() + 1))
-          : new Date(a);
-    const bDate =
-      b === "Today"
-        ? new Date()
-        : b === "Tomorrow"
-          ? new Date(new Date().setDate(new Date().getDate() + 1))
-          : new Date(b);
-
-    return aDate.getTime() - bDate.getTime();
-  });
+  const sortedStatusKeys = STATUS_ORDER.filter((status) =>
+    groupedByStatus.hasOwnProperty(status),
+  );
 
   return (
     <SharedLayout>
