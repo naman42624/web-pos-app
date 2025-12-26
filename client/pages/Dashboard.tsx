@@ -40,8 +40,20 @@ export default function Dashboard() {
   const totalCustomers = customers.length;
   const totalCredit = creditRecords.reduce((sum, c) => sum + c.amount, 0);
 
-  const deliveryOrders = sales.filter((sale) => sale.orderType === "delivery");
-  const pickupOrders = sales.filter((sale) => sale.orderType === "pickup_later");
+  const today = new Date().toISOString().split("T")[0];
+
+  const deliveryOrders = sales.filter((sale) => {
+    if (sale.orderType !== "delivery") return false;
+    const saleDate = new Date(sale.date).toISOString().split("T")[0];
+    return saleDate === today;
+  });
+
+  const pickupOrders = sales.filter((sale) => {
+    if (sale.orderType !== "pickup_later") return false;
+    if (!sale.pickupDate) return false;
+    const pickupDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+    return pickupDate === today;
+  });
 
   const deliveryStatusCounts = {
     pending: deliveryOrders.filter((o) => o.status === "pending").length,
