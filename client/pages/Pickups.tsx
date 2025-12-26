@@ -208,22 +208,47 @@ export default function Pickups() {
                       <div className="p-4 sm:p-6">
                         {/* Header Row */}
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
-                          <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+                          <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
                               <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                             </div>
-                            <div className="min-w-0">
-                              <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
-                                Order {order.id.slice(-8).toUpperCase()}
-                              </h3>
-                              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                                <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
+                                  Order {order.id.slice(-8).toUpperCase()}
+                                </h3>
+                                <select
+                                  value={order.status || "pending"}
+                                  onChange={(e) =>
+                                    handleStatusChange(
+                                      order.id,
+                                      e.target.value as
+                                        | "pending"
+                                        | "confirmed"
+                                        | "pick_up_ready"
+                                        | "picked_up"
+                                        | "cancelled",
+                                    )
+                                  }
+                                  className={cn(
+                                    "px-2 py-1 rounded-lg text-xs sm:text-sm font-medium border outline-none transition-colors cursor-pointer",
+                                    getStatusColor(order.status),
+                                  )}
+                                >
+                                  <option value="pending">Pending</option>
+                                  <option value="confirmed">Confirmed</option>
+                                  <option value="pick_up_ready">
+                                    Ready for Pickup
+                                  </option>
+                                  <option value="picked_up">Picked Up</option>
+                                  <option value="cancelled">Cancelled</option>
+                                </select>
+                              </div>
+                              <p className="text-xs sm:text-sm text-slate-500">
                                 Created: {formatDate(order.date)}
                               </p>
                             </div>
                           </div>
-                          <span className="px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-medium border text-xs sm:text-sm bg-blue-100 text-blue-800 border-blue-200 whitespace-nowrap">
-                            Pick Up Later
-                          </span>
                         </div>
 
                         {/* Items Summary */}
