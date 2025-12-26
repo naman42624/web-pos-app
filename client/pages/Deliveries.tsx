@@ -604,6 +604,46 @@ export default function Deliveries() {
           </div>
         </div>
 
+        {/* Status Menu Bar */}
+        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6">
+          <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
+            {sortedStatusKeys.map((status) => (
+              <button
+                key={status}
+                onClick={() =>
+                  setSelectedStatus(selectedStatus === status ? null : status)
+                }
+                className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  selectedStatus === status
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Label htmlFor="status-filter" className="text-sm font-medium text-slate-700">
+              Select Status:
+            </Label>
+            <select
+              id="status-filter"
+              value={selectedStatus || ""}
+              onChange={(e) => setSelectedStatus(e.target.value || null)}
+              className="px-3 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Statuses</option>
+              {sortedStatusKeys.map((status) => (
+                <option key={status} value={status}>
+                  {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* Orders List */}
         <div className="space-y-6 sm:space-y-8">
           {deliveryOrders.length > 0 ? (
