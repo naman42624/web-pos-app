@@ -533,13 +533,89 @@ export default function AddSale() {
       setScannedProduct(null);
       setShowScannedConfirm(false);
 
-      // Show customer modal after first product is added
+      // Show phone lookup modal after first product is added
       if (saleItems.length === 0 && !selectedCustomerId) {
         setTimeout(() => {
-          setIsCapturingCustomer(false);
-          setShowAddCustomerModal(true);
+          setIsCapturingCustomer(true);
+          setShowPhoneLookupModal(true);
         }, 300);
       }
+    }
+  };
+
+  const handlePhoneLookup = () => {
+    const phone = phoneLookupInput.trim();
+    if (!phone) {
+      alert("Please enter a phone number");
+      return;
+    }
+
+    // Search for customers with this phone number
+    const matching = customers.filter(
+      (customer) =>
+        customer.phone === phone || customer.altPhone === phone,
+    );
+
+    setMatchingCustomers(matching);
+
+    if (matching.length === 0) {
+      // No matching customer, show form to create new one
+      setShowNewCustomerForm(true);
+      setNewCustomerPhone(phone);
+    }
+  };
+
+  const handleSelectExistingCustomer = (customerId: string) => {
+    setSelectedCustomerId(customerId);
+    setShowPhoneLookupModal(false);
+    setPhoneLookupInput("");
+    setMatchingCustomers([]);
+    setShowNewCustomerForm(false);
+
+    // If we're in the middle of saving, proceed with save
+    if (isCapturingCustomer) {
+      setIsCapturingCustomer(false);
+      setTimeout(() => {
+        handleSaveSaleWithCustomer(customerId);
+      }, 100);
+    }
+  };
+
+  const handleCreateNewCustomerFromLookup = async () => {
+    if (!newCustomerName.trim()) {
+      alert("Please enter customer name");
+      return;
+    }
+
+    if (!newCustomerPhone.trim()) {
+      alert("Please enter phone number");
+      return;
+    }
+
+    const newCustomer = addCustomer({
+      name: newCustomerName.trim(),
+      phone: newCustomerPhone.trim(),
+      email: newCustomerEmail.trim() || undefined,
+      altPhone: undefined,
+      organization: undefined,
+      addresses: [],
+      totalCredit: 0,
+    });
+
+    setSelectedCustomerId(newCustomer.id);
+    setNewCustomerName("");
+    setNewCustomerPhone("");
+    setNewCustomerEmail("");
+    setShowPhoneLookupModal(false);
+    setPhoneLookupInput("");
+    setMatchingCustomers([]);
+    setShowNewCustomerForm(false);
+
+    // If we're saving a sale, proceed with the save after customer is created
+    if (isCapturingCustomer) {
+      setIsCapturingCustomer(false);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await handleSaveSaleWithCustomer(newCustomer.id);
     }
   };
 
