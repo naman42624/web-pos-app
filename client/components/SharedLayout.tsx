@@ -84,12 +84,12 @@ export function SharedLayout({ children }: SharedLayoutProps) {
           </div>
           <div className="flex items-center gap-4">
             <p className="text-xs sm:text-sm text-slate-500 whitespace-nowrap">
-              {new Date().toLocaleDateString("en-IN", {
+              {currentTime.toLocaleDateString("en-IN", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
               })}{" "}
-              {new Date().toLocaleTimeString("en-US", {
+              {currentTime.toLocaleTimeString("en-US", {
                 hour: "2-digit",
                 minute: "2-digit",
                 second: "2-digit",
