@@ -402,71 +402,7 @@ export default function AddSale() {
       }
     }
 
-    setIsLoading(true);
-    try {
-      const primaryMode = Array.from(selectedPaymentModes)[0];
-      addSale({
-        items: saleItems,
-        paymentMode: primaryMode,
-        customerId: selectedPaymentModes.has("credit")
-          ? selectedCustomerId
-          : undefined,
-        total,
-        orderType,
-        pickupDate:
-          orderType === "pickup_later" || orderType === "delivery"
-            ? pickupDate
-            : undefined,
-        pickupTime:
-          orderType === "pickup_later" || orderType === "delivery"
-            ? pickupTime
-            : undefined,
-        deliveryDetails: orderType === "delivery" ? deliveryDetails : undefined,
-        discountType: discountValue ? discountType : undefined,
-        discountValue: discountValue ? parseFloat(discountValue) : undefined,
-        discountAmount: discountValue ? discountAmount : undefined,
-        deliveryCharges:
-          orderType === "delivery" && deliveryCharges
-            ? parseFloat(deliveryCharges)
-            : undefined,
-      });
-
-      setSaleItems([]);
-      setOrderRemarks("");
-      setSelectedCustomerId("");
-      setSelectedPaymentModes(new Set(["cash"]));
-      setPaymentAmounts({ cash: "", upi: "", credit: "" });
-      setOrderType("pickup");
-      setPickupDate("");
-      setPickupTime("");
-      setDeliveryDetails({
-        receiverName: "",
-        receiverAddress: "",
-        receiverPhone: "",
-        message: "",
-        senderName: "",
-        senderPhone: "",
-      });
-      setDiscountType("percentage");
-      setDiscountValue("");
-      setDeliveryCharges("");
-      setAddMode("ready");
-      setProductName("");
-      setProductQuantity("1");
-      setCustomProductName("");
-      setCustomProductPrice("");
-      setCustomProductQuantity("1");
-      setCustomProductItems([]);
-
-      setTimeout(() => {
-        setIsLoading(false);
-        navigate("/");
-      }, 500);
-    } catch (error) {
-      console.error("Error saving sale:", error);
-      setIsLoading(false);
-      alert("Error saving sale");
-    }
+    await handleSaveSaleWithCustomer(selectedCustomerId);
   };
 
   const handleAddCustomer = async () => {
