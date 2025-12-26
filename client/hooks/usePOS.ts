@@ -545,7 +545,9 @@ export function usePOS() {
       .single();
 
     if (error) {
-      console.error("Error adding sale:", error);
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
+      console.error("Error adding sale:", errorMsg);
       throw error;
     }
 
