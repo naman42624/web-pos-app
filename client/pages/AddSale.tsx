@@ -792,7 +792,7 @@ export default function AddSale() {
             </div>
 
             {/* Items List */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-4">Sale Items</h2>
 
               {saleItems.length > 0 ? (
@@ -876,12 +876,12 @@ export default function AddSale() {
             </div>
 
             {/* Order Type Selection */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
                 Order Type
               </h2>
 
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
                 {(["pickup", "pickup_later", "delivery"] as const).map((type) => (
                   <button
                     key={type}
@@ -1064,12 +1064,12 @@ export default function AddSale() {
             </div>
 
             {/* Payment Mode Selection */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
                 Payment Mode
               </h2>
 
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
                 {(["cash", "upi", "credit"] as PaymentMode[]).map((mode) => (
                   <button
                     key={mode}
