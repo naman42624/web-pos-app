@@ -1779,7 +1779,10 @@ export default function AddSale() {
                           ).toFixed(2)}
                         </p>
                         <p className="text-xs text-slate-500">
-                          ₹{getItemPrice(item.itemId, item.customPrice).toFixed(2)}
+                          ₹
+                          {getItemPrice(item.itemId, item.customPrice).toFixed(
+                            2,
+                          )}
                           /unit
                         </p>
                       </div>
