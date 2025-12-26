@@ -544,6 +544,19 @@ export default function ReadyProducts() {
             </div>
           </div>
         )}
+
+        {/* QR Code Modal */}
+        {showQRModal && selectedProductForQR && (
+          <QRCodeModal
+            product={selectedProductForQR}
+            onClose={() => {
+              setShowQRModal(false);
+              setSelectedProductForQR(null);
+              setAutoprint(false);
+            }}
+            autoprint={autoprint}
+          />
+        )}
       </div>
     </SharedLayout>
   );
