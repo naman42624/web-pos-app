@@ -65,9 +65,9 @@ export default function QuickSale() {
   const [scannedProduct, setScannedProduct] = useState<QRCodeData | null>(null);
   const [showScannedConfirm, setShowScannedConfirm] = useState(false);
   const [creditCustomerSearch, setCreditCustomerSearch] = useState("");
-  const [filteredCustomers, setFilteredCustomers] = useState<
-    typeof customers
-  >([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<typeof customers>(
+    [],
+  );
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
     null,
@@ -326,7 +326,10 @@ export default function QuickSale() {
     }
   };
 
-  const handleSelectCreditCustomer = (customerId: string, customerName: string) => {
+  const handleSelectCreditCustomer = (
+    customerId: string,
+    customerName: string,
+  ) => {
     setSelectedCustomerId(customerId);
     setCreditCustomerSearch(customerName);
     setShowCustomerDropdown(false);
@@ -345,7 +348,11 @@ export default function QuickSale() {
 
     const primaryMode = Array.from(selectedPaymentModes)[0];
 
-    if (primaryMode === "credit" && !selectedCustomerId && !creditCustomerSearch.trim()) {
+    if (
+      primaryMode === "credit" &&
+      !selectedCustomerId &&
+      !creditCustomerSearch.trim()
+    ) {
       alert("Please select or enter customer name for credit sale");
       return;
     }
@@ -355,7 +362,11 @@ export default function QuickSale() {
       let customerId: string | undefined = selectedCustomerId || undefined;
 
       // Create customer for credit sales if not selected from existing
-      if (primaryMode === "credit" && !selectedCustomerId && creditCustomerSearch.trim()) {
+      if (
+        primaryMode === "credit" &&
+        !selectedCustomerId &&
+        creditCustomerSearch.trim()
+      ) {
         const newCustomer = addCustomer({
           name: creditCustomerSearch.trim(),
           phone: "",
