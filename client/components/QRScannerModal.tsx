@@ -82,12 +82,13 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       const scanner = new Html5QrcodeScanner(
         "qr-reader",
         {
-          fps: 15,
+          fps: 30,
           qrbox: { width: 300, height: 300 },
           aspectRatio: 1.0,
           rememberLastUsedCamera: true,
           showTorchButtonIfSupported: true,
           disableFlip: false,
+          useBarCodeDetectorIfSupported: true,
         },
         false,
       );
@@ -99,10 +100,10 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
           return;
         }
 
-        console.log("QR Code detected:", decodedText);
+        console.log("QR Code detected by scanner:", decodedText);
         try {
           const data = decodeQRData(decodedText);
-          console.log("Decoded data:", data);
+          console.log("Decoded data from QR:", data);
           if (data && data.type === "product") {
             console.log("Valid product QR detected, calling onScan");
             scanCompleteRef.current = true;
@@ -126,7 +127,10 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
               onScan(data);
             }
           } else {
-            console.warn("Invalid QR code data type:", decodedText);
+            console.warn(
+              "Invalid QR code data type. Expected product, got:",
+              decodedText.substring(0, 50),
+            );
             setError("Invalid QR code. Please scan a valid product QR code.");
           }
         } catch (err) {
@@ -136,19 +140,28 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       };
 
       const errorCallback = (errorMessage: string) => {
-        // Only log errors that are not "No QR code detected" to avoid spam
-        if (!errorMessage.includes("No QR code detected")) {
-          console.debug("Scan error:", errorMessage);
+        // Log all errors for debugging
+        if (
+          !errorMessage.includes("No QR code detected") &&
+          !errorMessage.includes("NotFoundException")
+        ) {
+          console.debug("Scanner error:", errorMessage);
         }
       };
 
       // render() does not return a promise, it sets up the scanner asynchronously
+      console.log("Starting QR scanner render...");
       scanner.render(successCallback, errorCallback);
 
       scannerRef.current = scanner;
       setScannerActive(true);
+
+      // Wait a moment for camera to fully initialize
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       setIsCameraReady(true);
       setError("");
+      console.log("QR scanner fully initialized");
     } catch (err: any) {
       console.error("Scanner initialization error:", err);
       setError(
