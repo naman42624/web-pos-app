@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
 import { SaleItem, DeliveryDetails } from "@/hooks/usePOS";
-import { Trash2, Plus, Check, X, Calendar, Clock, Truck, User, Phone, MapPin, MessageSquare } from "lucide-react";
+import { Trash2, Plus, Check, X, Calendar, Clock, Truck, User, Phone, MapPin, MessageSquare, QrCode } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { QRScannerModal } from "@/components/QRScannerModal";
+import { QRCodeData, convertQRDataToSaleItem } from "@/utils/qrcode";
 
 type PaymentMode = "cash" | "upi" | "credit";
 
