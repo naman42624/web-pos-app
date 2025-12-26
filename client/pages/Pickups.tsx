@@ -1,15 +1,29 @@
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Package, Clock, Calendar, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Package,
+  Clock,
+  Calendar,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 
 export default function Pickups() {
-  const { sales, items: inventoryItems, products: readyProducts } = usePOSContext();
+  const {
+    sales,
+    items: inventoryItems,
+    products: readyProducts,
+  } = usePOSContext();
 
-  const pickupOrders = sales.filter((sale) => sale.orderType === "pickup_later");
+  const pickupOrders = sales.filter(
+    (sale) => sale.orderType === "pickup_later",
+  );
 
   const getItemName = (itemId?: string, customName?: string) => {
     if (customName) return customName;
-    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
+    return itemId
+      ? inventoryItems.find((item) => item.id === itemId)?.name || "Unknown"
+      : "Unknown";
   };
 
   const getItemPrice = (itemId?: string, customPrice?: number): number => {
@@ -38,7 +52,10 @@ export default function Pickups() {
     return readyProducts.some((product) => {
       if (product.items.length !== composition.length) return false;
       return product.items.every((pItem) =>
-        composition.some((cItem) => cItem.itemId === pItem.itemId && cItem.quantity === pItem.quantity)
+        composition.some(
+          (cItem) =>
+            cItem.itemId === pItem.itemId && cItem.quantity === pItem.quantity,
+        ),
       );
     });
   };
@@ -90,7 +107,9 @@ export default function Pickups() {
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Pickups</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+            Pickups
+          </h1>
           <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
             Manage and track all scheduled pickups
           </p>
@@ -131,14 +150,20 @@ export default function Pickups() {
                       const itemStatus = getItemStatus(item, order.pickupDate);
                       const StatusIcon = itemStatus.icon;
                       return (
-                        <div key={item.id} className={`p-4 rounded-lg border ${itemStatus.color}`}>
+                        <div
+                          key={item.id}
+                          className={`p-4 rounded-lg border ${itemStatus.color}`}
+                        >
                           <div className="flex items-start justify-between mb-2">
                             <p className="text-sm font-semibold text-slate-900">
-                              {item.name} × {item.quantity} @ ₹{item.price.toFixed(2)} each
+                              {item.name} × {item.quantity} @ ₹
+                              {item.price.toFixed(2)} each
                             </p>
                             <div className="flex items-center gap-2 px-2 py-1 bg-white rounded border">
                               <StatusIcon className="w-4 h-4" />
-                              <span className={`text-xs font-semibold ${itemStatus.badge}`}>
+                              <span
+                                className={`text-xs font-semibold ${itemStatus.badge}`}
+                              >
                                 {itemStatus.status}
                               </span>
                             </div>
@@ -147,17 +172,26 @@ export default function Pickups() {
                           {/* Product Composition */}
                           {item.composition && item.composition.length > 0 && (
                             <div className="ml-4 mt-2 pt-2 border-t border-current border-opacity-30">
-                              <p className="text-xs font-semibold mb-2 opacity-80">Composition:</p>
+                              <p className="text-xs font-semibold mb-2 opacity-80">
+                                Composition:
+                              </p>
                               <div className="space-y-1">
                                 {item.composition.map((comp, idx) => {
-                                  const isCustom = (comp as any).customName !== undefined;
-                                  const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
+                                  const isCustom =
+                                    (comp as any).customName !== undefined;
+                                  const itemName = isCustom
+                                    ? (comp as any).customName
+                                    : getItemName(comp.itemId);
                                   const itemPrice = isCustom
-                                    ? ((comp as any).customPrice || 0)
+                                    ? (comp as any).customPrice || 0
                                     : getItemPrice(comp.itemId, undefined);
                                   return (
-                                    <p key={idx} className="text-xs opacity-75 ml-2">
-                                      • {itemName} × {comp.quantity} @ ₹{(itemPrice || 0).toFixed(2)} each
+                                    <p
+                                      key={idx}
+                                      className="text-xs opacity-75 ml-2"
+                                    >
+                                      • {itemName} × {comp.quantity} @ ₹
+                                      {(itemPrice || 0).toFixed(2)} each
                                     </p>
                                   );
                                 })}
@@ -174,9 +208,13 @@ export default function Pickups() {
                     <div className="flex items-start gap-2 sm:gap-3">
                       <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                       <div className="min-w-0">
-                        <p className="text-xs sm:text-sm text-slate-600">Pickup Date</p>
+                        <p className="text-xs sm:text-sm text-slate-600">
+                          Pickup Date
+                        </p>
                         <p className="font-semibold text-sm sm:text-base text-slate-900 truncate">
-                          {order.pickupDate ? formatDate(order.pickupDate) : "Not scheduled"}
+                          {order.pickupDate
+                            ? formatDate(order.pickupDate)
+                            : "Not scheduled"}
                         </p>
                       </div>
                     </div>
@@ -185,8 +223,12 @@ export default function Pickups() {
                       <div className="flex items-start gap-2 sm:gap-3">
                         <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="text-xs sm:text-sm text-slate-600">Pickup Time</p>
-                          <p className="font-semibold text-sm sm:text-base text-slate-900">{formatTime(order.pickupTime)}</p>
+                          <p className="text-xs sm:text-sm text-slate-600">
+                            Pickup Time
+                          </p>
+                          <p className="font-semibold text-sm sm:text-base text-slate-900">
+                            {formatTime(order.pickupTime)}
+                          </p>
                         </div>
                       </div>
                     )}
@@ -195,7 +237,9 @@ export default function Pickups() {
                   {/* Footer - Total and Payment */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-slate-200">
                     <div>
-                      <p className="text-xs sm:text-sm text-slate-600">Total Amount</p>
+                      <p className="text-xs sm:text-sm text-slate-600">
+                        Total Amount
+                      </p>
                       <p className="text-xl sm:text-2xl font-bold text-slate-900">
                         ₹{order.total.toLocaleString("en-IN")}
                       </p>
@@ -204,7 +248,11 @@ export default function Pickups() {
                       <p className="text-xs sm:text-sm text-slate-600 capitalize mb-2 sm:mb-1">
                         Payment: {order.paymentMode}
                       </p>
-                      {order.items.some((item) => getItemStatus(item, order.pickupDate).status === "Ready to be Picked") ? (
+                      {order.items.some(
+                        (item) =>
+                          getItemStatus(item, order.pickupDate).status ===
+                          "Ready to be Picked",
+                      ) ? (
                         <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
                           Ready to be Picked
                         </div>
@@ -221,7 +269,9 @@ export default function Pickups() {
           ) : (
             <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
               <Package className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-medium text-lg">No pickups scheduled</p>
+              <p className="text-slate-500 font-medium text-lg">
+                No pickups scheduled
+              </p>
               <p className="text-slate-400 text-sm mt-2">
                 Pickup orders will appear here once created
               </p>

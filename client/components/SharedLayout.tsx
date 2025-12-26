@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, ShoppingCart, Users, FileText, CreditCard, Truck, Box, Package, Menu, X } from "lucide-react";
+import {
+  BarChart3,
+  ShoppingCart,
+  Users,
+  FileText,
+  CreditCard,
+  Truck,
+  Box,
+  Package,
+  Menu,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SharedLayoutProps {
@@ -38,7 +49,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
               "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200",
               active
                 ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600"
-                : "text-slate-700 hover:bg-slate-50"
+                : "text-slate-700 hover:bg-slate-50",
             )}
           >
             <Icon className="w-5 h-5 flex-shrink-0" />
@@ -58,7 +69,9 @@ export function SharedLayout({ children }: SharedLayoutProps) {
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg flex-shrink-0">
               <ShoppingCart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 truncate">POS System</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
+              POS System
+            </h1>
           </div>
           <div className="flex items-center gap-4">
             <p className="text-xs sm:text-sm text-slate-500 whitespace-nowrap">
@@ -74,7 +87,11 @@ export function SharedLayout({ children }: SharedLayoutProps) {
               className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>

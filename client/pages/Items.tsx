@@ -91,7 +91,9 @@ export default function Items() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Items</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Items
+            </h1>
             <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
               Manage inventory items, prices, and stock levels
             </p>
@@ -153,7 +155,9 @@ export default function Items() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-medium text-slate-900">{item.name}</p>
+                        <p className="font-medium text-slate-900">
+                          {item.name}
+                        </p>
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-semibold text-slate-900">
@@ -168,8 +172,8 @@ export default function Items() {
                               item.stock > 10
                                 ? "bg-green-100 text-green-700"
                                 : item.stock > 0
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700",
                             )}
                           >
                             {item.stock}
@@ -189,7 +193,7 @@ export default function Items() {
                             onClick={() => {
                               if (
                                 confirm(
-                                  `Are you sure you want to delete "${item.name}"?`
+                                  `Are you sure you want to delete "${item.name}"?`,
                                 )
                               ) {
                                 deleteItem(item.id);
@@ -258,7 +262,9 @@ export default function Items() {
                     <input
                       type="number"
                       value={formData.price}
-                      onChange={(e) => handleInputChange("price", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("price", e.target.value)
+                      }
                       placeholder="0.00"
                       step="0.01"
                       min="0"
@@ -273,7 +279,9 @@ export default function Items() {
                     <input
                       type="number"
                       value={formData.stock}
-                      onChange={(e) => handleInputChange("stock", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("stock", e.target.value)
+                      }
                       placeholder="0"
                       min="0"
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"

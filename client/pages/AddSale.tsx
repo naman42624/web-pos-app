@@ -3,7 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
 import { SaleItem, DeliveryDetails } from "@/hooks/usePOS";
-import { Trash2, Plus, Check, X, Calendar, Clock, Truck, User, Phone, MapPin, MessageSquare, QrCode } from "lucide-react";
+import {
+  Trash2,
+  Plus,
+  Check,
+  X,
+  Calendar,
+  Clock,
+  Truck,
+  User,
+  Phone,
+  MapPin,
+  MessageSquare,
+  QrCode,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QRScannerModal } from "@/components/QRScannerModal";
 import { QRCodeData, convertQRDataToSaleItem } from "@/utils/qrcode";
@@ -12,7 +25,13 @@ type PaymentMode = "cash" | "upi" | "credit";
 
 export default function AddSale() {
   const navigate = useNavigate();
-  const { addSale, customers, addCustomer, items: inventoryItems, products: readyProducts } = usePOSContext();
+  const {
+    addSale,
+    customers,
+    addCustomer,
+    items: inventoryItems,
+    products: readyProducts,
+  } = usePOSContext();
 
   const [saleItems, setSaleItems] = useState<SaleItem[]>([]);
   const [addMode, setAddMode] = useState<"ready" | "custom">("ready");
@@ -20,14 +39,23 @@ export default function AddSale() {
   // Ready product mode
   const [productName, setProductName] = useState("");
   const [showProductDropdown, setShowProductDropdown] = useState(false);
-  const [filteredProducts, setFilteredProducts] = useState<typeof readyProducts>([]);
+  const [filteredProducts, setFilteredProducts] = useState<
+    typeof readyProducts
+  >([]);
   const [productQuantity, setProductQuantity] = useState("1");
 
   // Custom product mode
   const [customProductName, setCustomProductName] = useState("");
   const [customProductPrice, setCustomProductPrice] = useState("");
   const [customProductQuantity, setCustomProductQuantity] = useState("1");
-  const [customProductItems, setCustomProductItems] = useState<Array<{ itemId?: string; customName?: string; customPrice?: number; quantity: number }>>([]);
+  const [customProductItems, setCustomProductItems] = useState<
+    Array<{
+      itemId?: string;
+      customName?: string;
+      customPrice?: number;
+      quantity: number;
+    }>
+  >([]);
   const [itemSearchTerm, setItemSearchTerm] = useState("");
   const [showItemDropdown, setShowItemDropdown] = useState(false);
   const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
@@ -35,15 +63,21 @@ export default function AddSale() {
   const [customItemPrice, setCustomItemPrice] = useState("");
 
   // Payment and order
-  const [selectedPaymentModes, setSelectedPaymentModes] = useState<Set<PaymentMode>>(new Set(["cash"]));
-  const [paymentAmounts, setPaymentAmounts] = useState<Record<PaymentMode, string>>({
+  const [selectedPaymentModes, setSelectedPaymentModes] = useState<
+    Set<PaymentMode>
+  >(new Set(["cash"]));
+  const [paymentAmounts, setPaymentAmounts] = useState<
+    Record<PaymentMode, string>
+  >({
     cash: "",
     upi: "",
     credit: "",
   });
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [orderRemarks, setOrderRemarks] = useState("");
-  const [orderType, setOrderType] = useState<"pickup" | "pickup_later" | "delivery">("pickup");
+  const [orderType, setOrderType] = useState<
+    "pickup" | "pickup_later" | "delivery"
+  >("pickup");
   const [pickupDate, setPickupDate] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetails>({
@@ -54,7 +88,9 @@ export default function AddSale() {
     senderName: "",
     senderPhone: "",
   });
-  const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">(
+    "percentage",
+  );
   const [discountValue, setDiscountValue] = useState("");
   const [deliveryCharges, setDeliveryCharges] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +102,10 @@ export default function AddSale() {
   const [scannedProduct, setScannedProduct] = useState<QRCodeData | null>(null);
   const [showScannedConfirm, setShowScannedConfirm] = useState(false);
 
-  const subtotal = saleItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const subtotal = saleItems.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0,
+  );
 
   const calculateDiscount = () => {
     if (!discountValue) return 0;
@@ -79,14 +118,17 @@ export default function AddSale() {
   };
 
   const discountAmount = calculateDiscount();
-  const deliveryChargeAmount = orderType === "delivery" && deliveryCharges ? parseFloat(deliveryCharges) : 0;
+  const deliveryChargeAmount =
+    orderType === "delivery" && deliveryCharges
+      ? parseFloat(deliveryCharges)
+      : 0;
   const total = Math.max(0, subtotal - discountAmount + deliveryChargeAmount);
 
   const handleProductNameChange = (value: string) => {
     setProductName(value);
     if (value.trim()) {
       const filtered = readyProducts.filter((product) =>
-        product.name.toLowerCase().includes(value.toLowerCase())
+        product.name.toLowerCase().includes(value.toLowerCase()),
       );
       setFilteredProducts(filtered);
       setShowProductDropdown(true);
@@ -130,7 +172,7 @@ export default function AddSale() {
       const filtered = inventoryItems.filter(
         (item) =>
           item.name.toLowerCase().includes(value.toLowerCase()) &&
-          !customProductItems.some((pi) => pi.itemId === item.id)
+          !customProductItems.some((pi) => pi.itemId === item.id),
       );
       setFilteredItems(filtered);
       setShowItemDropdown(true);
@@ -140,7 +182,7 @@ export default function AddSale() {
     }
   };
 
-  const addItemToCustomProduct = (item: typeof inventoryItems[0]) => {
+  const addItemToCustomProduct = (item: (typeof inventoryItems)[0]) => {
     const newItems = [...customProductItems, { itemId: item.id, quantity: 1 }];
     setCustomProductItems(newItems);
     setItemSearchTerm("");
@@ -164,7 +206,7 @@ export default function AddSale() {
 
   const updateCustomProductItemQuantity = (index: number, quantity: number) => {
     const newItems = customProductItems.map((pi, i) =>
-      i === index ? { ...pi, quantity: Math.max(1, quantity) } : pi
+      i === index ? { ...pi, quantity: Math.max(1, quantity) } : pi,
     );
     setCustomProductItems(newItems);
     // Auto-update product price to composition total
@@ -176,7 +218,9 @@ export default function AddSale() {
 
   const getItemName = (itemId?: string, customName?: string) => {
     if (customName) return customName;
-    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
+    return itemId
+      ? inventoryItems.find((item) => item.id === itemId)?.name || "Unknown"
+      : "Unknown";
   };
 
   const getItemPrice = (itemId?: string, customPrice?: number): number => {
@@ -300,8 +344,8 @@ export default function AddSale() {
   const updateItemQuantity = (id: string, quantity: number) => {
     setSaleItems(
       saleItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      )
+        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item,
+      ),
     );
   };
 
@@ -321,8 +365,14 @@ export default function AddSale() {
       return;
     }
 
-    if ((orderType === "pickup_later" || orderType === "delivery") && !pickupDate) {
-      alert("Please select a date for " + (orderType === "pickup_later" ? "later pickup" : "delivery"));
+    if (
+      (orderType === "pickup_later" || orderType === "delivery") &&
+      !pickupDate
+    ) {
+      alert(
+        "Please select a date for " +
+          (orderType === "pickup_later" ? "later pickup" : "delivery"),
+      );
       return;
     }
 
@@ -355,16 +405,27 @@ export default function AddSale() {
       addSale({
         items: saleItems,
         paymentMode: primaryMode,
-        customerId: selectedPaymentModes.has("credit") ? selectedCustomerId : undefined,
+        customerId: selectedPaymentModes.has("credit")
+          ? selectedCustomerId
+          : undefined,
         total,
         orderType,
-        pickupDate: (orderType === "pickup_later" || orderType === "delivery") ? pickupDate : undefined,
-        pickupTime: (orderType === "pickup_later" || orderType === "delivery") ? pickupTime : undefined,
+        pickupDate:
+          orderType === "pickup_later" || orderType === "delivery"
+            ? pickupDate
+            : undefined,
+        pickupTime:
+          orderType === "pickup_later" || orderType === "delivery"
+            ? pickupTime
+            : undefined,
         deliveryDetails: orderType === "delivery" ? deliveryDetails : undefined,
         discountType: discountValue ? discountType : undefined,
         discountValue: discountValue ? parseFloat(discountValue) : undefined,
         discountAmount: discountValue ? discountAmount : undefined,
-        deliveryCharges: orderType === "delivery" && deliveryCharges ? parseFloat(deliveryCharges) : undefined,
+        deliveryCharges:
+          orderType === "delivery" && deliveryCharges
+            ? parseFloat(deliveryCharges)
+            : undefined,
       });
 
       setSaleItems([]);
@@ -453,9 +514,12 @@ export default function AddSale() {
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Add New Sale</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+            Add New Sale
+          </h1>
           <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
-            Select or create products, then select payment mode to complete the sale
+            Select or create products, then select payment mode to complete the
+            sale
           </p>
         </div>
 
@@ -476,7 +540,7 @@ export default function AddSale() {
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "ready"
                       ? "bg-blue-600 text-white shadow-md"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                   )}
                 >
                   Select Ready Product
@@ -487,7 +551,7 @@ export default function AddSale() {
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "custom"
                       ? "bg-blue-600 text-white shadow-md"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                   )}
                 >
                   Create Product from Items
@@ -509,7 +573,9 @@ export default function AddSale() {
 
                     <div className="relative border-t border-slate-200 pt-4">
                       <div className="absolute left-0 top-0 transform -translate-y-1/2 translate-x-6">
-                        <span className="bg-white px-2 text-xs font-semibold text-slate-500 uppercase">Or</span>
+                        <span className="bg-white px-2 text-xs font-semibold text-slate-500 uppercase">
+                          Or
+                        </span>
                       </div>
                     </div>
 
@@ -520,11 +586,15 @@ export default function AddSale() {
                       <input
                         type="text"
                         value={productName}
-                        onChange={(e) => handleProductNameChange(e.target.value)}
+                        onChange={(e) =>
+                          handleProductNameChange(e.target.value)
+                        }
                         onFocus={() => {
                           if (productName.trim()) {
                             const filtered = readyProducts.filter((product) =>
-                              product.name.toLowerCase().includes(productName.toLowerCase())
+                              product.name
+                                .toLowerCase()
+                                .includes(productName.toLowerCase()),
                             );
                             setFilteredProducts(filtered);
                             setShowProductDropdown(true);
@@ -532,7 +602,9 @@ export default function AddSale() {
                         }}
                         placeholder="Search ready products..."
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                        onKeyDown={(e) => e.key === "Enter" && handleAddReadyProduct()}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleAddReadyProduct()
+                        }
                       />
                       {showProductDropdown && filteredProducts.length > 0 && (
                         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-10">
@@ -553,7 +625,9 @@ export default function AddSale() {
                                     />
                                   ) : (
                                     <div className="w-10 h-10 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
-                                      <span className="text-xs text-slate-500">No img</span>
+                                      <span className="text-xs text-slate-500">
+                                        No img
+                                      </span>
                                     </div>
                                   )}
                                   <div className="flex-1 min-w-0">
@@ -591,18 +665,22 @@ export default function AddSale() {
                     </div>
 
                     <button
-                    onClick={handleAddReadyProduct}
-                    disabled={!productName || !readyProducts.find((p) => p.name === productName)}
-                    className={cn(
-                      "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
-                      !productName || !readyProducts.find((p) => p.name === productName)
-                        ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                        : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
-                    )}
-                  >
-                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                    Add Product
-                  </button>
+                      onClick={handleAddReadyProduct}
+                      disabled={
+                        !productName ||
+                        !readyProducts.find((p) => p.name === productName)
+                      }
+                      className={cn(
+                        "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
+                        !productName ||
+                          !readyProducts.find((p) => p.name === productName)
+                          ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                          : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white",
+                      )}
+                    >
+                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                      Add Product
+                    </button>
                   </>
                 )}
 
@@ -634,8 +712,12 @@ export default function AddSale() {
                           if (itemSearchTerm.trim()) {
                             const filtered = inventoryItems.filter(
                               (item) =>
-                                item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) &&
-                                !customProductItems.some((pi) => pi.itemId === item.id)
+                                item.name
+                                  .toLowerCase()
+                                  .includes(itemSearchTerm.toLowerCase()) &&
+                                !customProductItems.some(
+                                  (pi) => pi.itemId === item.id,
+                                ),
                             );
                             setFilteredItems(filtered);
                             setShowItemDropdown(true);
@@ -664,7 +746,9 @@ export default function AddSale() {
                                     />
                                   ) : (
                                     <div className="w-10 h-10 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
-                                      <span className="text-xs text-slate-500">No img</span>
+                                      <span className="text-xs text-slate-500">
+                                        No img
+                                      </span>
                                     </div>
                                   )}
                                   <div className="flex-1 min-w-0">
@@ -687,7 +771,9 @@ export default function AddSale() {
 
                     {/* Add Custom Item */}
                     <div className="border border-slate-300 rounded-lg p-3 bg-slate-50">
-                      <p className="text-sm font-semibold text-slate-700 mb-3">Or Add Custom Item</p>
+                      <p className="text-sm font-semibold text-slate-700 mb-3">
+                        Or Add Custom Item
+                      </p>
                       <div className="space-y-2">
                         <input
                           type="text"
@@ -701,7 +787,9 @@ export default function AddSale() {
                             <input
                               type="number"
                               value={customItemPrice}
-                              onChange={(e) => setCustomItemPrice(e.target.value)}
+                              onChange={(e) =>
+                                setCustomItemPrice(e.target.value)
+                              }
                               placeholder="Price (₹)"
                               step="0.01"
                               className="w-full px-3 py-2 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
@@ -734,7 +822,12 @@ export default function AddSale() {
                                   {getItemName(pi.itemId, pi.customName)}
                                 </p>
                                 <p className="text-xs text-slate-600">
-                                  ₹{getItemPrice(pi.itemId, pi.customPrice).toFixed(2)} each
+                                  ₹
+                                  {getItemPrice(
+                                    pi.itemId,
+                                    pi.customPrice,
+                                  ).toFixed(2)}{" "}
+                                  each
                                 </p>
                               </div>
                               <div className="flex items-center gap-2">
@@ -744,17 +837,23 @@ export default function AddSale() {
                                   onChange={(e) =>
                                     updateCustomProductItemQuantity(
                                       index,
-                                      parseInt(e.target.value) || 1
+                                      parseInt(e.target.value) || 1,
                                     )
                                   }
                                   min="1"
                                   className="w-12 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                                 />
                                 <p className="text-sm font-medium text-slate-900 w-16 text-right">
-                                  ₹{(getItemPrice(pi.itemId, pi.customPrice) * pi.quantity).toFixed(2)}
+                                  ₹
+                                  {(
+                                    getItemPrice(pi.itemId, pi.customPrice) *
+                                    pi.quantity
+                                  ).toFixed(2)}
                                 </p>
                                 <button
-                                  onClick={() => removeItemFromCustomProduct(index)}
+                                  onClick={() =>
+                                    removeItemFromCustomProduct(index)
+                                  }
                                   className="text-red-600 hover:text-red-700 transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -765,7 +864,10 @@ export default function AddSale() {
                         </div>
                         <div className="mt-3 pt-3 border-t border-slate-200">
                           <p className="text-sm text-slate-700">
-                            Composition Total: <span className="font-semibold">₹{getCustomProductTotalPrice().toFixed(2)}</span>
+                            Composition Total:{" "}
+                            <span className="font-semibold">
+                              ₹{getCustomProductTotalPrice().toFixed(2)}
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -775,7 +877,9 @@ export default function AddSale() {
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
                           Product Price (₹)
-                          <span className="text-xs text-slate-500 font-normal ml-1">(Auto-calculated)</span>
+                          <span className="text-xs text-slate-500 font-normal ml-1">
+                            (Auto-calculated)
+                          </span>
                         </label>
                         <input
                           type="number"
@@ -793,7 +897,9 @@ export default function AddSale() {
                         <input
                           type="number"
                           value={customProductQuantity}
-                          onChange={(e) => setCustomProductQuantity(e.target.value)}
+                          onChange={(e) =>
+                            setCustomProductQuantity(e.target.value)
+                          }
                           min="1"
                           className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                         />
@@ -801,26 +907,26 @@ export default function AddSale() {
                     </div>
 
                     <button
-                    onClick={handleAddCustomProduct}
-                    disabled={
-                      !customProductName.trim() ||
-                      !customProductPrice ||
-                      parseFloat(customProductPrice) <= 0 ||
-                      customProductItems.length === 0
-                    }
-                    className={cn(
-                      "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
-                      !customProductName.trim() ||
+                      onClick={handleAddCustomProduct}
+                      disabled={
+                        !customProductName.trim() ||
                         !customProductPrice ||
                         parseFloat(customProductPrice) <= 0 ||
                         customProductItems.length === 0
-                        ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                        : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
-                    )}
-                  >
-                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                    Add Product to Sale
-                  </button>
+                      }
+                      className={cn(
+                        "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
+                        !customProductName.trim() ||
+                          !customProductPrice ||
+                          parseFloat(customProductPrice) <= 0 ||
+                          customProductItems.length === 0
+                          ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                          : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white",
+                      )}
+                    >
+                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                      Add Product to Sale
+                    </button>
                   </>
                 )}
               </div>
@@ -828,12 +934,17 @@ export default function AddSale() {
 
             {/* Items List */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-              <h2 className="text-lg font-bold text-slate-900 mb-4">Sale Items</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-4">
+                Sale Items
+              </h2>
 
               {saleItems.length > 0 ? (
                 <div className="space-y-3">
                   {saleItems.map((item) => (
-                    <div key={item.id} className="border border-slate-200 rounded-lg overflow-hidden">
+                    <div
+                      key={item.id}
+                      className="border border-slate-200 rounded-lg overflow-hidden"
+                    >
                       <div className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {item.image ? (
@@ -844,11 +955,15 @@ export default function AddSale() {
                             />
                           ) : (
                             <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
-                              <span className="text-xs text-slate-500">No img</span>
+                              <span className="text-xs text-slate-500">
+                                No img
+                              </span>
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-slate-900">{item.name}</p>
+                            <p className="font-medium text-slate-900">
+                              {item.name}
+                            </p>
                             <p className="text-sm text-slate-500 mt-1">
                               {item.quantity} × ₹{item.price.toFixed(2)}
                             </p>
@@ -861,7 +976,7 @@ export default function AddSale() {
                             onChange={(e) =>
                               updateItemQuantity(
                                 item.id,
-                                parseInt(e.target.value) || 1
+                                parseInt(e.target.value) || 1,
                               )
                             }
                             min="1"
@@ -882,18 +997,33 @@ export default function AddSale() {
                       {/* Product Composition */}
                       {item.composition && item.composition.length > 0 && (
                         <div className="border-t border-slate-200 bg-slate-50 p-3">
-                          <p className="text-xs font-semibold text-slate-700 mb-2">Composition:</p>
+                          <p className="text-xs font-semibold text-slate-700 mb-2">
+                            Composition:
+                          </p>
                           <div className="space-y-1">
                             {item.composition.map((comp, idx) => {
-                              const isCustom = (comp as any).customName !== undefined;
-                              const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
+                              const isCustom =
+                                (comp as any).customName !== undefined;
+                              const itemName = isCustom
+                                ? (comp as any).customName
+                                : getItemName(comp.itemId);
                               const itemPrice = isCustom
-                                ? ((comp as any).customPrice || 0)
+                                ? (comp as any).customPrice || 0
                                 : getItemPrice(comp.itemId, undefined);
                               return (
-                                <div key={idx} className="flex justify-between text-xs text-slate-600 px-2">
-                                  <span>{itemName} × {comp.quantity}</span>
-                                  <span className="font-medium">₹{((itemPrice || 0) * comp.quantity).toFixed(2)}</span>
+                                <div
+                                  key={idx}
+                                  className="flex justify-between text-xs text-slate-600 px-2"
+                                >
+                                  <span>
+                                    {itemName} × {comp.quantity}
+                                  </span>
+                                  <span className="font-medium">
+                                    ₹
+                                    {((itemPrice || 0) * comp.quantity).toFixed(
+                                      2,
+                                    )}
+                                  </span>
                                 </div>
                               );
                             })}
@@ -917,33 +1047,35 @@ export default function AddSale() {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-                {(["pickup", "pickup_later", "delivery"] as const).map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => {
-                      setOrderType(type);
-                      if (type === "pickup") {
-                        setPickupDate("");
-                        setPickupTime("");
-                      }
-                    }}
-                    className={cn(
-                      "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
-                      orderType === type
-                        ? "border-blue-600 bg-blue-50 text-blue-700"
-                        : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
-                    )}
-                  >
-                    {orderType === type && (
-                      <Check className="w-5 h-5 absolute top-2 right-2" />
-                    )}
-                    <span className="block">
-                      {type === "pickup" && "Pick Up"}
-                      {type === "pickup_later" && "Pick Up Later"}
-                      {type === "delivery" && "Delivery"}
-                    </span>
-                  </button>
-                ))}
+                {(["pickup", "pickup_later", "delivery"] as const).map(
+                  (type) => (
+                    <button
+                      key={type}
+                      onClick={() => {
+                        setOrderType(type);
+                        if (type === "pickup") {
+                          setPickupDate("");
+                          setPickupTime("");
+                        }
+                      }}
+                      className={cn(
+                        "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
+                        orderType === type
+                          ? "border-blue-600 bg-blue-50 text-blue-700"
+                          : "border-slate-300 bg-white text-slate-700 hover:border-slate-400",
+                      )}
+                    >
+                      {orderType === type && (
+                        <Check className="w-5 h-5 absolute top-2 right-2" />
+                      )}
+                      <span className="block">
+                        {type === "pickup" && "Pick Up"}
+                        {type === "pickup_later" && "Pick Up Later"}
+                        {type === "delivery" && "Delivery"}
+                      </span>
+                    </button>
+                  ),
+                )}
               </div>
 
               {(orderType === "pickup_later" || orderType === "delivery") && (
@@ -951,7 +1083,10 @@ export default function AddSale() {
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      {orderType === "pickup_later" ? "Pickup Date" : "Delivery Date"} <span className="text-red-500">*</span>
+                      {orderType === "pickup_later"
+                        ? "Pickup Date"
+                        : "Delivery Date"}{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="date"
@@ -964,7 +1099,9 @@ export default function AddSale() {
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      {orderType === "pickup_later" ? "Pickup Time" : "Delivery Time"}
+                      {orderType === "pickup_later"
+                        ? "Pickup Time"
+                        : "Delivery Time"}
                     </label>
                     <input
                       type="time"
@@ -992,7 +1129,12 @@ export default function AddSale() {
                       <input
                         type="text"
                         value={deliveryDetails.receiverName}
-                        onChange={(e) => setDeliveryDetails({ ...deliveryDetails, receiverName: e.target.value })}
+                        onChange={(e) =>
+                          setDeliveryDetails({
+                            ...deliveryDetails,
+                            receiverName: e.target.value,
+                          })
+                        }
                         placeholder="e.g., John Doe"
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       />
@@ -1001,12 +1143,18 @@ export default function AddSale() {
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
                         <Phone className="w-4 h-4" />
-                        Receiver Phone No. <span className="text-red-500">*</span>
+                        Receiver Phone No.{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
                         value={deliveryDetails.receiverPhone}
-                        onChange={(e) => setDeliveryDetails({ ...deliveryDetails, receiverPhone: e.target.value })}
+                        onChange={(e) =>
+                          setDeliveryDetails({
+                            ...deliveryDetails,
+                            receiverPhone: e.target.value,
+                          })
+                        }
                         placeholder="e.g., 9876543210"
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       />
@@ -1020,7 +1168,12 @@ export default function AddSale() {
                     </label>
                     <textarea
                       value={deliveryDetails.receiverAddress}
-                      onChange={(e) => setDeliveryDetails({ ...deliveryDetails, receiverAddress: e.target.value })}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          receiverAddress: e.target.value,
+                        })
+                      }
                       placeholder="Enter complete delivery address"
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
                       rows={2}
@@ -1034,7 +1187,12 @@ export default function AddSale() {
                     </label>
                     <textarea
                       value={deliveryDetails.message}
-                      onChange={(e) => setDeliveryDetails({ ...deliveryDetails, message: e.target.value })}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          message: e.target.value,
+                        })
+                      }
                       placeholder="Add any special instructions or delivery notes"
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
                       rows={2}
@@ -1042,7 +1200,9 @@ export default function AddSale() {
                   </div>
 
                   <div className="border-t border-amber-200 pt-4">
-                    <h4 className="text-sm font-semibold text-slate-900 mb-4">Sender Details</h4>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-4">
+                      Sender Details
+                    </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
@@ -1052,7 +1212,12 @@ export default function AddSale() {
                         <input
                           type="text"
                           value={deliveryDetails.senderName}
-                          onChange={(e) => setDeliveryDetails({ ...deliveryDetails, senderName: e.target.value })}
+                          onChange={(e) =>
+                            setDeliveryDetails({
+                              ...deliveryDetails,
+                              senderName: e.target.value,
+                            })
+                          }
                           placeholder="e.g., Jane Smith"
                           className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                         />
@@ -1061,12 +1226,18 @@ export default function AddSale() {
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
                           <Phone className="w-4 h-4" />
-                          Sender Phone No. <span className="text-red-500">*</span>
+                          Sender Phone No.{" "}
+                          <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="tel"
                           value={deliveryDetails.senderPhone}
-                          onChange={(e) => setDeliveryDetails({ ...deliveryDetails, senderPhone: e.target.value })}
+                          onChange={(e) =>
+                            setDeliveryDetails({
+                              ...deliveryDetails,
+                              senderPhone: e.target.value,
+                            })
+                          }
                           placeholder="e.g., 9876543210"
                           className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                         />
@@ -1113,7 +1284,7 @@ export default function AddSale() {
                       "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
                       selectedPaymentModes.has(mode)
                         ? "border-blue-600 bg-blue-50 text-blue-700"
-                        : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
+                        : "border-slate-300 bg-white text-slate-700 hover:border-slate-400",
                     )}
                   >
                     {selectedPaymentModes.has(mode) && (
@@ -1127,7 +1298,8 @@ export default function AddSale() {
               {selectedPaymentModes.size > 1 && (
                 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm font-medium text-blue-700 mb-4">
-                    Enter amount for each payment method (must sum to ₹{total.toFixed(2)})
+                    Enter amount for each payment method (must sum to ₹
+                    {total.toFixed(2)})
                   </p>
                   <div className="space-y-3">
                     {Array.from(selectedPaymentModes).map((mode) => (
@@ -1140,7 +1312,9 @@ export default function AddSale() {
                           <input
                             type="number"
                             value={paymentAmounts[mode]}
-                            onChange={(e) => updatePaymentAmount(mode, e.target.value)}
+                            onChange={(e) =>
+                              updatePaymentAmount(mode, e.target.value)
+                            }
                             placeholder="0.00"
                             step="0.01"
                             min="0"
@@ -1153,12 +1327,14 @@ export default function AddSale() {
                   <div className="mt-4 p-3 bg-white rounded border border-slate-200">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Total Entered:</span>
-                      <span className={cn(
-                        "font-semibold",
-                        Math.abs(getTotalPaymentAmount() - total) < 0.01
-                          ? "text-green-600"
-                          : "text-red-600"
-                      )}>
+                      <span
+                        className={cn(
+                          "font-semibold",
+                          Math.abs(getTotalPaymentAmount() - total) < 0.01
+                            ? "text-green-600"
+                            : "text-red-600",
+                        )}
+                      >
                         ₹{getTotalPaymentAmount().toFixed(2)}
                       </span>
                     </div>
@@ -1194,9 +1370,8 @@ export default function AddSale() {
                     <option value="">Choose a customer...</option>
                     {customers.map((customer) => (
                       <option key={customer.id} value={customer.id}>
-                        {customer.name} (₹{customer.totalCredit.toLocaleString(
-                          "en-IN"
-                        )})
+                        {customer.name} (₹
+                        {customer.totalCredit.toLocaleString("en-IN")})
                       </option>
                     ))}
                   </select>
@@ -1216,7 +1391,7 @@ export default function AddSale() {
                       "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
                       discountType === "percentage"
                         ? "bg-blue-600 text-white shadow-md"
-                        : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                        : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                     )}
                   >
                     % Percentage
@@ -1227,7 +1402,7 @@ export default function AddSale() {
                       "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
                       discountType === "fixed"
                         ? "bg-blue-600 text-white shadow-md"
-                        : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                        : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                     )}
                   >
                     ₹ Fixed Amount
@@ -1236,13 +1411,17 @@ export default function AddSale() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    {discountType === "percentage" ? "Discount (%)" : "Discount (₹)"}
+                    {discountType === "percentage"
+                      ? "Discount (%)"
+                      : "Discount (₹)"}
                   </label>
                   <input
                     type="number"
                     value={discountValue}
                     onChange={(e) => setDiscountValue(e.target.value)}
-                    placeholder={discountType === "percentage" ? "e.g., 10" : "e.g., 100"}
+                    placeholder={
+                      discountType === "percentage" ? "e.g., 10" : "e.g., 100"
+                    }
                     step={discountType === "percentage" ? "0.1" : "0.01"}
                     min="0"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
@@ -1299,15 +1478,25 @@ export default function AddSale() {
 
                 {discountValue && (
                   <div className="flex justify-between text-amber-600 text-sm">
-                    <span>Discount ({discountType === "percentage" ? `${discountValue}%` : `₹${discountValue}`})</span>
-                    <span className="font-medium">-₹{discountAmount.toFixed(2)}</span>
+                    <span>
+                      Discount (
+                      {discountType === "percentage"
+                        ? `${discountValue}%`
+                        : `₹${discountValue}`}
+                      )
+                    </span>
+                    <span className="font-medium">
+                      -₹{discountAmount.toFixed(2)}
+                    </span>
                   </div>
                 )}
 
                 {deliveryChargeAmount > 0 && (
                   <div className="flex justify-between text-orange-600 text-sm">
                     <span>Delivery Charges</span>
-                    <span className="font-medium">+₹{deliveryChargeAmount.toFixed(2)}</span>
+                    <span className="font-medium">
+                      +₹{deliveryChargeAmount.toFixed(2)}
+                    </span>
                   </div>
                 )}
 
@@ -1320,13 +1509,20 @@ export default function AddSale() {
                   </div>
                 ) : (
                   <div className="pt-2 border-t border-blue-200 mt-2">
-                    <p className="text-xs text-slate-500 font-medium mb-2">Payment Breakdown</p>
+                    <p className="text-xs text-slate-500 font-medium mb-2">
+                      Payment Breakdown
+                    </p>
                     <div className="space-y-1">
                       {Array.from(selectedPaymentModes).map((mode) => {
                         const amount = parseFloat(paymentAmounts[mode]) || 0;
                         return (
-                          <div key={mode} className="flex justify-between text-sm">
-                            <span className="text-slate-600 capitalize">{mode}:</span>
+                          <div
+                            key={mode}
+                            className="flex justify-between text-sm"
+                          >
+                            <span className="text-slate-600 capitalize">
+                              {mode}:
+                            </span>
                             <span className="font-medium text-slate-900">
                               ₹{amount.toFixed(2)}
                             </span>
@@ -1343,25 +1539,40 @@ export default function AddSale() {
                       {orderType === "pickup_later" ? "Pickup" : "Delivery"}
                     </p>
                     <p className="text-sm text-slate-700 bg-white rounded px-2 py-1">
-                      {pickupDate && new Date(pickupDate).toLocaleDateString("en-IN")} {pickupTime && `at ${pickupTime}`}
+                      {pickupDate &&
+                        new Date(pickupDate).toLocaleDateString("en-IN")}{" "}
+                      {pickupTime && `at ${pickupTime}`}
                     </p>
                   </div>
                 )}
 
                 {orderType === "delivery" && deliveryDetails.receiverName && (
                   <div className="pt-2 border-t border-blue-200 mt-2">
-                    <p className="text-xs text-slate-500 font-medium mb-2">Delivery Info</p>
+                    <p className="text-xs text-slate-500 font-medium mb-2">
+                      Delivery Info
+                    </p>
                     <div className="text-xs text-slate-700 bg-white rounded px-2 py-1 space-y-1">
-                      <p><span className="font-medium">To:</span> {deliveryDetails.receiverName}</p>
-                      <p><span className="font-medium">Phone:</span> {deliveryDetails.receiverPhone}</p>
-                      <p><span className="font-medium">From:</span> {deliveryDetails.senderName}</p>
+                      <p>
+                        <span className="font-medium">To:</span>{" "}
+                        {deliveryDetails.receiverName}
+                      </p>
+                      <p>
+                        <span className="font-medium">Phone:</span>{" "}
+                        {deliveryDetails.receiverPhone}
+                      </p>
+                      <p>
+                        <span className="font-medium">From:</span>{" "}
+                        {deliveryDetails.senderName}
+                      </p>
                     </div>
                   </div>
                 )}
 
                 {orderRemarks && (
                   <div className="pt-2 border-t border-blue-200 mt-2">
-                    <p className="text-xs text-slate-500 font-medium mb-1">Remarks</p>
+                    <p className="text-xs text-slate-500 font-medium mb-1">
+                      Remarks
+                    </p>
                     <p className="text-sm text-slate-700 bg-white rounded px-2 py-1">
                       {orderRemarks}
                     </p>
@@ -1380,7 +1591,11 @@ export default function AddSale() {
                 {discountValue && (
                   <div className="flex justify-between text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">
                     <span className="text-sm font-medium">
-                      Discount ({discountType === "percentage" ? `${discountValue}%` : `₹${discountValue}`})
+                      Discount (
+                      {discountType === "percentage"
+                        ? `${discountValue}%`
+                        : `₹${discountValue}`}
+                      )
                     </span>
                     <span className="font-semibold">
                       -₹{discountAmount.toFixed(2)}
@@ -1390,7 +1605,9 @@ export default function AddSale() {
 
                 {deliveryChargeAmount > 0 && (
                   <div className="flex justify-between text-orange-700 bg-orange-50 px-3 py-2 rounded-lg">
-                    <span className="text-sm font-medium">Delivery Charges</span>
+                    <span className="text-sm font-medium">
+                      Delivery Charges
+                    </span>
                     <span className="font-semibold">
                       +₹{deliveryChargeAmount.toFixed(2)}
                     </span>
@@ -1407,12 +1624,14 @@ export default function AddSale() {
 
               <button
                 onClick={handleSaveSale}
-                disabled={isLoading || saleItems.length === 0 || !isPaymentValid()}
+                disabled={
+                  isLoading || saleItems.length === 0 || !isPaymentValid()
+                }
                 className={cn(
                   "w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2",
                   isLoading || saleItems.length === 0 || !isPaymentValid()
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md hover:shadow-lg"
+                    : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md hover:shadow-lg",
                 )}
               >
                 <Check className="w-5 h-5" />
@@ -1427,7 +1646,9 @@ export default function AddSale() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Add New Customer</h2>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Add New Customer
+                </h2>
                 <button
                   onClick={() => setShowAddCustomerModal(false)}
                   className="text-slate-400 hover:text-slate-600 transition-colors"
@@ -1511,20 +1732,28 @@ export default function AddSale() {
         {showScannedConfirm && scannedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-              <h2 className="text-lg font-bold text-slate-900 mb-4">Add Scanned Product?</h2>
+              <h2 className="text-lg font-bold text-slate-900 mb-4">
+                Add Scanned Product?
+              </h2>
 
               <div className="space-y-4 mb-6 p-4 bg-slate-50 rounded-lg">
                 <div>
                   <p className="text-sm text-slate-600">Product</p>
-                  <p className="text-lg font-semibold text-slate-900">{scannedProduct.name}</p>
+                  <p className="text-lg font-semibold text-slate-900">
+                    {scannedProduct.name}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-slate-600">Price</p>
-                  <p className="text-lg font-semibold text-blue-600">₹{scannedProduct.price.toFixed(2)}</p>
+                  <p className="text-lg font-semibold text-blue-600">
+                    ₹{scannedProduct.price.toFixed(2)}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-slate-600">Items in Composition</p>
-                  <p className="text-lg font-semibold text-slate-900">{scannedProduct.items.length}</p>
+                  <p className="text-lg font-semibold text-slate-900">
+                    {scannedProduct.items.length}
+                  </p>
                 </div>
               </div>
 

@@ -10,7 +10,9 @@ export default function Deliveries() {
 
   const getItemName = (itemId?: string, customName?: string) => {
     if (customName) return customName;
-    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
+    return itemId
+      ? inventoryItems.find((item) => item.id === itemId)?.name || "Unknown"
+      : "Unknown";
   };
 
   const getItemPrice = (itemId?: string, customPrice?: number): number => {
@@ -39,7 +41,9 @@ export default function Deliveries() {
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Deliveries</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+            Deliveries
+          </h1>
           <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
             Manage and track all scheduled deliveries
           </p>
@@ -77,25 +81,38 @@ export default function Deliveries() {
                   {/* Items Summary */}
                   <div className="mb-4 space-y-3">
                     {order.items.map((item) => (
-                      <div key={item.id} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                      <div
+                        key={item.id}
+                        className="p-4 bg-slate-50 rounded-lg border border-slate-200"
+                      >
                         <p className="text-sm font-semibold text-slate-900 mb-2">
-                          {item.name} × {item.quantity} @ ₹{item.price.toFixed(2)} each
+                          {item.name} × {item.quantity} @ ₹
+                          {item.price.toFixed(2)} each
                         </p>
 
                         {/* Product Composition */}
                         {item.composition && item.composition.length > 0 && (
                           <div className="ml-4 mt-2 pt-2 border-t border-slate-300">
-                            <p className="text-xs font-semibold text-slate-700 mb-2">Composition:</p>
+                            <p className="text-xs font-semibold text-slate-700 mb-2">
+                              Composition:
+                            </p>
                             <div className="space-y-1">
                               {item.composition.map((comp, idx) => {
-                                const isCustom = (comp as any).customName !== undefined;
-                                const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
+                                const isCustom =
+                                  (comp as any).customName !== undefined;
+                                const itemName = isCustom
+                                  ? (comp as any).customName
+                                  : getItemName(comp.itemId);
                                 const itemPrice = isCustom
-                                  ? ((comp as any).customPrice || 0)
+                                  ? (comp as any).customPrice || 0
                                   : getItemPrice(comp.itemId, undefined);
                                 return (
-                                  <p key={idx} className="text-xs text-slate-600 ml-2">
-                                    • {itemName} × {comp.quantity} @ ₹{(itemPrice || 0).toFixed(2)} each
+                                  <p
+                                    key={idx}
+                                    className="text-xs text-slate-600 ml-2"
+                                  >
+                                    • {itemName} × {comp.quantity} @ ₹
+                                    {(itemPrice || 0).toFixed(2)} each
                                   </p>
                                 );
                               })}
@@ -113,7 +130,9 @@ export default function Deliveries() {
                       <div>
                         <p className="text-sm text-slate-600">Delivery Date</p>
                         <p className="font-semibold text-slate-900">
-                          {order.pickupDate ? formatDate(order.pickupDate) : "Not scheduled"}
+                          {order.pickupDate
+                            ? formatDate(order.pickupDate)
+                            : "Not scheduled"}
                         </p>
                       </div>
                     </div>
@@ -122,8 +141,12 @@ export default function Deliveries() {
                       <div className="flex items-start gap-3">
                         <Clock className="w-5 h-5 text-slate-500 mt-0.5" />
                         <div>
-                          <p className="text-sm text-slate-600">Delivery Time</p>
-                          <p className="font-semibold text-slate-900">{formatTime(order.pickupTime)}</p>
+                          <p className="text-sm text-slate-600">
+                            Delivery Time
+                          </p>
+                          <p className="font-semibold text-slate-900">
+                            {formatTime(order.pickupTime)}
+                          </p>
                         </div>
                       </div>
                     )}
@@ -193,7 +216,9 @@ export default function Deliveries() {
                           {order.deliveryDetails.message && (
                             <div className="flex items-start gap-2">
                               <div>
-                                <p className="text-sm text-slate-600">Message</p>
+                                <p className="text-sm text-slate-600">
+                                  Message
+                                </p>
                                 <p className="font-medium text-slate-900 text-sm">
                                   {order.deliveryDetails.message}
                                 </p>
@@ -228,7 +253,9 @@ export default function Deliveries() {
           ) : (
             <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
               <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-medium text-lg">No deliveries scheduled</p>
+              <p className="text-slate-500 font-medium text-lg">
+                No deliveries scheduled
+              </p>
               <p className="text-slate-400 text-sm mt-2">
                 Delivery orders will appear here once created
               </p>

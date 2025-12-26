@@ -10,7 +10,11 @@ interface QRCodeModalProps {
   autoprint?: boolean;
 }
 
-export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModalProps) {
+export function QRCodeModal({
+  product,
+  onClose,
+  autoprint = false,
+}: QRCodeModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
@@ -35,7 +39,7 @@ export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModal
             const url = canvasRef.current?.toDataURL("image/png");
             if (url) setQrDataUrl(url);
           }
-        }
+        },
       );
     }
   }, [encodedData]);
@@ -149,19 +153,22 @@ export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModal
         <div className="mb-6 p-4 bg-slate-50 rounded-lg">
           <h3 className="font-semibold text-slate-900 mb-2">{product.name}</h3>
           <p className="text-sm text-slate-600">
-            Price: <span className="font-semibold text-slate-900">₹{product.price.toFixed(2)}</span>
+            Price:{" "}
+            <span className="font-semibold text-slate-900">
+              ₹{product.price.toFixed(2)}
+            </span>
           </p>
           <p className="text-sm text-slate-600 mt-1">
-            Items in composition: <span className="font-semibold text-slate-900">{product.items.length}</span>
+            Items in composition:{" "}
+            <span className="font-semibold text-slate-900">
+              {product.items.length}
+            </span>
           </p>
         </div>
 
         {/* QR Code */}
         <div className="flex justify-center mb-6 p-4 bg-white border-2 border-slate-200 rounded-lg">
-          <canvas
-            ref={canvasRef}
-            className="w-full max-w-xs"
-          />
+          <canvas ref={canvasRef} className="w-full max-w-xs" />
         </div>
 
         {/* Action Buttons */}

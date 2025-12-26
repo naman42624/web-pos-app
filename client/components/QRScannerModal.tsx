@@ -40,7 +40,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
         },
-        false
+        false,
       );
 
       scanner.render(
@@ -59,7 +59,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
         },
         () => {
           // Error handler - just continue scanning
-        }
+        },
       );
 
       scannerRef.current = scanner;
@@ -170,7 +170,9 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
             {!isCameraReady && (
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
                 <Camera className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                <p className="text-sm text-slate-600 mb-2">Initializing camera...</p>
+                <p className="text-sm text-slate-600 mb-2">
+                  Initializing camera...
+                </p>
                 <p className="text-xs text-slate-500">
                   Please allow camera access when prompted
                 </p>

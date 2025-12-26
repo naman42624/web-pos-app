@@ -7,7 +7,13 @@ import { cn } from "@/lib/utils";
 import { QRCodeModal } from "@/components/QRCodeModal";
 
 export default function ReadyProducts() {
-  const { products, addProduct, updateProduct, deleteProduct, items: inventoryItems } = usePOSContext();
+  const {
+    products,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    items: inventoryItems,
+  } = usePOSContext();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
@@ -15,14 +21,20 @@ export default function ReadyProducts() {
     name: "",
     price: "",
     image: "",
-    selectedItems: [] as Array<{ itemId?: string; customName?: string; customPrice?: number; quantity: number }>,
+    selectedItems: [] as Array<{
+      itemId?: string;
+      customName?: string;
+      customPrice?: number;
+      quantity: number;
+    }>,
   });
   const [searchItem, setSearchItem] = useState("");
   const [filteredItems, setFilteredItems] = useState<typeof inventoryItems>([]);
   const [showItemDropdown, setShowItemDropdown] = useState(false);
   const [customItemName, setCustomItemName] = useState("");
   const [customItemPrice, setCustomItemPrice] = useState("");
-  const [selectedProductForQR, setSelectedProductForQR] = useState<Product | null>(null);
+  const [selectedProductForQR, setSelectedProductForQR] =
+    useState<Product | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
   const [autoprint, setAutoprint] = useState(false);
 
@@ -67,7 +79,7 @@ export default function ReadyProducts() {
       const filtered = inventoryItems.filter(
         (item) =>
           item.name.toLowerCase().includes(value.toLowerCase()) &&
-          !formData.selectedItems.some((pi) => pi.itemId === item.id)
+          !formData.selectedItems.some((pi) => pi.itemId === item.id),
       );
       setFilteredItems(filtered);
       setShowItemDropdown(true);
@@ -77,7 +89,7 @@ export default function ReadyProducts() {
     }
   };
 
-  const addItemToProduct = (item: typeof inventoryItems[0]) => {
+  const addItemToProduct = (item: (typeof inventoryItems)[0]) => {
     const newProductItem: ProductItem = {
       itemId: item.id,
       quantity: 1,
@@ -101,7 +113,7 @@ export default function ReadyProducts() {
     setFormData((prev) => ({
       ...prev,
       selectedItems: prev.selectedItems.map((pi, i) =>
-        i === index ? { ...pi, quantity: Math.max(1, quantity) } : pi
+        i === index ? { ...pi, quantity: Math.max(1, quantity) } : pi,
       ),
     }));
   };
@@ -149,7 +161,9 @@ export default function ReadyProducts() {
 
   const getItemName = (itemId?: string, customName?: string) => {
     if (customName) return customName;
-    return itemId ? (inventoryItems.find((item) => item.id === itemId)?.name || "Unknown") : "Unknown";
+    return itemId
+      ? inventoryItems.find((item) => item.id === itemId)?.name || "Unknown"
+      : "Unknown";
   };
 
   const getItemPrice = (itemId?: string, customPrice?: number): number => {
@@ -197,7 +211,9 @@ export default function ReadyProducts() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Ready Products</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Ready Products
+            </h1>
             <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
               Create and manage pre-configured products made from items
             </p>
@@ -215,7 +231,10 @@ export default function ReadyProducts() {
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+              <div
+                key={product.id}
+                className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+              >
                 {/* Product Image */}
                 <div className="h-40 sm:h-48 bg-slate-100 overflow-hidden">
                   {product.image ? (
@@ -226,7 +245,9 @@ export default function ReadyProducts() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-slate-400 text-xs sm:text-sm">No image</span>
+                      <span className="text-slate-400 text-xs sm:text-sm">
+                        No image
+                      </span>
                     </div>
                   )}
                 </div>
@@ -234,8 +255,12 @@ export default function ReadyProducts() {
                 {/* Product Info */}
                 <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 flex-1 flex flex-col">
                   <div>
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 line-clamp-2">{product.name}</h3>
-                    <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">₹{product.price.toFixed(2)}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 line-clamp-2">
+                      {product.name}
+                    </h3>
+                    <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">
+                      ₹{product.price.toFixed(2)}
+                    </p>
                   </div>
 
                   <div className="border-t border-slate-200 pt-3">
@@ -245,14 +270,23 @@ export default function ReadyProducts() {
                     <div className="space-y-1">
                       {product.items.map((pi, idx) => {
                         const isCustom = (pi as any).customName !== undefined;
-                        const itemName = isCustom ? (pi as any).customName : getItemName(pi.itemId);
+                        const itemName = isCustom
+                          ? (pi as any).customName
+                          : getItemName(pi.itemId);
                         const itemPrice = isCustom
-                          ? ((pi as any).customPrice || 0)
+                          ? (pi as any).customPrice || 0
                           : getItemPrice(pi.itemId, undefined);
                         return (
-                          <div key={idx} className="flex justify-between text-xs text-slate-600">
-                            <span>{itemName} × {pi.quantity}</span>
-                            <span className="font-medium">₹{((itemPrice || 0) * pi.quantity).toFixed(2)}</span>
+                          <div
+                            key={idx}
+                            className="flex justify-between text-xs text-slate-600"
+                          >
+                            <span>
+                              {itemName} × {pi.quantity}
+                            </span>
+                            <span className="font-medium">
+                              ₹{((itemPrice || 0) * pi.quantity).toFixed(2)}
+                            </span>
                           </div>
                         );
                       })}
@@ -304,7 +338,9 @@ export default function ReadyProducts() {
                 <Plus className="w-8 h-8 text-slate-400" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">No products yet</h3>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">
+              No products yet
+            </h3>
             <p className="text-slate-600 mb-6">
               Create your first ready product by combining items
             </p>
@@ -343,7 +379,9 @@ export default function ReadyProducts() {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     placeholder="e.g., Breakfast Combo"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
@@ -357,17 +395,26 @@ export default function ReadyProducts() {
                   <input
                     type="number"
                     value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, price: e.target.value })
+                    }
                     placeholder="0.00"
                     step="0.01"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
                   {formData.price && (
                     <p className="text-sm text-slate-600 mt-2">
-                      Composition value: ₹{calculateCompositionPrice().toFixed(2)}
-                      {parseFloat(formData.price) > calculateCompositionPrice() && (
+                      Composition value: ₹
+                      {calculateCompositionPrice().toFixed(2)}
+                      {parseFloat(formData.price) >
+                        calculateCompositionPrice() && (
                         <span className="text-green-600 ml-2">
-                          (+₹{(parseFloat(formData.price) - calculateCompositionPrice()).toFixed(2)} margin)
+                          (+₹
+                          {(
+                            parseFloat(formData.price) -
+                            calculateCompositionPrice()
+                          ).toFixed(2)}{" "}
+                          margin)
                         </span>
                       )}
                     </p>
@@ -381,7 +428,9 @@ export default function ReadyProducts() {
                   </label>
                   <textarea
                     value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, image: e.target.value })
+                    }
                     placeholder="Paste base64 encoded image data here..."
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
                     rows={3}
@@ -404,8 +453,12 @@ export default function ReadyProducts() {
                         if (searchItem.trim()) {
                           const filtered = inventoryItems.filter(
                             (item) =>
-                              item.name.toLowerCase().includes(searchItem.toLowerCase()) &&
-                              !formData.selectedItems.some((pi) => pi.itemId === item.id)
+                              item.name
+                                .toLowerCase()
+                                .includes(searchItem.toLowerCase()) &&
+                              !formData.selectedItems.some(
+                                (pi) => pi.itemId === item.id,
+                              ),
                           );
                           setFilteredItems(filtered);
                           setShowItemDropdown(true);
@@ -433,13 +486,19 @@ export default function ReadyProducts() {
                                 />
                               ) : (
                                 <div className="w-10 h-10 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
-                                  <span className="text-xs text-slate-500">No img</span>
+                                  <span className="text-xs text-slate-500">
+                                    No img
+                                  </span>
                                 </div>
                               )}
                               <div className="flex-1">
                                 <div className="flex items-center justify-between">
-                                  <span className="font-medium text-slate-900">{item.name}</span>
-                                  <span className="text-sm text-slate-600">₹{item.price.toFixed(2)}</span>
+                                  <span className="font-medium text-slate-900">
+                                    {item.name}
+                                  </span>
+                                  <span className="text-sm text-slate-600">
+                                    ₹{item.price.toFixed(2)}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -451,7 +510,9 @@ export default function ReadyProducts() {
 
                   {/* Add Custom Item */}
                   <div className="border border-slate-300 rounded-lg p-3 bg-slate-50">
-                    <p className="text-sm font-semibold text-slate-700 mb-3">Or Add Custom Item</p>
+                    <p className="text-sm font-semibold text-slate-700 mb-3">
+                      Or Add Custom Item
+                    </p>
                     <div className="space-y-2">
                       <input
                         type="text"
@@ -490,9 +551,15 @@ export default function ReadyProducts() {
                           className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg"
                         >
                           <div className="flex-1">
-                            <p className="font-medium text-slate-900">{getItemName(pi.itemId, pi.customName)}</p>
+                            <p className="font-medium text-slate-900">
+                              {getItemName(pi.itemId, pi.customName)}
+                            </p>
                             <p className="text-sm text-slate-600">
-                              ₹{getItemPrice(pi.itemId, pi.customPrice).toFixed(2)} each
+                              ₹
+                              {getItemPrice(pi.itemId, pi.customPrice).toFixed(
+                                2,
+                              )}{" "}
+                              each
                             </p>
                           </div>
                           <div className="flex items-center gap-3">
@@ -500,13 +567,20 @@ export default function ReadyProducts() {
                               type="number"
                               value={pi.quantity}
                               onChange={(e) =>
-                                updateItemQuantity(index, parseInt(e.target.value) || 1)
+                                updateItemQuantity(
+                                  index,
+                                  parseInt(e.target.value) || 1,
+                                )
                               }
                               min="1"
                               className="w-16 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             />
                             <p className="font-medium text-slate-900 w-20 text-right">
-                              ₹{(getItemPrice(pi.itemId, pi.customPrice) * pi.quantity).toFixed(2)}
+                              ₹
+                              {(
+                                getItemPrice(pi.itemId, pi.customPrice) *
+                                pi.quantity
+                              ).toFixed(2)}
                             </p>
                             <button
                               onClick={() => removeItemFromProduct(index)}
@@ -520,7 +594,8 @@ export default function ReadyProducts() {
                     </div>
                   ) : (
                     <p className="text-sm text-slate-500 p-4 bg-slate-50 rounded-lg text-center">
-                      No items added yet. Search and add items above or add custom items.
+                      No items added yet. Search and add items above or add
+                      custom items.
                     </p>
                   )}
                 </div>

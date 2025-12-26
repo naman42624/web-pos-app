@@ -2,7 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
-import { Users, Phone, Mail, CreditCard, Plus, X, Trash2, Search } from "lucide-react";
+import {
+  Users,
+  Phone,
+  Mail,
+  CreditCard,
+  Plus,
+  X,
+  Trash2,
+  Search,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Address } from "@/hooks/usePOS";
 
@@ -30,7 +39,7 @@ export default function Customers() {
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: string
+    field: string,
   ) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
@@ -60,12 +69,12 @@ export default function Customers() {
   const handleAddressChange = (
     addressId: string,
     field: string,
-    value: string
+    value: string,
   ) => {
     setFormData({
       ...formData,
       addresses: formData.addresses.map((addr) =>
-        addr.id === addressId ? { ...addr, [field]: value } : addr
+        addr.id === addressId ? { ...addr, [field]: value } : addr,
       ),
     });
   };
@@ -108,7 +117,9 @@ export default function Customers() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Customers</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Customers
+            </h1>
             <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
               Manage customer information and view credit details
             </p>
@@ -209,7 +220,9 @@ export default function Customers() {
               ) : (
                 <div className="text-center py-12">
                   <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-500 font-medium">No customers found</p>
+                  <p className="text-slate-500 font-medium">
+                    No customers found
+                  </p>
                   <p className="text-slate-400 text-sm mt-1">
                     Try adjusting your search terms
                   </p>
@@ -232,7 +245,9 @@ export default function Customers() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
               <div className="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4">
-                <h2 className="text-3xl font-bold text-slate-900">Add New Customer</h2>
+                <h2 className="text-3xl font-bold text-slate-900">
+                  Add New Customer
+                </h2>
                 <button
                   onClick={() => setShowAddCustomerModal(false)}
                   className="text-slate-400 hover:text-slate-600 transition-colors"
@@ -279,7 +294,9 @@ export default function Customers() {
                             className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
                           />
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">10-digit mobile number</p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          10-digit mobile number
+                        </p>
                       </div>
 
                       <div>
@@ -353,13 +370,20 @@ export default function Customers() {
 
                   <div className="space-y-4">
                     {formData.addresses.map((address) => (
-                      <div key={address.id} className="p-4 border border-slate-200 rounded-lg space-y-3">
+                      <div
+                        key={address.id}
+                        className="p-4 border border-slate-200 rounded-lg space-y-3"
+                      >
                         <div className="flex items-center justify-between">
                           <input
                             type="text"
                             value={address.label}
                             onChange={(e) =>
-                              handleAddressChange(address.id, "label", e.target.value)
+                              handleAddressChange(
+                                address.id,
+                                "label",
+                                e.target.value,
+                              )
                             }
                             placeholder="e.g., Home, Office"
                             className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm font-semibold"
@@ -376,7 +400,11 @@ export default function Customers() {
                           type="text"
                           value={address.street}
                           onChange={(e) =>
-                            handleAddressChange(address.id, "street", e.target.value)
+                            handleAddressChange(
+                              address.id,
+                              "street",
+                              e.target.value,
+                            )
                           }
                           placeholder="Street address"
                           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
@@ -387,7 +415,11 @@ export default function Customers() {
                             type="text"
                             value={address.city}
                             onChange={(e) =>
-                              handleAddressChange(address.id, "city", e.target.value)
+                              handleAddressChange(
+                                address.id,
+                                "city",
+                                e.target.value,
+                              )
                             }
                             placeholder="City"
                             className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
@@ -396,7 +428,11 @@ export default function Customers() {
                             type="text"
                             value={address.state}
                             onChange={(e) =>
-                              handleAddressChange(address.id, "state", e.target.value)
+                              handleAddressChange(
+                                address.id,
+                                "state",
+                                e.target.value,
+                              )
                             }
                             placeholder="State"
                             className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
@@ -405,7 +441,11 @@ export default function Customers() {
                             type="text"
                             value={address.zip}
                             onChange={(e) =>
-                              handleAddressChange(address.id, "zip", e.target.value)
+                              handleAddressChange(
+                                address.id,
+                                "zip",
+                                e.target.value,
+                              )
                             }
                             placeholder="ZIP"
                             className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"

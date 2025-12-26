@@ -46,7 +46,9 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Dashboard</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Dashboard
+            </h1>
             <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
               Welcome back! Here's your sales overview.
             </p>
@@ -100,7 +102,9 @@ export default function Dashboard() {
           <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-slate-500 text-xs sm:text-sm font-medium">Customers</p>
+                <p className="text-slate-500 text-xs sm:text-sm font-medium">
+                  Customers
+                </p>
                 <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2">
                   {totalCustomers}
                 </p>
@@ -132,7 +136,9 @@ export default function Dashboard() {
         {/* Recent Sales */}
         <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Recent Sales</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+              Recent Sales
+            </h2>
             <Link
               to="/add-sale"
               className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1 w-fit"
@@ -174,7 +180,9 @@ export default function Dashboard() {
           ) : (
             <div className="text-center py-8 sm:py-12">
               <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-3 sm:mb-4" />
-              <p className="text-slate-500 font-medium text-sm sm:text-base">No sales yet</p>
+              <p className="text-slate-500 font-medium text-sm sm:text-base">
+                No sales yet
+              </p>
               <p className="text-slate-400 text-xs sm:text-sm mt-1">
                 Start by creating your first sale
               </p>
