@@ -229,7 +229,7 @@ export default function CustomerDetail() {
                         {!isPaid && (
                           <button
                             onClick={() =>
-                              handleRecordPayment(record.saleId, record.amount)
+                              openPaymentDialog(record.saleId, record.amount)
                             }
                             disabled={recordingPayment === record.saleId}
                             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap"
