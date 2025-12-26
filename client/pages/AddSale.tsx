@@ -379,9 +379,8 @@ export default function AddSale() {
       return;
     }
 
-    // If no customer is selected, ask to create one
+    // If no customer is selected, show modal to create one
     if (!selectedCustomerId) {
-      setIsCapturingCustomer(true);
       setShowAddCustomerModal(true);
       return;
     }
