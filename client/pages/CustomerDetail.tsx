@@ -1,7 +1,9 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { ArrowLeft, Phone, Mail, CreditCard, AlertCircle } from "lucide-react";
+import { ArrowLeft, Phone, Mail, CreditCard, AlertCircle, Check, Loader } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
