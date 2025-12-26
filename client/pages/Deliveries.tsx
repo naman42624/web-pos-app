@@ -41,28 +41,11 @@ export default function Deliveries() {
   };
 
   const handlePrintCustomerSlip = (order: (typeof deliveryOrders)[0], orderNumber: string) => {
-    const itemsHTML = order.items
+    const customerItemsHTML = order.items
       .map(
         (item) => `
       <div style="margin-bottom: 12px; padding: 10px; border-bottom: 1px solid #e2e8f0;">
-        <div style="font-weight: 600; margin-bottom: 4px;">${item.name} × ${item.quantity}</div>
-        <div style="font-size: 14px; color: #666;">₹${item.price.toFixed(2)} each</div>
-        ${
-          item.composition && item.composition.length > 0
-            ? `
-          <div style="margin-top: 8px; font-size: 12px; color: #666; border-left: 2px solid #ddd; padding-left: 8px;">
-            ${item.composition
-              .map((comp) => {
-                const isCustom = (comp as any).customName !== undefined;
-                const itemName = isCustom ? (comp as any).customName : getItemName(comp.itemId);
-                const itemPrice = isCustom ? (comp as any).customPrice || 0 : getItemPrice(comp.itemId);
-                return `• ${itemName} × ${comp.quantity} @ ₹${(itemPrice || 0).toFixed(2)}`;
-              })
-              .join("<br>")}
-          </div>
-        `
-            : ""
-        }
+        <div style="font-weight: 600;">${item.name} × ${item.quantity}</div>
       </div>
     `
       )
@@ -101,7 +84,7 @@ export default function Deliveries() {
 
           <div class="section items">
             <div class="section-title">ITEMS</div>
-            ${itemsHTML}
+            ${customerItemsHTML}
           </div>
 
           ${
