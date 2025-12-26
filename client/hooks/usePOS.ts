@@ -62,6 +62,7 @@ export interface Sale {
   discountValue?: number;
   discountAmount?: number;
   deliveryCharges?: number;
+  status?: "pending" | "confirmed" | "in_transit" | "delivered" | "pick_up_ready" | "cancelled";
 }
 
 export interface Address {
