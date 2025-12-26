@@ -170,38 +170,38 @@ export default function Pickups() {
                   </div>
 
                   {/* Schedule Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-slate-600">Pickup Date</p>
-                        <p className="font-semibold text-slate-900">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs sm:text-sm text-slate-600">Pickup Date</p>
+                        <p className="font-semibold text-sm sm:text-base text-slate-900 truncate">
                           {order.pickupDate ? formatDate(order.pickupDate) : "Not scheduled"}
                         </p>
                       </div>
                     </div>
 
                     {order.pickupTime && (
-                      <div className="flex items-start gap-3">
-                        <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="text-sm text-slate-600">Pickup Time</p>
-                          <p className="font-semibold text-slate-900">{formatTime(order.pickupTime)}</p>
+                          <p className="text-xs sm:text-sm text-slate-600">Pickup Time</p>
+                          <p className="font-semibold text-sm sm:text-base text-slate-900">{formatTime(order.pickupTime)}</p>
                         </div>
                       </div>
                     )}
                   </div>
 
                   {/* Footer - Total and Payment */}
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-slate-200">
                     <div>
-                      <p className="text-sm text-slate-600">Total Amount</p>
-                      <p className="text-2xl font-bold text-slate-900">
+                      <p className="text-xs sm:text-sm text-slate-600">Total Amount</p>
+                      <p className="text-xl sm:text-2xl font-bold text-slate-900">
                         ₹{order.total.toLocaleString("en-IN")}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-slate-600 capitalize mb-1">
+                    <div className="sm:text-right">
+                      <p className="text-xs sm:text-sm text-slate-600 capitalize mb-2 sm:mb-1">
                         Payment: {order.paymentMode}
                       </p>
                       {order.items.some((item) => getItemStatus(item, order.pickupDate).status === "Ready to be Picked") ? (
