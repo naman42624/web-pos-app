@@ -354,7 +354,12 @@ export default function Deliveries() {
                   Deliveries for {dateGroup}
                 </h2>
                 <div className="space-y-3 sm:space-y-4">
-                  {groupedOrders[dateGroup].map((order) => (
+                  {groupedOrders[dateGroup].map((order, index) => {
+                    const orderNumber = getOrderNumber(
+                      order.id,
+                      deliveryOrders.findIndex((o) => o.id === order.id)
+                    );
+                    return (
                     <div
                       key={order.id}
                       className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
@@ -368,7 +373,7 @@ export default function Deliveries() {
                             </div>
                             <div className="min-w-0">
                               <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
-                                Order {order.id.slice(-8).toUpperCase()}
+                                Order {orderNumber}
                               </h3>
                               <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
                                 Created: {formatDate(order.date)}
@@ -550,27 +555,50 @@ export default function Deliveries() {
                         )}
 
                         {/* Footer - Total and Payment */}
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                          <div>
-                            <p className="text-sm text-slate-600">
-                              Total Amount
-                            </p>
-                            <p className="text-2xl font-bold text-slate-900">
-                              ₹{order.total.toLocaleString("en-IN")}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm text-slate-600 capitalize mb-1">
-                              Payment: {order.paymentMode}
-                            </p>
-                            <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
-                              Pending Delivery
+                        <div className="flex flex-col gap-4 pt-4 border-t border-slate-200">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-slate-600">
+                                Total Amount
+                              </p>
+                              <p className="text-2xl font-bold text-slate-900">
+                                ₹{order.total.toLocaleString("en-IN")}
+                              </p>
                             </div>
+                            <div className="text-right">
+                              <p className="text-sm text-slate-600 capitalize mb-1">
+                                Payment: {order.paymentMode}
+                              </p>
+                              <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                                Pending Delivery
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Print Buttons */}
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handlePrintCustomerSlip(order, orderNumber)}
+                              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg transition-colors text-sm"
+                              title="Print customer copy"
+                            >
+                              <Printer className="w-4 h-4" />
+                              Print (Customer)
+                            </button>
+                            <button
+                              onClick={() => handlePrintDispatchSlip(order, orderNumber)}
+                              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 font-medium rounded-lg transition-colors text-sm"
+                              title="Print dispatch copy"
+                            >
+                              <Printer className="w-4 h-4" />
+                              Print (Dispatch)
+                            </button>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))
