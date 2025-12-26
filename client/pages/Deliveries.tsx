@@ -573,6 +573,10 @@ export default function Deliveries() {
     groupedByStatus.hasOwnProperty(status),
   );
 
+  const filteredOrders = selectedStatus
+    ? groupedByStatus[selectedStatus] || []
+    : deliveryOrders;
+
   return (
     <SharedLayout>
       <div className="space-y-6 sm:space-y-8">
