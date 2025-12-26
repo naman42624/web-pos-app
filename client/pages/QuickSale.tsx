@@ -314,19 +314,43 @@ export default function QuickSale() {
       return;
     }
 
+    const primaryMode = Array.from(selectedPaymentModes)[0];
+
+    if (primaryMode === "credit" && !creditCustomerName.trim()) {
+      alert("Please enter customer name for credit sale");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const primaryMode = Array.from(selectedPaymentModes)[0];
+      let customerId: string | undefined = undefined;
+
+      // Create customer for credit sales
+      if (primaryMode === "credit" && creditCustomerName.trim()) {
+        const newCustomer = addCustomer({
+          name: creditCustomerName.trim(),
+          phone: "",
+          email: undefined,
+          altPhone: undefined,
+          organization: undefined,
+          addresses: [],
+          totalCredit: 0,
+        });
+        customerId = newCustomer.id;
+      }
+
       addSale({
         items: saleItems,
         paymentMode: primaryMode,
         total,
+        customerId,
       });
 
       setSaleItems([]);
       setSelectedPaymentModes(new Set(["cash"]));
       setPaymentAmounts({ cash: "", upi: "", credit: "" });
       setAddMode("ready");
+      setCreditCustomerName("");
 
       alert("Sale registered successfully!");
       navigate("/");
