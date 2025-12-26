@@ -22,6 +22,9 @@ export default function ReadyProducts() {
   const [showItemDropdown, setShowItemDropdown] = useState(false);
   const [customItemName, setCustomItemName] = useState("");
   const [customItemPrice, setCustomItemPrice] = useState("");
+  const [selectedProductForQR, setSelectedProductForQR] = useState<Product | null>(null);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [autoprint, setAutoprint] = useState(false);
 
   const resetForm = () => {
     setFormData({
