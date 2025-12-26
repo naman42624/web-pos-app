@@ -21,15 +21,60 @@ export default function CustomerDetail() {
   const navigate = useNavigate();
   const { customers, getCreditRecordsByCustomer, recordPayment, sales } = usePOSContext();
   const [recordingPayment, setRecordingPayment] = useState<string | null>(null);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [paymentDialogData, setPaymentDialogData] = useState<{
+    saleId: string;
+    totalAmount: number;
+  } | null>(null);
+  const [amountInput, setAmountInput] = useState("");
+  const [amountError, setAmountError] = useState("");
 
   const customer = customers.find((c) => c.id === id);
   const creditRecords = customer ? getCreditRecordsByCustomer(customer.id) : [];
 
-  const handleRecordPayment = async (saleId: string, amount: number) => {
+  const openPaymentDialog = (saleId: string, amount: number) => {
+    setPaymentDialogData({ saleId, totalAmount: amount });
+    setAmountInput(amount.toString());
+    setAmountError("");
+    setPaymentDialogOpen(true);
+  };
+
+  const closePaymentDialog = () => {
+    setPaymentDialogOpen(false);
+    setPaymentDialogData(null);
+    setAmountInput("");
+    setAmountError("");
+  };
+
+  const handleAmountChange = (value: string) => {
+    setAmountInput(value);
+    setAmountError("");
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!paymentDialogData) return;
+
+    const amount = parseFloat(amountInput);
+
+    if (isNaN(amount) || amount <= 0) {
+      setAmountError("Amount must be a valid positive number");
+      return;
+    }
+
+    if (amount > paymentDialogData.totalAmount) {
+      setAmountError(
+        `Amount cannot exceed ₹${paymentDialogData.totalAmount.toLocaleString("en-IN")}`,
+      );
+      return;
+    }
+
     try {
-      setRecordingPayment(saleId);
-      await recordPayment(saleId);
-      toast.success(`Payment of ₹${amount.toLocaleString("en-IN")} recorded`);
+      setRecordingPayment(paymentDialogData.saleId);
+      await recordPayment(paymentDialogData.saleId, amount);
+      toast.success(
+        `Payment of ₹${amount.toLocaleString("en-IN")} recorded successfully`,
+      );
+      closePaymentDialog();
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : "Failed to record payment";
       toast.error(errorMsg);
