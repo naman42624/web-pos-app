@@ -2,8 +2,9 @@ import { useState } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/POSContext";
 import { Product, ProductItem } from "@/hooks/usePOS";
-import { Trash2, Plus, Edit2, X } from "lucide-react";
+import { Trash2, Plus, Edit2, X, QrCode } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { QRCodeModal } from "@/components/QRCodeModal";
 
 export default function ReadyProducts() {
   const { products, addProduct, updateProduct, deleteProduct, items: inventoryItems } = usePOSContext();
