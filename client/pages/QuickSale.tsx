@@ -15,6 +15,7 @@ export default function QuickSale() {
   const {
     addSale,
     addCustomer,
+    customers,
     items: inventoryItems,
     products: readyProducts,
   } = usePOSContext();
