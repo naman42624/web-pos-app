@@ -4,6 +4,17 @@ import { usePOSContext } from "@/contexts/usePOSContext";
 import { ArrowLeft, Phone, Mail, CreditCard, AlertCircle, Check, Loader } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
