@@ -306,14 +306,6 @@ export default function AddSale() {
     setCustomProductQuantity("1");
     setCustomProductItems([]);
     setItemSearchTerm("");
-
-    // Show phone lookup modal after first product is added
-    if (saleItems.length === 0 && !selectedCustomerId) {
-      setTimeout(() => {
-        setIsCapturingCustomer(true);
-        setShowPhoneLookupModal(true);
-      }, 300);
-    }
   };
 
   const togglePaymentMode = (mode: PaymentMode) => {
