@@ -498,6 +498,21 @@ export default function AddSale() {
                 {/* Ready Product Mode */}
                 {addMode === "ready" && (
                   <>
+                    {/* QR Code Scanner Button */}
+                    <button
+                      onClick={() => setShowQRScanner(true)}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 text-sm sm:text-base"
+                    >
+                      <QrCode className="w-5 h-5" />
+                      Scan QR Code
+                    </button>
+
+                    <div className="relative border-t border-slate-200 pt-4">
+                      <div className="absolute left-0 top-0 transform -translate-y-1/2 translate-x-6">
+                        <span className="bg-white px-2 text-xs font-semibold text-slate-500 uppercase">Or</span>
+                      </div>
+                    </div>
+
                     <div className="relative">
                       <label className="block text-sm font-medium text-slate-700 mb-2">
                         Product Name
