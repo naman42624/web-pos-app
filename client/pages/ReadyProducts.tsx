@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
-import { usePOSContext } from "@/contexts/POSContext";
+import { usePOSContext } from "@/contexts/usePOSContext";
 import { Product, ProductItem } from "@/hooks/usePOS";
 import { Trash2, Plus, Edit2, X, QrCode } from "lucide-react";
 import { cn } from "@/lib/utils";
