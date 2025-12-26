@@ -389,7 +389,7 @@ export default function Deliveries() {
         {/* Status Menu Bar */}
         <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6">
           <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
-            {sortedStatusKeys.map((status) => (
+            {menuBarStatuses.map((status) => (
               <button
                 key={status}
                 onClick={() =>
