@@ -259,7 +259,7 @@ export default function ReadyProducts() {
                       {product.name}
                     </h3>
                     <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">
-                      ₹{product.price.toFixed(2)}
+                      ₹{(product.price || 0).toFixed(2)}
                     </p>
                   </div>
 
