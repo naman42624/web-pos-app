@@ -17,10 +17,18 @@ import { Label } from "@/components/ui/label";
 
 export default function Deliveries() {
   const { sales, items: inventoryItems, updateSaleStatus } = usePOSContext();
+  const [searchParams] = useSearchParams();
 
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const statusFromUrl = searchParams.get("status");
+    if (statusFromUrl) {
+      setSelectedStatus(statusFromUrl);
+    }
+  }, [searchParams]);
 
   const deliveryOrders = useMemo(() => {
     const allDeliveries = sales.filter((sale) => sale.orderType === "delivery");
