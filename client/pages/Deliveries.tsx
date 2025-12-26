@@ -405,22 +405,49 @@ export default function Deliveries() {
                         <div className="p-4 sm:p-6">
                           {/* Header Row */}
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
-                            <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+                            <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
                               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
                                 <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
                               </div>
-                              <div className="min-w-0">
-                                <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
-                                  Order {orderNumber}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                                  <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
+                                    Order {orderNumber}
+                                  </h3>
+                                  <select
+                                    value={order.status || "pending"}
+                                    onChange={(e) =>
+                                      handleStatusChange(
+                                        order.id,
+                                        e.target.value as
+                                          | "pending"
+                                          | "confirmed"
+                                          | "in_transit"
+                                          | "delivered"
+                                          | "pick_up_ready"
+                                          | "cancelled",
+                                      )
+                                    }
+                                    className={cn(
+                                      "px-2 py-1 rounded-lg text-xs sm:text-sm font-medium border outline-none transition-colors cursor-pointer",
+                                      getStatusColor(order.status),
+                                    )}
+                                  >
+                                    <option value="pending">Pending</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="in_transit">In Transit</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="pick_up_ready">
+                                      Pick Up Ready
+                                    </option>
+                                    <option value="cancelled">Cancelled</option>
+                                  </select>
+                                </div>
+                                <p className="text-xs sm:text-sm text-slate-500">
                                   Created: {formatDate(order.date)}
                                 </p>
                               </div>
                             </div>
-                            <span className="px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-medium border text-xs sm:text-sm bg-amber-100 text-amber-800 border-amber-200 whitespace-nowrap">
-                              Delivery
-                            </span>
                           </div>
 
                           {/* Items Summary */}
