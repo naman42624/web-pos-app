@@ -341,19 +341,19 @@ export default function QuickSale() {
 
     const primaryMode = Array.from(selectedPaymentModes)[0];
 
-    if (primaryMode === "credit" && !creditCustomerName.trim()) {
-      alert("Please enter customer name for credit sale");
+    if (primaryMode === "credit" && !selectedCustomerId && !creditCustomerSearch.trim()) {
+      alert("Please select or enter customer name for credit sale");
       return;
     }
 
     setIsLoading(true);
     try {
-      let customerId: string | undefined = undefined;
+      let customerId: string | undefined = selectedCustomerId || undefined;
 
-      // Create customer for credit sales
-      if (primaryMode === "credit" && creditCustomerName.trim()) {
+      // Create customer for credit sales if not selected from existing
+      if (primaryMode === "credit" && !selectedCustomerId && creditCustomerSearch.trim()) {
         const newCustomer = addCustomer({
-          name: creditCustomerName.trim(),
+          name: creditCustomerSearch.trim(),
           phone: "",
           email: undefined,
           altPhone: undefined,
@@ -375,7 +375,8 @@ export default function QuickSale() {
       setSelectedPaymentModes(new Set(["cash"]));
       setPaymentAmounts({ cash: "", upi: "", credit: "" });
       setAddMode("ready");
-      setCreditCustomerName("");
+      setCreditCustomerSearch("");
+      setSelectedCustomerId(null);
 
       alert("Sale registered successfully!");
       navigate("/");
