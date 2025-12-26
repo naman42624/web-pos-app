@@ -287,7 +287,7 @@ export function usePOS() {
     const newProduct = {
       id: productId,
       name: data.name,
-      price: parseFloat(data.price),
+      price: parseFloat(data.price) || 0,
       image: data.image,
       items: product.items,
     };
