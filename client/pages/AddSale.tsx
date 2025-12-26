@@ -548,18 +548,9 @@ export default function AddSale() {
 
   const handleSelectExistingCustomer = (customerId: string) => {
     setSelectedCustomerId(customerId);
-    setShowPhoneLookupModal(false);
     setPhoneLookupInput("");
     setMatchingCustomers([]);
     setShowNewCustomerForm(false);
-
-    // If we're in the middle of saving, proceed with save
-    if (isCapturingCustomer) {
-      setIsCapturingCustomer(false);
-      setTimeout(() => {
-        handleSaveSaleWithCustomer(customerId);
-      }, 100);
-    }
   };
 
   const handleCreateNewCustomerFromLookup = async () => {
