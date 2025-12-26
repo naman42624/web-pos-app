@@ -87,17 +87,17 @@ export default function Pickups() {
 
   return (
     <SharedLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Pickups</h1>
-          <p className="text-slate-500 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Pickups</h1>
+          <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
             Manage and track all scheduled pickups
           </p>
         </div>
 
         {/* Orders List */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {pickupOrders.length > 0 ? (
             pickupOrders.map((order) => (
               <div
