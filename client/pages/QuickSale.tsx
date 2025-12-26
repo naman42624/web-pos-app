@@ -14,6 +14,7 @@ export default function QuickSale() {
   const navigate = useNavigate();
   const {
     addSale,
+    addCustomer,
     items: inventoryItems,
     products: readyProducts,
   } = usePOSContext();
