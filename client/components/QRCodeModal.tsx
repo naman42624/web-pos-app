@@ -160,13 +160,13 @@ export function QRCodeModal({
           <p className="text-sm text-slate-600">
             Price:{" "}
             <span className="font-semibold text-slate-900">
-              ₹{product.price.toFixed(2)}
+              ₹{(product.price || 0).toFixed(2)}
             </span>
           </p>
           <p className="text-sm text-slate-600 mt-1">
             Items in composition:{" "}
             <span className="font-semibold text-slate-900">
-              {product.items.length}
+              {product.items?.length || 0}
             </span>
           </p>
         </div>
