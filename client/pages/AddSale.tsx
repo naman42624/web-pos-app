@@ -556,18 +556,18 @@ export default function AddSale() {
                     </div>
 
                     <button
-                      onClick={handleAddReadyProduct}
-                      disabled={!productName || !readyProducts.find((p) => p.name === productName)}
-                      className={cn(
-                        "w-full font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2",
-                        !productName || !readyProducts.find((p) => p.name === productName)
-                          ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                          : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
-                      )}
-                    >
-                      <Plus className="w-5 h-5" />
-                      Add Product
-                    </button>
+                    onClick={handleAddReadyProduct}
+                    disabled={!productName || !readyProducts.find((p) => p.name === productName)}
+                    className={cn(
+                      "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
+                      !productName || !readyProducts.find((p) => p.name === productName)
+                        ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
+                    )}
+                  >
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Add Product
+                  </button>
                   </>
                 )}
 
@@ -766,26 +766,26 @@ export default function AddSale() {
                     </div>
 
                     <button
-                      onClick={handleAddCustomProduct}
-                      disabled={
-                        !customProductName.trim() ||
+                    onClick={handleAddCustomProduct}
+                    disabled={
+                      !customProductName.trim() ||
+                      !customProductPrice ||
+                      parseFloat(customProductPrice) <= 0 ||
+                      customProductItems.length === 0
+                    }
+                    className={cn(
+                      "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
+                      !customProductName.trim() ||
                         !customProductPrice ||
                         parseFloat(customProductPrice) <= 0 ||
                         customProductItems.length === 0
-                      }
-                      className={cn(
-                        "w-full font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2",
-                        !customProductName.trim() ||
-                          !customProductPrice ||
-                          parseFloat(customProductPrice) <= 0 ||
-                          customProductItems.length === 0
-                          ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                          : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
-                      )}
-                    >
-                      <Plus className="w-5 h-5" />
-                      Add Product to Sale
-                    </button>
+                        ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
+                    )}
+                  >
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Add Product to Sale
+                  </button>
                   </>
                 )}
               </div>
