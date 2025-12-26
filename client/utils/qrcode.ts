@@ -21,7 +21,7 @@ export function generateQRCodeData(product: Product): QRCodeData {
     id: product.id,
     name: product.name,
     price: product.price,
-    image: product.image,
+    // Exclude image from QR code to reduce size and improve readability
     items: product.items,
     timestamp: new Date().toISOString(),
   };
