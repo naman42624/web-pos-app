@@ -447,8 +447,26 @@ export default function ReadyProducts() {
                       className="hidden"
                       id="product-image-upload"
                     />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const base64 = event.target?.result as string;
+                            setFormData({ ...formData, image: base64 });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="hidden"
+                      id="product-image-camera"
+                    />
                     {formData.image ? (
-                      <label htmlFor="product-image-upload" className="cursor-pointer block">
+                      <div className="space-y-3">
                         <div className="mb-3">
                           <img
                             src={formData.image}
@@ -456,20 +474,46 @@ export default function ReadyProducts() {
                             className="w-32 h-32 object-cover rounded-lg mx-auto"
                           />
                         </div>
-                        <p className="text-sm font-medium text-blue-600 group-hover:text-blue-700">
-                          Click to change image
-                        </p>
-                      </label>
+                        <p className="text-sm font-medium text-blue-600">Change image</p>
+                        <div className="flex gap-2 justify-center">
+                          <label
+                            htmlFor="product-image-camera"
+                            className="px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                          >
+                            📷 Camera
+                          </label>
+                          <label
+                            htmlFor="product-image-upload"
+                            className="px-3 py-2 bg-slate-600 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors cursor-pointer"
+                          >
+                            📁 Gallery
+                          </label>
+                        </div>
+                      </div>
                     ) : (
-                      <label htmlFor="product-image-upload" className="cursor-pointer block">
-                        <div className="text-4xl mb-2">📷</div>
-                        <p className="text-sm font-medium text-slate-700 mb-1">
-                          Click to upload image
+                      <div className="space-y-3">
+                        <div className="text-4xl">📷</div>
+                        <p className="text-sm font-medium text-slate-700">
+                          Add product image
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 mb-4">
                           PNG, JPG, GIF up to 5MB
                         </p>
-                      </label>
+                        <div className="flex gap-2 justify-center">
+                          <label
+                            htmlFor="product-image-camera"
+                            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                          >
+                            📷 Take Photo
+                          </label>
+                          <label
+                            htmlFor="product-image-upload"
+                            className="px-4 py-2 bg-slate-600 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors cursor-pointer"
+                          >
+                            📁 Choose File
+                          </label>
+                        </div>
+                      </div>
                     )}
                   </div>
                   {formData.image && (
