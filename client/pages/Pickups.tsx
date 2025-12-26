@@ -32,8 +32,9 @@ export default function Pickups() {
     if (!selectedDate) return allPickups;
 
     return allPickups.filter((sale) => {
-      const saleDate = new Date(sale.date).toISOString().split("T")[0];
-      return saleDate === selectedDate;
+      if (!sale.pickupDate) return false;
+      const pickupDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+      return pickupDate === selectedDate;
     });
   }, [sales, selectedDate]);
 
