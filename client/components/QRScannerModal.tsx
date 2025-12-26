@@ -83,10 +83,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     try {
       console.log("Starting QR scanner initialization...");
 
-      const scanner = new Html5Qrcode("qr-reader", {
-        formatsToSupport: ["QR_CODE"],
-        verbose: true,
-      });
+      const scanner = new Html5Qrcode("qr-reader");
 
       const successCallback = (decodedText: string, decodedResult: any) => {
         // Prevent multiple triggers
