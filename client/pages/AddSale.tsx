@@ -525,9 +525,18 @@ export default function AddSale() {
   const handleAddScannedProduct = () => {
     if (scannedProduct) {
       const saleItem = convertQRDataToSaleItem(scannedProduct);
-      setSaleItems([...saleItems, saleItem]);
+      const newSaleItems = [...saleItems, saleItem];
+      setSaleItems(newSaleItems);
       setScannedProduct(null);
       setShowScannedConfirm(false);
+
+      // Show customer modal after first product is added
+      if (saleItems.length === 0 && !selectedCustomerId) {
+        setTimeout(() => {
+          setIsCapturingCustomer(false);
+          setShowAddCustomerModal(true);
+        }, 300);
+      }
     }
   };
 
