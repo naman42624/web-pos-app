@@ -107,9 +107,8 @@ export default function Deliveries() {
           .label { font-weight: 600; margin-right: 4px; }
           .items { margin-bottom: 16px; }
           .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #666; }
-          .gap { height: 60px; margin: 40px 0; border-top: 3px dashed #999; position: relative; }
-          .gap-text { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; font-size: 12px; color: #999; }
-          @media print { body { padding: 0; } }
+          .page-break { page-break-after: always; margin-bottom: 20px; }
+          @media print { body { padding: 0; } .page-break { margin-bottom: 0; } }
         </style>
       </head>
       <body>
