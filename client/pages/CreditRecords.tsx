@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
-import { usePOSContext } from "@/contexts/POSContext";
+import { usePOSContext } from "@/contexts/usePOSContext";
 import { CreditCard, TrendingUp } from "lucide-react";
 
 export default function CreditRecords() {
