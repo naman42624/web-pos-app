@@ -430,16 +430,16 @@ export default function AddSale() {
 
   return (
     <SharedLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Add New Sale</h1>
-          <p className="text-slate-500 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Add New Sale</h1>
+          <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
             Select or create products, then select payment mode to complete the sale
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2 space-y-6">
             {/* Unified Add Product/Items Form */}
