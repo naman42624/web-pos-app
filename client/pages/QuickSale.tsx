@@ -307,6 +307,27 @@ export default function QuickSale() {
     }
   };
 
+  const handleCreditCustomerSearch = (value: string) => {
+    setCreditCustomerSearch(value);
+    if (value.trim()) {
+      const filtered = customers.filter((customer) =>
+        customer.name.toLowerCase().includes(value.toLowerCase()),
+      );
+      setFilteredCustomers(filtered);
+      setShowCustomerDropdown(true);
+    } else {
+      setFilteredCustomers([]);
+      setShowCustomerDropdown(false);
+      setSelectedCustomerId(null);
+    }
+  };
+
+  const handleSelectCreditCustomer = (customerId: string, customerName: string) => {
+    setSelectedCustomerId(customerId);
+    setCreditCustomerSearch(customerName);
+    setShowCustomerDropdown(false);
+  };
+
   const handleSaveSale = async () => {
     if (saleItems.length === 0) {
       alert("Please add at least one item");
