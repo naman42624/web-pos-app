@@ -202,9 +202,9 @@ export default function ReadyProducts() {
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow">
+              <div key={product.id} className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                 {/* Product Image */}
-                <div className="h-48 bg-slate-100 overflow-hidden">
+                <div className="h-40 sm:h-48 bg-slate-100 overflow-hidden">
                   {product.image ? (
                     <img
                       src={product.image}
@@ -213,16 +213,16 @@ export default function ReadyProducts() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-slate-400 text-sm">No image</span>
+                      <span className="text-slate-400 text-xs sm:text-sm">No image</span>
                     </div>
                   )}
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 space-y-3">
+                <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 flex-1 flex flex-col">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900">{product.name}</h3>
-                    <p className="text-2xl font-bold text-blue-600 mt-1">₹{product.price.toFixed(2)}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 line-clamp-2">{product.name}</h3>
+                    <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">₹{product.price.toFixed(2)}</p>
                   </div>
 
                   <div className="border-t border-slate-200 pt-3">
