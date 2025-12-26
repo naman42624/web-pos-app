@@ -94,14 +94,24 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
             console.log("Valid product QR detected, calling onScan");
             scanCompleteRef.current = true;
 
-            // Clear scanner before calling onScan
+            // Stop scanner before calling onScan
             if (scanner) {
-              scanner.clear().catch((err) => {
-                console.error("Error clearing scanner:", err);
-              });
+              scanner
+                .stop()
+                .then(() => {
+                  console.log("Scanner stopped successfully");
+                  setScannerActive(false);
+                  onScan(data);
+                })
+                .catch((err) => {
+                  console.error("Error stopping scanner:", err);
+                  setScannerActive(false);
+                  onScan(data);
+                });
+            } else {
+              setScannerActive(false);
+              onScan(data);
             }
-            setScannerActive(false);
-            onScan(data);
           } else {
             console.warn("Invalid QR code data type:", decodedText);
             setError("Invalid QR code. Please scan a valid product QR code.");
