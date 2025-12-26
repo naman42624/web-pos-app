@@ -52,7 +52,11 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       scanCompleteRef.current = false;
       if (scanMode === "camera" && scannerRef.current) {
         try {
-          scannerRef.current.clear().catch(() => {});
+          scannerRef.current.stop().then(() => {
+            console.log("Scanner stopped during cleanup");
+          }).catch((e) => {
+            console.debug("Error during scanner cleanup:", e);
+          });
         } catch (e) {
           console.debug("Error during scanner cleanup:", e);
         }
