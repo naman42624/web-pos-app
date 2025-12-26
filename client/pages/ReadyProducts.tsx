@@ -131,11 +131,20 @@ export default function ReadyProducts() {
 
     if (editingProductId) {
       updateProduct(editingProductId, productData);
+      closeModal();
     } else {
-      addProduct(productData);
-    }
+      const newProduct = addProduct(productData);
+      closeModal();
 
-    closeModal();
+      // Auto-print QR code for new products
+      if (newProduct) {
+        setTimeout(() => {
+          setSelectedProductForQR(newProduct);
+          setShowQRModal(true);
+          setAutoprint(true);
+        }, 500);
+      }
+    }
   };
 
   const getItemName = (itemId?: string, customName?: string) => {
