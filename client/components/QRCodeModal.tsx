@@ -16,8 +16,8 @@ export function QRCodeModal({
   autoprint = false,
 }: QRCodeModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const hasRenderedRef = useRef<string | null>(null);
-  const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const qrDataUrlRef = useRef<string>("");
+  const [, setRerender] = useState(0);
 
   // Memoize the encoded data based on product identity
   const encodedData = useMemo(() => {
@@ -25,46 +25,28 @@ export function QRCodeModal({
     return encodeQRData(qrData);
   }, [product.id]);
 
-  // Generate QR code on canvas - prevent re-renders for same product
+  // Generate QR code on canvas once per product
   useEffect(() => {
-    if (!canvasRef.current || !encodedData) return;
+    if (!canvasRef.current) return;
 
-    // Only render if product ID has changed
-    if (hasRenderedRef.current === product.id) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    hasRenderedRef.current = product.id;
+    // Generate QR code to canvas
+    QRCode.toCanvas(canvas, encodedData, {
+      errorCorrectionLevel: "H",
+      type: "image/png",
+      quality: 0.95,
+      margin: 1,
+      width: 300,
+    });
 
-    const generateQR = async () => {
-      return new Promise<string>((resolve, reject) => {
-        QRCode.toCanvas(
-          canvasRef.current!,
-          encodedData,
-          {
-            errorCorrectionLevel: "H",
-            type: "image/png",
-            quality: 0.95,
-            margin: 1,
-            width: 300,
-          },
-          (error) => {
-            if (error) {
-              reject(error);
-            } else {
-              const url = canvasRef.current?.toDataURL("image/png");
-              resolve(url || "");
-            }
-          },
-        );
-      });
-    };
+    // Extract data URL without state update
+    qrDataUrlRef.current = canvas.toDataURL("image/png");
 
-    generateQR()
-      .then((url) => {
-        if (url) setQrDataUrl(url);
-      })
-      .catch((error) => {
-        console.error("QR Code generation error:", error);
-      });
+    // Trigger minimal re-render if needed
+    setRerender((prev) => prev + 1);
   }, [encodedData]);
 
   const handleDownload = () => {
