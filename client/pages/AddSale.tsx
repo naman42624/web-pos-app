@@ -640,7 +640,9 @@ export default function AddSale() {
                       {matchingCustomers.map((customer) => (
                         <button
                           key={customer.id}
-                          onClick={() => handleSelectExistingCustomer(customer.id)}
+                          onClick={() =>
+                            handleSelectExistingCustomer(customer.id)
+                          }
                           className="w-full text-left p-3 border border-slate-300 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-colors"
                         >
                           <p className="font-medium text-slate-900">
