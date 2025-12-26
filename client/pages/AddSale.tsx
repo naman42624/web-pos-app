@@ -1238,7 +1238,7 @@ export default function AddSale() {
 
           {/* Summary Section */}
           <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-200 p-6 sticky top-24 space-y-6">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl shadow-sm border border-blue-200 p-4 sm:p-6 lg:sticky lg:top-24 space-y-4 sm:space-y-6">
               <h2 className="text-lg font-bold text-slate-900">Summary</h2>
 
               <div className="space-y-3 border-b border-blue-200 pb-6">
