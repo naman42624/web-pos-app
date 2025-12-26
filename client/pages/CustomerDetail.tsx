@@ -8,10 +8,30 @@ import { toast } from "sonner";
 export default function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { customers, getCreditRecordsByCustomer } = usePOSContext();
+  const { customers, getCreditRecordsByCustomer, recordPayment, sales } = usePOSContext();
+  const [recordingPayment, setRecordingPayment] = useState<string | null>(null);
 
   const customer = customers.find((c) => c.id === id);
   const creditRecords = customer ? getCreditRecordsByCustomer(customer.id) : [];
+
+  const handleRecordPayment = async (saleId: string, amount: number) => {
+    try {
+      setRecordingPayment(saleId);
+      await recordPayment(saleId);
+      toast.success(`Payment of ₹${amount.toLocaleString("en-IN")} recorded`);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : "Failed to record payment";
+      toast.error(errorMsg);
+      console.error("Error recording payment:", error);
+    } finally {
+      setRecordingPayment(null);
+    }
+  };
+
+  const getPaymentStatus = (saleId: string) => {
+    const sale = sales.find((s) => s.id === saleId);
+    return sale?.paymentStatus || "pending";
+  };
 
   if (!customer) {
     return (
