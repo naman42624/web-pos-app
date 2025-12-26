@@ -1,8 +1,6 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { usePOS } from "@/hooks/usePOS";
-import { POSContext, usePOSContext } from "./usePOSContext";
-
-export { usePOSContext };
+import { POSContext } from "./usePOSContext";
 
 export function POSProvider({ children }: { children: ReactNode }) {
   const pos = usePOS();
