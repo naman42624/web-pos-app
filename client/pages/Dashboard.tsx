@@ -234,30 +234,42 @@ export default function Dashboard() {
               </h3>
             </div>
             <div className="space-y-2">
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              <Link
+                to="/pickups?status=pending"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Pending</span>
                 <span className="font-semibold text-slate-900">
                   {pickupStatusCounts.pending}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              </Link>
+              <Link
+                to="/pickups?status=pick_up_ready"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Ready for Pickup</span>
                 <span className="font-semibold text-slate-900">
                   {pickupStatusCounts.pick_up_ready}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              </Link>
+              <Link
+                to="/pickups?status=picked_up"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Picked Up</span>
                 <span className="font-semibold text-slate-900">
                   {pickupStatusCounts.picked_up}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2">
+              </Link>
+              <Link
+                to="/pickups?status=cancelled"
+                className="flex justify-between items-center py-2 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Cancelled</span>
                 <span className="font-semibold text-slate-900">
                   {pickupStatusCounts.cancelled}
                 </span>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
