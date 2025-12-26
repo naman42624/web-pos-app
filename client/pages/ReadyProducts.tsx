@@ -236,17 +236,20 @@ export default function ReadyProducts() {
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
               >
                 {/* Product Image */}
-                <div className="h-40 sm:h-48 bg-slate-100 overflow-hidden">
+                <div
+                  onClick={() => openEditModal(product)}
+                  className="h-40 sm:h-48 bg-slate-100 overflow-hidden cursor-pointer hover:bg-slate-200 transition-colors group"
+                >
                   {product.image ? (
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-full h-full flex items-center justify-center group-hover:bg-slate-300 transition-colors">
                       <span className="text-slate-400 text-xs sm:text-sm">
-                        No image
+                        Click to add image
                       </span>
                     </div>
                   )}
