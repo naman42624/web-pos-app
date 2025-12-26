@@ -1736,6 +1736,33 @@ export default function AddSale() {
                 Add Scanned Product?
               </h2>
 
+              {/* Product Image */}
+              {scannedProduct && readyProducts && (
+                (() => {
+                  const product = readyProducts.find(
+                    (p) => p.id === scannedProduct.id,
+                  );
+                  return (
+                    <div className="mb-4 w-full aspect-square bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+                      {product?.image ? (
+                        <img
+                          src={product.image}
+                          alt={scannedProduct.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <div className="w-12 h-12 bg-slate-300 rounded-full flex items-center justify-center">
+                            <span className="text-xl text-slate-600">📦</span>
+                          </div>
+                          <p className="text-sm text-slate-500">No image</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()
+              )}
+
               <div className="space-y-4 mb-6 p-4 bg-slate-50 rounded-lg">
                 <div>
                   <p className="text-sm text-slate-600">Product</p>
