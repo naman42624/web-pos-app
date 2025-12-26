@@ -433,6 +433,21 @@ export default function AddSale() {
     setShowAddCustomerModal(false);
   };
 
+  const handleQRScanned = (data: QRCodeData) => {
+    setScannedProduct(data);
+    setShowQRScanner(false);
+    setShowScannedConfirm(true);
+  };
+
+  const handleAddScannedProduct = () => {
+    if (scannedProduct) {
+      const saleItem = convertQRDataToSaleItem(scannedProduct);
+      setSaleItems([...saleItems, saleItem]);
+      setScannedProduct(null);
+      setShowScannedConfirm(false);
+    }
+  };
+
   return (
     <SharedLayout>
       <div className="space-y-6 sm:space-y-8">
