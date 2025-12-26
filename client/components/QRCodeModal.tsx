@@ -18,13 +18,12 @@ export function QRCodeModal({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
-  const encodedData = useMemo(() => {
-    const qrData = generateQRCodeData(product);
-    return encodeQRData(qrData);
-  }, [product.id, product.name, product.price, product.items]);
+  // Simple synchronous calculation - no dependency issues
+  const qrData = generateQRCodeData(product);
+  const encodedData = encodeQRData(qrData);
 
   useEffect(() => {
-    if (canvasRef.current) {
+    if (canvasRef.current && encodedData) {
       QRCode.toCanvas(
         canvasRef.current,
         encodedData,
