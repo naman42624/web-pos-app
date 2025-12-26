@@ -162,6 +162,91 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Delivery Status Counts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Deliveries */}
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">
+                Delivery Status
+              </h3>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">Pending</span>
+                <span className="font-semibold text-slate-900">
+                  {deliveryStatusCounts.pending}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">Ready for Pickup</span>
+                <span className="font-semibold text-slate-900">
+                  {deliveryStatusCounts.pick_up_ready}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">In Transit</span>
+                <span className="font-semibold text-slate-900">
+                  {deliveryStatusCounts.in_transit}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">Delivered</span>
+                <span className="font-semibold text-slate-900">
+                  {deliveryStatusCounts.delivered}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-slate-600 text-sm">Cancelled</span>
+                <span className="font-semibold text-slate-900">
+                  {deliveryStatusCounts.cancelled}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Pickups */}
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">
+                Pickup Status
+              </h3>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">Pending</span>
+                <span className="font-semibold text-slate-900">
+                  {pickupStatusCounts.pending}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">Ready for Pickup</span>
+                <span className="font-semibold text-slate-900">
+                  {pickupStatusCounts.pick_up_ready}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                <span className="text-slate-600 text-sm">Picked Up</span>
+                <span className="font-semibold text-slate-900">
+                  {pickupStatusCounts.picked_up}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-slate-600 text-sm">Cancelled</span>
+                <span className="font-semibold text-slate-900">
+                  {pickupStatusCounts.cancelled}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Recent Sales */}
         <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
