@@ -104,7 +104,9 @@ export default function AddSale() {
   const [isCapturingCustomer, setIsCapturingCustomer] = useState(false);
   const [showPhoneLookupModal, setShowPhoneLookupModal] = useState(false);
   const [phoneLookupInput, setPhoneLookupInput] = useState("");
-  const [matchingCustomers, setMatchingCustomers] = useState<typeof customers>([]);
+  const [matchingCustomers, setMatchingCustomers] = useState<typeof customers>(
+    [],
+  );
   const [showNewCustomerForm, setShowNewCustomerForm] = useState(false);
 
   const subtotal = saleItems.reduce(
@@ -557,8 +559,7 @@ export default function AddSale() {
 
     // Search for customers with this phone number
     const matching = customers.filter(
-      (customer) =>
-        customer.phone === phone || customer.altPhone === phone,
+      (customer) => customer.phone === phone || customer.altPhone === phone,
     );
 
     setMatchingCustomers(matching);
@@ -1809,7 +1810,8 @@ export default function AddSale() {
               {!showNewCustomerForm ? (
                 <>
                   <p className="text-sm text-slate-600 mb-4">
-                    Enter phone number to find existing customer or create a new one
+                    Enter phone number to find existing customer or create a new
+                    one
                   </p>
 
                   <div className="space-y-4">
@@ -1823,7 +1825,9 @@ export default function AddSale() {
                         onChange={(e) => setPhoneLookupInput(e.target.value)}
                         placeholder="e.g., 9876543210"
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                        onKeyDown={(e) => e.key === "Enter" && handlePhoneLookup()}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handlePhoneLookup()
+                        }
                       />
                     </div>
                   </div>
@@ -1884,14 +1888,15 @@ export default function AddSale() {
                     </button>
                   </div>
 
-                  {matchingCustomers.length === 0 && phoneLookupInput.trim() && (
-                    <button
-                      onClick={() => setShowNewCustomerForm(true)}
-                      className="w-full mt-4 px-4 py-2 border border-amber-300 text-amber-700 font-medium rounded-lg hover:bg-amber-50 transition-colors"
-                    >
-                      Create New Customer
-                    </button>
-                  )}
+                  {matchingCustomers.length === 0 &&
+                    phoneLookupInput.trim() && (
+                      <button
+                        onClick={() => setShowNewCustomerForm(true)}
+                        className="w-full mt-4 px-4 py-2 border border-amber-300 text-amber-700 font-medium rounded-lg hover:bg-amber-50 transition-colors"
+                      >
+                        Create New Customer
+                      </button>
+                    )}
                 </>
               ) : (
                 <>
