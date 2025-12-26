@@ -369,10 +369,9 @@ export default function AddSale() {
       return;
     }
 
-    // If no customer is selected, show phone lookup modal
+    // Require customer selection
     if (!selectedCustomerId) {
-      setIsCapturingCustomer(true);
-      setShowPhoneLookupModal(true);
+      alert("Please select or create a customer before saving the sale");
       return;
     }
 
