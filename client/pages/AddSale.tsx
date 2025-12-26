@@ -517,7 +517,7 @@ export default function AddSale() {
       setShowNewCustomerForm(false);
       setIsCapturingCustomer(false);
 
-      navigate("/sales");
+      navigate("/");
     } catch (error) {
       console.error("Error saving sale:", error);
       alert("Failed to save sale. Please try again.");
