@@ -53,13 +53,22 @@ export default function Dashboard() {
               Welcome back! Here's your sales overview.
             </p>
           </div>
-          <Link
-            to="/add-sale"
-            className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg w-full sm:w-auto"
-          >
-            <ShoppingCart className="w-5 h-5" />
-            New Sale
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <Link
+              to="/quick-sale"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-2 sm:order-1"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              Quick Sale
+            </Link>
+            <Link
+              to="/add-sale"
+              className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-1 sm:order-2"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              New Sale
+            </Link>
+          </div>
         </div>
 
         {/* Stats Grid */}
