@@ -473,13 +473,7 @@ export default function Deliveries() {
 
   const handleStatusChange = async (
     saleId: string,
-    newStatus:
-      | "pending"
-      | "confirmed"
-      | "in_transit"
-      | "delivered"
-      | "pick_up_ready"
-      | "cancelled",
+    newStatus: "pending" | "pick_up_ready" | "in_transit" | "delivered",
   ) => {
     try {
       await updateSaleStatus(saleId, newStatus);
@@ -492,16 +486,12 @@ export default function Deliveries() {
 
   const getStatusColor = (status?: string) => {
     switch (status) {
-      case "confirmed":
+      case "pick_up_ready":
         return "bg-blue-100 text-blue-700 border-blue-200";
       case "in_transit":
         return "bg-purple-100 text-purple-700 border-purple-200";
       case "delivered":
         return "bg-green-100 text-green-700 border-green-200";
-      case "pick_up_ready":
-        return "bg-indigo-100 text-indigo-700 border-indigo-200";
-      case "cancelled":
-        return "bg-red-100 text-red-700 border-red-200";
       default:
         return "bg-amber-100 text-amber-700 border-amber-200";
     }
@@ -635,12 +625,13 @@ export default function Deliveries() {
                                     )}
                                   >
                                     <option value="pending">Pending</option>
-                                    <option value="confirmed">Confirmed</option>
+                                    <option value="pick_up_ready">
+                                      Ready for Pickup
+                                    </option>
                                     <option value="in_transit">
                                       In Transit
                                     </option>
                                     <option value="delivered">Delivered</option>
-                                    <option value="cancelled">Cancelled</option>
                                   </select>
                                 </div>
                                 <p className="text-xs sm:text-sm text-slate-500">
