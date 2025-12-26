@@ -424,7 +424,6 @@ export default function Deliveries() {
                                           | "confirmed"
                                           | "in_transit"
                                           | "delivered"
-                                          | "pick_up_ready"
                                           | "cancelled",
                                       )
                                     }
@@ -437,9 +436,6 @@ export default function Deliveries() {
                                     <option value="confirmed">Confirmed</option>
                                     <option value="in_transit">In Transit</option>
                                     <option value="delivered">Delivered</option>
-                                    <option value="pick_up_ready">
-                                      Pick Up Ready
-                                    </option>
                                     <option value="cancelled">Cancelled</option>
                                   </select>
                                 </div>
