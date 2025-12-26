@@ -118,12 +118,11 @@ export default function Deliveries() {
           }
 
           ${
-            order.pickupDate || order.pickupTime
+            order.pickupDate
               ? `
             <div class="section">
               <div class="section-title">DELIVERY SCHEDULE</div>
-              ${order.pickupDate ? `<div class="detail-row"><span class="label">Date:</span> ${formatDate(order.pickupDate)}</div>` : ""}
-              ${order.pickupTime ? `<div class="detail-row"><span class="label">Time:</span> ${formatTime(order.pickupTime)}</div>` : ""}
+              <div class="detail-row"><span class="label">Date:</span> ${formatDate(order.pickupDate)}</div>
             </div>
           `
               : ""
@@ -139,10 +138,6 @@ export default function Deliveries() {
           `
               : ""
           }
-
-          <div class="total-row">
-            Total: ₹${order.total.toLocaleString("en-IN")}
-          </div>
 
           <div class="footer">
             <div>Thank you for your order!</div>
