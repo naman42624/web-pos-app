@@ -492,6 +492,12 @@ export default function Deliveries() {
         return "bg-purple-100 text-purple-700 border-purple-200";
       case "delivered":
         return "bg-green-100 text-green-700 border-green-200";
+      case "cancelled":
+        return "bg-red-100 text-red-700 border-red-200";
+      case "delivery_attempted_once":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      case "delivery_attempted_twice":
+        return "bg-rose-100 text-rose-700 border-rose-200";
       default:
         return "bg-amber-100 text-amber-700 border-amber-200";
     }
