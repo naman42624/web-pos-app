@@ -101,6 +101,17 @@ export default function Deliveries() {
           }
 
           ${
+            order.deliveryDetails?.senderName
+              ? `
+            <div class="section">
+              <div class="section-title">FROM</div>
+              <div class="detail-row">${order.deliveryDetails.senderName}</div>
+            </div>
+          `
+              : ""
+          }
+
+          ${
             order.pickupDate
               ? `
             <div class="section">
