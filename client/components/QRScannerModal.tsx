@@ -88,7 +88,6 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
           rememberLastUsedCamera: true,
           showTorchButtonIfSupported: true,
           disableFlip: false,
-          supportedScanTypes: ["image", "video"],
         },
         false,
       );
