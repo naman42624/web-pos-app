@@ -20,10 +20,18 @@ export default function Pickups() {
     products: readyProducts,
     updateSaleStatus,
   } = usePOSContext();
+  const [searchParams] = useSearchParams();
 
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    const statusFromUrl = searchParams.get("status");
+    if (statusFromUrl) {
+      setSelectedStatus(statusFromUrl);
+    }
+  }, [searchParams]);
 
   const pickupOrders = useMemo(() => {
     const allPickups = sales.filter(
