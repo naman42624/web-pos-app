@@ -8,6 +8,8 @@ import {
   CreditCard,
   ArrowRight,
   Loader,
+  Truck,
+  Package,
 } from "lucide-react";
 
 export default function Dashboard() {
