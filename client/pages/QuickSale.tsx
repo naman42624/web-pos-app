@@ -890,6 +890,21 @@ export default function QuickSale() {
                 ))}
               </div>
 
+              {selectedPaymentModes.has("credit") && (
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Customer Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={creditCustomerName}
+                    onChange={(e) => setCreditCustomerName(e.target.value)}
+                    placeholder="Enter customer name for credit"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+              )}
+
               {selectedPaymentModes.size > 1 && (
                 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm font-medium text-blue-700 mb-4">
