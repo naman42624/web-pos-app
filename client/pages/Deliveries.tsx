@@ -328,6 +328,13 @@ export default function Deliveries() {
     "cancelled",
   ];
 
+  const MENU_BAR_STATUSES = [
+    "pending",
+    "pick_up_ready",
+    "in_transit",
+    "delivered",
+  ];
+
   const groupedByStatus = deliveryOrders.reduce(
     (groups, order) => {
       const status = order.status || "pending";
@@ -341,6 +348,10 @@ export default function Deliveries() {
   );
 
   const sortedStatusKeys = STATUS_ORDER.filter((status) =>
+    groupedByStatus.hasOwnProperty(status),
+  );
+
+  const menuBarStatuses = MENU_BAR_STATUSES.filter((status) =>
     groupedByStatus.hasOwnProperty(status),
   );
 
