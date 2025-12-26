@@ -21,6 +21,15 @@ interface SharedLayoutProps {
 export function SharedLayout({ children }: SharedLayoutProps) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const navItems = [
     { path: "/", label: "Dashboard", icon: BarChart3 },
