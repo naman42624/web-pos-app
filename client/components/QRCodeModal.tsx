@@ -168,14 +168,16 @@ export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModal
         <div className="flex gap-3">
           <button
             onClick={handleDownload}
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            disabled={!qrDataUrl}
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
           >
             <Download className="w-4 h-4" />
             Download
           </button>
           <button
             onClick={handlePrint}
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            disabled={!qrDataUrl}
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-slate-300 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
           >
             <Printer className="w-4 h-4" />
             Print
