@@ -18,14 +18,21 @@ export function QRCodeModal({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
-  // Simple synchronous calculation - no dependency issues
-  const qrData = generateQRCodeData(product);
-  const encodedData = encodeQRData(qrData);
+  // Memoize the encoded data based on product identity
+  // Only recalculate if the product's key properties change
+  const encodedData = useMemo(() => {
+    const qrData = generateQRCodeData(product);
+    return encodeQRData(qrData);
+  }, [product.id]);
 
+  // Generate QR code on canvas when encoded data is ready
   useEffect(() => {
-    if (canvasRef.current && encodedData) {
+    if (!canvasRef.current || !encodedData) return;
+
+    // Use a small timeout to ensure canvas is ready
+    const timeoutId = setTimeout(() => {
       QRCode.toCanvas(
-        canvasRef.current,
+        canvasRef.current!,
         encodedData,
         {
           errorCorrectionLevel: "H",
@@ -42,7 +49,9 @@ export function QRCodeModal({
           }
         },
       );
-    }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [encodedData]);
 
   const handleDownload = () => {
