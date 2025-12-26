@@ -63,67 +63,67 @@ export default function Dashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Today's Sales */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-sm font-medium">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-slate-500 text-xs sm:text-sm font-medium">
                   Today's Sales
                 </p>
-                <p className="text-3xl font-bold text-slate-900 mt-2">
+                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2 truncate">
                   ₹{todayTotal.toLocaleString("en-IN")}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
               </div>
             </div>
           </div>
 
           {/* Today's Transactions */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-sm font-medium">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-slate-500 text-xs sm:text-sm font-medium">
                   Transactions
                 </p>
-                <p className="text-3xl font-bold text-slate-900 mt-2">
+                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2">
                   {todayCount}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-green-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
               </div>
             </div>
           </div>
 
           {/* Total Customers */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-sm font-medium">Customers</p>
-                <p className="text-3xl font-bold text-slate-900 mt-2">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-slate-500 text-xs sm:text-sm font-medium">Customers</p>
+                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2">
                   {totalCustomers}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-purple-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               </div>
             </div>
           </div>
 
           {/* Total Credit */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-slate-500 text-sm font-medium">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-slate-500 text-xs sm:text-sm font-medium">
                   Credit Issued
                 </p>
-                <p className="text-3xl font-bold text-slate-900 mt-2">
+                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2 truncate">
                   ₹{totalCredit.toLocaleString("en-IN")}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-orange-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
               </div>
             </div>
           </div>
