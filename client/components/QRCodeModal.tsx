@@ -16,7 +16,7 @@ export function QRCodeModal({
   autoprint = false,
 }: QRCodeModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const renderRef = useRef<boolean>(false);
+  const hasRenderedRef = useRef<string | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
   // Memoize the encoded data based on product identity
@@ -25,11 +25,14 @@ export function QRCodeModal({
     return encodeQRData(qrData);
   }, [product.id]);
 
-  // Generate QR code on canvas only once per product
+  // Generate QR code on canvas - prevent re-renders for same product
   useEffect(() => {
-    if (!canvasRef.current || !encodedData || renderRef.current) return;
+    if (!canvasRef.current || !encodedData) return;
 
-    renderRef.current = true;
+    // Only render if product ID has changed
+    if (hasRenderedRef.current === product.id) return;
+
+    hasRenderedRef.current = product.id;
 
     QRCode.toCanvas(
       canvasRef.current,
@@ -50,7 +53,7 @@ export function QRCodeModal({
         }
       },
     );
-  }, [encodedData]);
+  }, [encodedData, product.id]);
 
   const handleDownload = () => {
     if (qrDataUrl) {
