@@ -3,13 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleItem } from "@/hooks/usePOS";
-import {
-  Trash2,
-  Plus,
-  Check,
-  X,
-  QrCode,
-} from "lucide-react";
+import { Trash2, Plus, Check, X, QrCode } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QRScannerModal } from "@/components/QRScannerModal";
 import { QRCodeData, convertQRDataToSaleItem } from "@/utils/qrcode";
@@ -984,7 +978,9 @@ export default function QuickSale() {
 
               <button
                 onClick={handleSaveSale}
-                disabled={isLoading || saleItems.length === 0 || !isPaymentValid()}
+                disabled={
+                  isLoading || saleItems.length === 0 || !isPaymentValid()
+                }
                 className={cn(
                   "w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-white",
                   isLoading || saleItems.length === 0 || !isPaymentValid()
