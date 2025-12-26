@@ -1731,7 +1731,7 @@ export default function AddSale() {
         {/* Scanned Product Confirmation Dialog */}
         {showScannedConfirm && scannedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
               <h2 className="text-lg font-bold text-slate-900 mb-4">
                 Add Scanned Product?
               </h2>
@@ -1749,11 +1749,42 @@ export default function AddSale() {
                     ₹{scannedProduct.price.toFixed(2)}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-600">Items in Composition</p>
-                  <p className="text-lg font-semibold text-slate-900">
-                    {scannedProduct.items.length}
-                  </p>
+              </div>
+
+              {/* Full Composition */}
+              <div className="mb-6 p-4 bg-white border border-slate-200 rounded-lg">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3">
+                  Composition ({scannedProduct.items.length} items)
+                </h3>
+                <div className="space-y-2">
+                  {scannedProduct.items.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center py-2 border-b border-slate-100 last:border-b-0"
+                    >
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-slate-900">
+                          {getItemName(item.itemId, item.customName)}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          Qty: {item.quantity}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-slate-900">
+                          ₹
+                          {(
+                            getItemPrice(item.itemId, item.customPrice) *
+                            item.quantity
+                          ).toFixed(2)}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          ₹{getItemPrice(item.itemId, item.customPrice).toFixed(2)}
+                          /unit
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
