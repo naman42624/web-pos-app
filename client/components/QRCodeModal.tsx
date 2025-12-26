@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import QRCode from "qrcode.react";
+import { useRef, useEffect, useState } from "react";
+import * as QRCode from "qrcode";
 import { X, Download, Printer } from "lucide-react";
 import { Product } from "@/hooks/usePOS";
 import { generateQRCodeData, encodeQRData } from "@/utils/qrcode";
@@ -11,27 +11,46 @@ interface QRCodeModalProps {
 }
 
 export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModalProps) {
-  const qrRef = useRef<any>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
   const qrData = generateQRCodeData(product);
   const encodedData = encodeQRData(qrData);
 
+  useEffect(() => {
+    if (canvasRef.current) {
+      QRCode.toCanvas(
+        canvasRef.current,
+        encodedData,
+        {
+          errorCorrectionLevel: "H",
+          type: "image/png",
+          quality: 0.95,
+          margin: 1,
+          width: 300,
+        },
+        (error) => {
+          if (error) console.error("QR Code generation error:", error);
+          else {
+            const url = canvasRef.current?.toDataURL("image/png");
+            if (url) setQrDataUrl(url);
+          }
+        }
+      );
+    }
+  }, [encodedData]);
+
   const handleDownload = () => {
-    if (qrRef.current) {
-      const canvas = qrRef.current.querySelector("canvas");
-      const url = canvas.toDataURL("image/png");
+    if (qrDataUrl) {
       const link = document.createElement("a");
-      link.href = url;
+      link.href = qrDataUrl;
       link.download = `qr-${product.name.replace(/\s+/g, "-")}.png`;
       link.click();
     }
   };
 
   const handlePrint = () => {
-    if (qrRef.current) {
-      const canvas = qrRef.current.querySelector("canvas");
-      const url = canvas.toDataURL("image/png");
-
+    if (qrDataUrl) {
       const printWindow = window.open("", "", "height=400,width=400");
       if (printWindow) {
         printWindow.document.write(`
@@ -83,7 +102,7 @@ export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModal
             </head>
             <body>
               <div class="qr-container">
-                <img src="${url}" alt="QR Code" />
+                <img src="${qrDataUrl}" alt="QR Code" />
               </div>
               <div class="product-info">
                 <h2>${product.name}</h2>
@@ -105,11 +124,13 @@ export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModal
   };
 
   // Auto-print on mount if autoprint prop is true
-  if (autoprint) {
-    setTimeout(() => {
-      handlePrint();
-    }, 500);
-  }
+  useEffect(() => {
+    if (autoprint && qrDataUrl) {
+      setTimeout(() => {
+        handlePrint();
+      }, 500);
+    }
+  }, [autoprint, qrDataUrl]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
