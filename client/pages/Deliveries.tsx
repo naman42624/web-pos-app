@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function Deliveries() {
-  const { sales, items: inventoryItems } = usePOSContext();
+  const { sales, items: inventoryItems, updateSaleStatus } = usePOSContext();
 
   const deliveryOrders = sales.filter((sale) => sale.orderType === "delivery");
 
