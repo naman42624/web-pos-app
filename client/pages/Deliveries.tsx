@@ -1,6 +1,6 @@
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { Truck, Clock, MapPin, Phone, User, Calendar } from "lucide-react";
+import { Truck, Clock, MapPin, Phone, User, Calendar, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Deliveries() {
