@@ -301,12 +301,21 @@ export default function AddSale() {
       composition: customProductItems,
     };
 
-    setSaleItems([...saleItems, newItem]);
+    const newSaleItems = [...saleItems, newItem];
+    setSaleItems(newSaleItems);
     setCustomProductName("");
     setCustomProductPrice("");
     setCustomProductQuantity("1");
     setCustomProductItems([]);
     setItemSearchTerm("");
+
+    // Show customer modal after first product is added
+    if (saleItems.length === 0 && !selectedCustomerId) {
+      setTimeout(() => {
+        setIsCapturingCustomer(false);
+        setShowAddCustomerModal(true);
+      }, 300);
+    }
   };
 
   const togglePaymentMode = (mode: PaymentMode) => {
