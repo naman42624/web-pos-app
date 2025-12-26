@@ -161,10 +161,19 @@ export default function AddSale() {
       composition: product.items,
     };
 
-    setSaleItems([...saleItems, newItem]);
+    const newSaleItems = [...saleItems, newItem];
+    setSaleItems(newSaleItems);
     setProductName("");
     setProductQuantity("1");
     setShowProductDropdown(false);
+
+    // Show customer modal after first product is added
+    if (saleItems.length === 0 && !selectedCustomerId) {
+      setTimeout(() => {
+        setIsCapturingCustomer(false);
+        setShowAddCustomerModal(true);
+      }, 300);
+    }
   };
 
   const handleItemSearchChange = (value: string) => {
