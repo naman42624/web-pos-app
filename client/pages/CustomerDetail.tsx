@@ -131,30 +131,70 @@ export default function CustomerDetail() {
 
             {creditRecords.length > 0 ? (
               <div className="space-y-3">
-                {creditRecords.map((record) => (
-                  <div
-                    key={record.id}
-                    className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    <div>
-                      <p className="font-medium text-slate-900">
-                        Sale {record.saleId}
-                      </p>
-                      <p className="text-sm text-slate-500 mt-1">
-                        {new Date(record.date).toLocaleDateString("en-IN", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                {creditRecords.map((record) => {
+                  const paymentStatus = getPaymentStatus(record.saleId);
+                  const isPaid = paymentStatus === "paid";
+
+                  return (
+                    <div
+                      key={record.id}
+                      className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
+                        isPaid
+                          ? "border-green-200 bg-green-50"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <p className="font-medium text-slate-900">
+                            Sale {record.saleId}
+                          </p>
+                          {isPaid && (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                              <Check className="w-3 h-3" />
+                              Paid
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-slate-500 mt-1">
+                          {new Date(record.date).toLocaleDateString("en-IN", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <p className="font-bold text-slate-900">
+                          ₹{record.amount.toLocaleString("en-IN")}
+                        </p>
+                        {!isPaid && (
+                          <button
+                            onClick={() =>
+                              handleRecordPayment(record.saleId, record.amount)
+                            }
+                            disabled={recordingPayment === record.saleId}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap"
+                          >
+                            {recordingPayment === record.saleId ? (
+                              <>
+                                <Loader className="w-4 h-4 animate-spin" />
+                                Recording...
+                              </>
+                            ) : (
+                              <>
+                                <Check className="w-4 h-4" />
+                                Record Payment
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <p className="font-bold text-slate-900">
-                      ₹{record.amount.toLocaleString("en-IN")}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12">
