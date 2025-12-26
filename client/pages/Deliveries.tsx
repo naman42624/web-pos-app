@@ -284,7 +284,8 @@ export default function Deliveries() {
     try {
       await updateSaleStatus(saleId, newStatus);
     } catch (error) {
-      console.error("Failed to update status:", error);
+      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+      console.error("Failed to update status:", errorMsg);
     }
   };
 
