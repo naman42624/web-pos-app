@@ -1663,6 +1663,12 @@ export default function AddSale() {
                 </button>
               </div>
 
+              {isCapturingCustomer && (
+                <p className="text-sm text-slate-600 mb-4">
+                  Please enter customer details to complete and save the sale.
+                </p>
+              )}
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
