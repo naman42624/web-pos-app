@@ -21,10 +21,19 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
   useEffect(() => {
     let isMounted = true;
     let scannerInitTimer: NodeJS.Timeout;
+    let cameraInitTimer: NodeJS.Timeout;
 
     const setupScanner = async () => {
       if (scanMode === "camera" && !scannerActive && qrReaderRef.current && isMounted) {
         await initializeScanner();
+
+        // Set a timeout to check if camera is actually ready
+        cameraInitTimer = setTimeout(() => {
+          if (isMounted && !isCameraReady) {
+            console.warn("Camera initialization timeout - camera may not have started");
+          }
+        }, 5000);
+
         // Give scanner a moment to fully initialize before marking as ready
         scannerInitTimer = setTimeout(() => {
           if (isMounted) {
@@ -39,6 +48,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     return () => {
       isMounted = false;
       clearTimeout(scannerInitTimer);
+      clearTimeout(cameraInitTimer);
       scanCompleteRef.current = false;
       if (scanMode === "camera" && scannerRef.current) {
         try {
@@ -49,7 +59,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
         setScannerActive(false);
       }
     };
-  }, [scanMode]);
+  }, [scanMode, isCameraReady]);
 
   const initializeScanner = async () => {
     if (!qrReaderRef.current) return;
