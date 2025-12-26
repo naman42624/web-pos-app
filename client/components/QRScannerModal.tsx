@@ -193,9 +193,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       } else if (errorMessage.includes("NotFoundError")) {
         setError("No camera found on this device.");
       } else {
-        setError(
-          `Camera not available: ${errorMessage || "Unknown error"}`,
-        );
+        setError(`Camera not available: ${errorMessage || "Unknown error"}`);
       }
       setIsCameraReady(false);
       setScannerActive(false);
