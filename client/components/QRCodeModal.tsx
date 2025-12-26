@@ -16,42 +16,40 @@ export function QRCodeModal({
   autoprint = false,
 }: QRCodeModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const renderRef = useRef<boolean>(false);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
 
   // Memoize the encoded data based on product identity
-  // Only recalculate if the product's key properties change
   const encodedData = useMemo(() => {
     const qrData = generateQRCodeData(product);
     return encodeQRData(qrData);
   }, [product.id]);
 
-  // Generate QR code on canvas when encoded data is ready
+  // Generate QR code on canvas only once per product
   useEffect(() => {
-    if (!canvasRef.current || !encodedData) return;
+    if (!canvasRef.current || !encodedData || renderRef.current) return;
 
-    // Use a small timeout to ensure canvas is ready
-    const timeoutId = setTimeout(() => {
-      QRCode.toCanvas(
-        canvasRef.current!,
-        encodedData,
-        {
-          errorCorrectionLevel: "H",
-          type: "image/png",
-          quality: 0.95,
-          margin: 1,
-          width: 300,
-        },
-        (error) => {
-          if (error) console.error("QR Code generation error:", error);
-          else {
-            const url = canvasRef.current?.toDataURL("image/png");
-            if (url) setQrDataUrl(url);
-          }
-        },
-      );
-    }, 0);
+    renderRef.current = true;
 
-    return () => clearTimeout(timeoutId);
+    QRCode.toCanvas(
+      canvasRef.current,
+      encodedData,
+      {
+        errorCorrectionLevel: "H",
+        type: "image/png",
+        quality: 0.95,
+        margin: 1,
+        width: 300,
+      },
+      (error) => {
+        if (error) {
+          console.error("QR Code generation error:", error);
+        } else {
+          const url = canvasRef.current?.toDataURL("image/png");
+          if (url) setQrDataUrl(url);
+        }
+      },
+    );
   }, [encodedData]);
 
   const handleDownload = () => {
