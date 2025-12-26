@@ -474,7 +474,9 @@ export default function ReadyProducts() {
                             className="w-32 h-32 object-cover rounded-lg mx-auto"
                           />
                         </div>
-                        <p className="text-sm font-medium text-blue-600">Change image</p>
+                        <p className="text-sm font-medium text-blue-600">
+                          Change image
+                        </p>
                         <div className="flex gap-2 justify-center">
                           <label
                             htmlFor="product-image-camera"
