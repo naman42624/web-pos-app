@@ -50,16 +50,16 @@ export function QRCodeModal({
   }, [encodedData]);
 
   const handleDownload = () => {
-    if (qrDataUrl) {
+    if (qrDataUrlRef.current) {
       const link = document.createElement("a");
-      link.href = qrDataUrl;
+      link.href = qrDataUrlRef.current;
       link.download = `qr-${product.name.replace(/\s+/g, "-")}.png`;
       link.click();
     }
   };
 
   const handlePrint = () => {
-    if (qrDataUrl) {
+    if (qrDataUrlRef.current) {
       const printWindow = window.open("", "", "height=400,width=400");
       if (printWindow) {
         printWindow.document.write(`
