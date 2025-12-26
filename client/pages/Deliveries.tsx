@@ -19,6 +19,7 @@ export default function Deliveries() {
 
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   const deliveryOrders = useMemo(() => {
     const allDeliveries = sales.filter((sale) => sale.orderType === "delivery");
