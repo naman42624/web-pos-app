@@ -390,6 +390,7 @@ export default function QuickSale() {
         paymentMode: primaryMode,
         total,
         customerId,
+        orderType: "pickup",
       });
 
       setSaleItems([]);
