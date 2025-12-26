@@ -227,7 +227,7 @@ export function usePOS() {
         return {
           id: product.id,
           name: product.name,
-          price: parseFloat(product.price),
+          price: parseFloat(product.price) || 0,
           image: product.image,
           items: itemsData
             ? itemsData.map((pi: any) => ({
