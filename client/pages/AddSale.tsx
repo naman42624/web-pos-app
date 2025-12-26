@@ -578,17 +578,9 @@ export default function AddSale() {
     setNewCustomerName("");
     setNewCustomerPhone("");
     setNewCustomerEmail("");
-    setShowPhoneLookupModal(false);
     setPhoneLookupInput("");
     setMatchingCustomers([]);
     setShowNewCustomerForm(false);
-
-    // If we're saving a sale, proceed with the save after customer is created
-    if (isCapturingCustomer) {
-      setIsCapturingCustomer(false);
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      await handleSaveSaleWithCustomer(newCustomer.id);
-    }
   };
 
   return (
