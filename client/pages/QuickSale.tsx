@@ -1132,21 +1132,70 @@ export default function QuickSale() {
         {/* Scanned Product Confirmation */}
         {showScannedConfirm && scannedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
               <h2 className="text-xl font-bold text-slate-900 mb-4">
                 Add Scanned Product?
               </h2>
-              <div className="mb-6 p-4 bg-slate-50 rounded-lg">
-                <p className="font-medium text-slate-900">
-                  {scannedProduct.name}
-                </p>
-                <p className="text-sm text-slate-600 mt-1">
-                  Qty: {scannedProduct.quantity}
-                </p>
-                <p className="text-sm text-slate-600">
-                  Price: ₹{scannedProduct.price.toFixed(2)}
-                </p>
+
+              <div className="mb-6 p-4 bg-slate-50 rounded-lg space-y-3">
+                <div>
+                  <p className="text-sm text-slate-600">Product Name</p>
+                  <p className="font-semibold text-slate-900">
+                    {scannedProduct.name}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-sm text-slate-600">Price</p>
+                    <p className="font-semibold text-slate-900">
+                      ₹{scannedProduct.price.toFixed(2)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600">Default Qty</p>
+                    <p className="font-semibold text-slate-900">
+                      {scannedProduct.quantity}
+                    </p>
+                  </div>
+                </div>
               </div>
+
+              {/* Product Composition */}
+              {scannedProduct.items && scannedProduct.items.length > 0 && (
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-semibold text-slate-900 mb-3">
+                    Composition ({scannedProduct.items.length} items)
+                  </p>
+                  <div className="space-y-2">
+                    {scannedProduct.items.map((item, idx) => {
+                      const isCustom = (item as any).customName !== undefined;
+                      const itemName = isCustom
+                        ? (item as any).customName
+                        : inventoryItems.find((i) => i.id === item.itemId)
+                            ?.name || "Unknown";
+                      const itemPrice = isCustom
+                        ? (item as any).customPrice || 0
+                        : inventoryItems.find((i) => i.id === item.itemId)
+                            ?.price || 0;
+                      return (
+                        <div
+                          key={idx}
+                          className="flex justify-between text-xs p-2 bg-white rounded border border-blue-100"
+                        >
+                          <span className="text-slate-700">
+                            {itemName} × {item.quantity}
+                          </span>
+                          <span className="font-medium text-slate-900">
+                            ₹{((itemPrice || 0) * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div className="flex gap-3">
                 <button
                   onClick={() => {
