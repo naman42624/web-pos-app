@@ -693,6 +693,7 @@ export function usePOS() {
     products,
     loading,
     addSale,
+    updateSaleStatus,
     addItem,
     updateItem,
     deleteItem,
