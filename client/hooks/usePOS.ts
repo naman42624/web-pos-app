@@ -702,7 +702,9 @@ export function usePOS() {
 
     if (saleError) {
       const errorMsg =
-        saleError instanceof Error ? saleError.message : JSON.stringify(saleError);
+        saleError instanceof Error
+          ? saleError.message
+          : JSON.stringify(saleError);
       console.error("Error recording payment:", errorMsg);
       throw saleError;
     }
@@ -711,7 +713,10 @@ export function usePOS() {
     if (sale.customerId) {
       const customer = customers.find((c) => c.id === sale.customerId);
       if (customer) {
-        const newTotalCredit = Math.max(0, customer.totalCredit - amountReceived);
+        const newTotalCredit = Math.max(
+          0,
+          customer.totalCredit - amountReceived,
+        );
         const { error: customerError } = await supabase
           .from("customers")
           .update({ total_credit: newTotalCredit })
@@ -731,7 +736,9 @@ export function usePOS() {
     // Update local state
     setSales(
       sales.map((s) =>
-        s.id === saleId ? { ...s, paymentStatus: isPaid ? "paid" : s.paymentStatus } : s,
+        s.id === saleId
+          ? { ...s, paymentStatus: isPaid ? "paid" : s.paymentStatus }
+          : s,
       ),
     );
 

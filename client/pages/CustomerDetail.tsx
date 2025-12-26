@@ -1,7 +1,15 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { ArrowLeft, Phone, Mail, CreditCard, AlertCircle, Check, Loader } from "lucide-react";
+import {
+  ArrowLeft,
+  Phone,
+  Mail,
+  CreditCard,
+  AlertCircle,
+  Check,
+  Loader,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -19,7 +27,8 @@ import { Button } from "@/components/ui/button";
 export default function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { customers, getCreditRecordsByCustomer, recordPayment, sales } = usePOSContext();
+  const { customers, getCreditRecordsByCustomer, recordPayment, sales } =
+    usePOSContext();
   const [recordingPayment, setRecordingPayment] = useState<string | null>(null);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [paymentDialogData, setPaymentDialogData] = useState<{
@@ -76,7 +85,8 @@ export default function CustomerDetail() {
       );
       closePaymentDialog();
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Failed to record payment";
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to record payment";
       toast.error(errorMsg);
       console.error("Error recording payment:", error);
     } finally {
@@ -280,7 +290,9 @@ export default function CustomerDetail() {
                 Amount to Record
               </Label>
               <div className="flex items-center mt-2">
-                <span className="text-xl font-semibold text-slate-700 mr-2">₹</span>
+                <span className="text-xl font-semibold text-slate-700 mr-2">
+                  ₹
+                </span>
                 <Input
                   id="amount"
                   type="number"
