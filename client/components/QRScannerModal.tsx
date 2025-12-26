@@ -138,6 +138,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
   };
 
   const handleSwitchMode = async (mode: "manual" | "camera") => {
+    scanCompleteRef.current = false;
     if (scannerRef.current && scanMode === "camera") {
       try {
         await scannerRef.current.clear();
