@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
-import { usePOSContext } from "@/contexts/POSContext";
+import { usePOSContext } from "@/contexts/usePOSContext";
 import {
   ArrowLeft,
   Phone,
