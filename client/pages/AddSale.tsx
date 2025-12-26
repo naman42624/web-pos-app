@@ -1651,7 +1651,9 @@ export default function AddSale() {
             <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-slate-900">
-                  Add New Customer
+                  {isCapturingCustomer
+                    ? "Add Customer to Complete Sale"
+                    : "Add New Customer"}
                 </h2>
                 <button
                   onClick={() => setShowAddCustomerModal(false)}
