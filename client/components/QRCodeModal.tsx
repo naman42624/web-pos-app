@@ -172,8 +172,11 @@ export function QRCodeModal({
         </div>
 
         {/* QR Code */}
-        <div className="flex justify-center mb-6 p-4 bg-white border-2 border-slate-200 rounded-lg">
+        <div className="flex flex-col items-center mb-6 p-4 bg-white border-2 border-slate-200 rounded-lg">
           <canvas ref={canvasRef} className="w-full max-w-xs" />
+          <p className="text-xs text-slate-500 mt-3">
+            Manual Entry Code: <span className="font-semibold text-slate-700">{product.id}</span>
+          </p>
         </div>
 
         {/* Action Buttons */}
