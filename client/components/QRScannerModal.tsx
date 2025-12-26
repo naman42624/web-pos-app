@@ -59,7 +59,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
         setScannerActive(false);
       }
     };
-  }, [scanMode, isCameraReady]);
+  }, [scanMode]);
 
   const initializeScanner = async () => {
     if (!qrReaderRef.current) return;
