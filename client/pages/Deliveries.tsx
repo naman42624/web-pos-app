@@ -594,13 +594,27 @@ export default function Deliveries() {
     <SharedLayout>
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            Deliveries
-          </h1>
-          <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
-            Manage and track all scheduled deliveries
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Deliveries
+            </h1>
+            <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
+              Manage and track all scheduled deliveries
+            </p>
+          </div>
+          <div className="w-full sm:w-auto">
+            <Label htmlFor="delivery-date" className="text-sm font-medium text-slate-700 block mb-2">
+              Filter by Date
+            </Label>
+            <Input
+              id="delivery-date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full sm:w-48"
+            />
+          </div>
         </div>
 
         {/* Orders List */}
