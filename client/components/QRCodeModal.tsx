@@ -21,7 +21,7 @@ export function QRCodeModal({
   const encodedData = useMemo(() => {
     const qrData = generateQRCodeData(product);
     return encodeQRData(qrData);
-  }, [product.id]);
+  }, [product.id, product.name, product.price, product.items]);
 
   useEffect(() => {
     if (canvasRef.current) {
