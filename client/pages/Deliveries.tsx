@@ -177,10 +177,8 @@ export default function Deliveries() {
           </div>
         </div>
 
-        <!-- GAP BETWEEN COPIES -->
-        <div class="gap">
-          <div class="gap-text">✂ CUT HERE ✂</div>
-        </div>
+        <!-- PAGE BREAK -->
+        <div class="page-break"></div>
 
         <!-- DISPATCH COPY -->
         <div class="container">
