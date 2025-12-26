@@ -81,21 +81,14 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     if (!qrReaderRef.current) return;
 
     try {
-      const scanner = new Html5QrcodeScanner(
-        "qr-reader",
-        {
-          fps: 30,
-          qrbox: { width: 300, height: 300 },
-          aspectRatio: 1.0,
-          rememberLastUsedCamera: true,
-          showTorchButtonIfSupported: true,
-          disableFlip: false,
-          useBarCodeDetectorIfSupported: true,
-        },
-        false,
-      );
+      console.log("Starting QR scanner initialization...");
 
-      const successCallback = (decodedText: string) => {
+      const scanner = new Html5Qrcode("qr-reader", {
+        formatsToSupport: ["QR_CODE"],
+        verbose: true,
+      });
+
+      const successCallback = (decodedText: string, decodedResult: any) => {
         // Prevent multiple triggers
         if (scanCompleteRef.current) {
           console.log("Scan already complete, ignoring additional detection");
@@ -150,34 +143,60 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
         }
       };
 
-      const errorCallback = (errorMessage: string) => {
-        // Log all errors for debugging
+      const errorCallback = (error: any) => {
+        // Ignore common non-error messages
+        const errorStr = String(error);
         if (
-          !errorMessage.includes("No QR code detected") &&
-          !errorMessage.includes("NotFoundException")
+          !errorStr.includes("No QR code detected") &&
+          !errorStr.includes("NotFoundException") &&
+          !errorStr.includes("NotAllowedError") &&
+          !errorStr.includes("Permission denied")
         ) {
-          console.debug("Scanner error:", errorMessage);
+          console.debug("Scanner detection:", errorStr.substring(0, 100));
         }
       };
 
-      // render() does not return a promise, it sets up the scanner asynchronously
-      console.log("Starting QR scanner render...");
-      scanner.render(successCallback, errorCallback);
+      // Start scanning from camera
+      console.log("Requesting camera access...");
+      const stream = await Html5Qrcode.getCameras();
 
-      scannerRef.current = scanner;
-      setScannerActive(true);
+      if (stream && stream.length > 0) {
+        console.log("Available cameras:", stream);
+        const cameraId = stream[0].id;
 
-      // Wait a moment for camera to fully initialize
-      await new Promise((resolve) => setTimeout(resolve, 500));
+        await scanner.start(
+          cameraId,
+          {
+            fps: 30,
+            qrbox: { width: 300, height: 300 },
+          },
+          successCallback,
+          errorCallback,
+        );
 
-      setIsCameraReady(true);
-      setError("");
-      console.log("QR scanner fully initialized");
+        console.log("Scanner started successfully");
+        scannerRef.current = scanner;
+        setScannerActive(true);
+        setIsCameraReady(true);
+        setError("");
+      } else {
+        throw new Error("No cameras found on device");
+      }
     } catch (err: any) {
       console.error("Scanner initialization error:", err);
-      setError(
-        `Camera not available: ${err.message || "Please check camera permissions"}`,
-      );
+      const errorMessage = err.message || String(err);
+      if (
+        errorMessage.includes("NotAllowedError") ||
+        errorMessage.includes("Permission denied")
+      ) {
+        setError("Camera permission denied. Please enable camera access.");
+      } else if (errorMessage.includes("NotFoundError")) {
+        setError("No camera found on this device.");
+      } else {
+        setError(
+          `Camera not available: ${errorMessage || "Unknown error"}`,
+        );
+      }
       setIsCameraReady(false);
       setScannerActive(false);
     }
