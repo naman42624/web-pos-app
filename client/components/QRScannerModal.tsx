@@ -302,9 +302,19 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
               className="w-full rounded-lg overflow-hidden"
             />
             {isCameraReady && (
-              <p className="text-xs text-slate-500 text-center">
-                Point your camera at the product QR code
-              </p>
+              <div className="space-y-2">
+                <p className="text-xs text-slate-500 text-center">
+                  Point your camera at the product QR code
+                </p>
+                {isScanning && (
+                  <div className="flex items-center justify-center gap-2 p-2 bg-green-50 border border-green-200 rounded">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <p className="text-xs text-green-700 font-medium">
+                      QR Code detected!
+                    </p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}
