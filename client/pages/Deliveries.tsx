@@ -422,17 +422,15 @@ export default function Deliveries() {
                   </option>
                 ))}
               </optgroup>
-              {sortedStatusKeys.some(s => !menuBarStatuses.includes(s)) && (
-                <optgroup label="Other Statuses">
-                  {sortedStatusKeys
-                    .filter(s => !menuBarStatuses.includes(s))
-                    .map((status) => (
-                      <option key={status} value={status}>
-                        {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
-                      </option>
-                    ))}
-                </optgroup>
-              )}
+              <optgroup label="Other Statuses">
+                {sortedStatusKeys
+                  .filter(s => !menuBarStatuses.includes(s))
+                  .map((status) => (
+                    <option key={status} value={status}>
+                      {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                    </option>
+                  ))}
+              </optgroup>
             </select>
           </div>
         </div>
