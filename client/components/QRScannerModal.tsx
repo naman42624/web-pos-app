@@ -29,26 +29,29 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     };
   }, [scanMode, scannerActive]);
 
-  const initializeScanner = () => {
+  const initializeScanner = async () => {
     if (!qrReaderRef.current) return;
 
     try {
       const scanner = new Html5QrcodeScanner(
-        qrReaderRef.current.id,
+        "qr-reader",
         {
           fps: 10,
           qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
+          rememberLastUsedCamera: true,
         },
         false,
       );
 
-      scanner.render(
+      // Wait for scanner to render and start
+      await scanner.render(
         (decodedText) => {
           try {
             const data = decodeQRData(decodedText);
             if (data && data.type === "product") {
               scanner.clear().catch(() => {});
+              setScannerActive(false);
               onScan(data);
             } else {
               setError("Invalid QR code. Please scan a valid product QR code.");
@@ -57,8 +60,9 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
             setError("Failed to decode QR code. Please try again.");
           }
         },
-        () => {
-          // Error handler - just continue scanning
+        (errorMessage) => {
+          // Suppress error messages during scanning
+          console.debug("Scan error:", errorMessage);
         },
       );
 
@@ -67,8 +71,12 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
       setIsCameraReady(true);
       setError("");
     } catch (err: any) {
-      setError(`Camera not available: ${err.message}`);
+      console.error("Scanner initialization error:", err);
+      setError(
+        `Camera not available: ${err.message || "Please check camera permissions"}`,
+      );
       setIsCameraReady(false);
+      setScannerActive(false);
     }
   };
 
