@@ -361,8 +361,10 @@ export default function AddSale() {
       return;
     }
 
-    if (selectedPaymentModes.has("credit") && !selectedCustomerId) {
-      alert("Please select a customer for credit sale");
+    // If no customer is selected, ask to create one
+    if (!selectedCustomerId) {
+      setIsCapturingCustomer(true);
+      setShowAddCustomerModal(true);
       return;
     }
 
@@ -467,7 +469,7 @@ export default function AddSale() {
     }
   };
 
-  const handleAddCustomer = () => {
+  const handleAddCustomer = async () => {
     if (!newCustomerName.trim()) {
       alert("Please enter customer name");
       return;
@@ -493,6 +495,71 @@ export default function AddSale() {
     setNewCustomerPhone("");
     setNewCustomerEmail("");
     setShowAddCustomerModal(false);
+
+    // If we're saving a sale, proceed with the save after customer is created
+    if (isCapturingCustomer) {
+      setIsCapturingCustomer(false);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await handleSaveSaleWithCustomer(newCustomer.id);
+    }
+  };
+
+  const handleSaveSaleWithCustomer = async (customerId: string) => {
+    setIsLoading(true);
+    try {
+      const primaryMode = Array.from(selectedPaymentModes)[0];
+      addSale({
+        items: saleItems,
+        paymentMode: primaryMode,
+        customerId: customerId,
+        total,
+        orderType,
+        pickupDate:
+          orderType === "pickup_later" || orderType === "delivery"
+            ? pickupDate
+            : undefined,
+        pickupTime:
+          orderType === "pickup_later" || orderType === "delivery"
+            ? pickupTime
+            : undefined,
+        deliveryDetails: orderType === "delivery" ? deliveryDetails : undefined,
+        discountType: discountValue ? discountType : undefined,
+        discountValue: discountValue ? parseFloat(discountValue) : undefined,
+        discountAmount: discountValue ? discountAmount : undefined,
+        deliveryCharges:
+          orderType === "delivery" && deliveryCharges
+            ? parseFloat(deliveryCharges)
+            : undefined,
+      });
+
+      setSaleItems([]);
+      setOrderRemarks("");
+      setSelectedCustomerId("");
+      setSelectedPaymentModes(new Set(["cash"]));
+      setPaymentAmounts({ cash: "", upi: "", credit: "" });
+      setOrderType("pickup");
+      setPickupDate("");
+      setPickupTime("");
+      setDeliveryDetails({
+        receiverName: "",
+        receiverAddress: "",
+        receiverPhone: "",
+        message: "",
+        senderName: "",
+        senderPhone: "",
+      });
+      setDiscountType("percentage");
+      setDiscountValue("");
+      setDeliveryCharges("");
+      setAddMode("ready");
+
+      navigate("/sales");
+    } catch (error) {
+      console.error("Error saving sale:", error);
+      alert("Failed to save sale. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleQRScanned = (data: QRCodeData) => {
