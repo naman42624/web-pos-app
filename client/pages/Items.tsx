@@ -87,12 +87,12 @@ export default function Items() {
 
   return (
     <SharedLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Items</h1>
-            <p className="text-slate-500 mt-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Items</h1>
+            <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
               Manage inventory items, prices, and stock levels
             </p>
           </div>
@@ -102,15 +102,15 @@ export default function Items() {
               setFormData({ name: "", price: "", stock: "", image: "" });
               setShowAddItemModal(true);
             }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+            className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg w-full sm:w-auto"
           >
             <Plus className="w-5 h-5" />
             Add Item
           </button>
         </div>
 
-        {/* Items Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        {/* Items Table/Grid */}
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           {items.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
