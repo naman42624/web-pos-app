@@ -297,7 +297,13 @@ export default function QuickSale() {
   };
 
   const handleQRScanned = (data: QRCodeData) => {
-    setScannedProduct(data);
+    // Look up the full product to get the image
+    const fullProduct = readyProducts.find((p) => p.id === data.id);
+    const enrichedData: QRCodeData = {
+      ...data,
+      image: fullProduct?.image,
+    };
+    setScannedProduct(enrichedData);
     setShowQRScanner(false);
     setShowScannedConfirm(true);
   };
