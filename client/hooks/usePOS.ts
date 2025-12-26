@@ -768,6 +768,7 @@ export function usePOS() {
     loading,
     addSale,
     updateSaleStatus,
+    recordPayment,
     addItem,
     updateItem,
     deleteItem,
