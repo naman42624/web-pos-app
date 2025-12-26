@@ -102,25 +102,25 @@ export default function Pickups() {
             pickupOrders.map((order) => (
               <div
                 key={order.id}
-                className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
+                className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
               >
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   {/* Header Row */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <Package className="w-6 h-6 text-blue-600" />
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
+                    <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-slate-900">
+                      <div className="min-w-0">
+                        <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
                           Order {order.id.slice(-8).toUpperCase()}
                         </h3>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
                           Created: {formatDate(order.date)}
                         </p>
                       </div>
                     </div>
-                    <span className="px-4 py-2 rounded-lg font-medium border text-sm bg-blue-100 text-blue-800 border-blue-200">
+                    <span className="px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-medium border text-xs sm:text-sm bg-blue-100 text-blue-800 border-blue-200 whitespace-nowrap">
                       Pick Up Later
                     </span>
                   </div>
