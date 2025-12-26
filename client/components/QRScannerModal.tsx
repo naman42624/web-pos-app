@@ -102,12 +102,18 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
     }
   };
 
-  const handleSwitchMode = (mode: "manual" | "camera") => {
+  const handleSwitchMode = async (mode: "manual" | "camera") => {
     if (scannerRef.current && scanMode === "camera") {
-      scannerRef.current.clear().catch(() => {});
+      try {
+        await scannerRef.current.clear();
+      } catch (e) {
+        console.debug("Scanner cleanup error:", e);
+      }
       setScannerActive(false);
+      scannerRef.current = null;
     }
     setError("");
+    setIsCameraReady(false);
     setScanMode(mode);
   };
 
