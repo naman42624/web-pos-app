@@ -1137,6 +1137,17 @@ export default function QuickSale() {
                 Add Scanned Product?
               </h2>
 
+              {/* Product Image */}
+              {scannedProduct.image && (
+                <div className="mb-6 rounded-lg overflow-hidden">
+                  <img
+                    src={scannedProduct.image}
+                    alt={scannedProduct.name}
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
+              )}
+
               <div className="mb-6 p-4 bg-slate-50 rounded-lg space-y-3">
                 <div>
                   <p className="text-sm text-slate-600">Product Name</p>
