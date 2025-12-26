@@ -371,7 +371,10 @@ export default function Deliveries() {
             </p>
           </div>
           <div className="w-full sm:w-auto">
-            <Label htmlFor="delivery-date" className="text-sm font-medium text-slate-700 block mb-2">
+            <Label
+              htmlFor="delivery-date"
+              className="text-sm font-medium text-slate-700 block mb-2"
+            >
               Filter by Date
             </Label>
             <Input
@@ -399,13 +402,17 @@ export default function Deliveries() {
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
-                {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0}
+                )
               </button>
             ))}
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <Label htmlFor="status-filter" className="text-sm font-medium text-slate-700">
+            <Label
+              htmlFor="status-filter"
+              className="text-sm font-medium text-slate-700"
+            >
               Select Status:
             </Label>
             <select
@@ -418,16 +425,18 @@ export default function Deliveries() {
               <optgroup label="Main Statuses">
                 {menuBarStatuses.map((status) => (
                   <option key={status} value={status}>
-                    {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                    {getStatusLabel(status)} (
+                    {groupedByStatus[status]?.length || 0})
                   </option>
                 ))}
               </optgroup>
               <optgroup label="Other Statuses">
                 {sortedStatusKeys
-                  .filter(s => !menuBarStatuses.includes(s))
+                  .filter((s) => !menuBarStatuses.includes(s))
                   .map((status) => (
                     <option key={status} value={status}>
-                      {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                      {getStatusLabel(status)} (
+                      {groupedByStatus[status]?.length || 0})
                     </option>
                   ))}
               </optgroup>
@@ -723,7 +732,8 @@ export default function Deliveries() {
                 {sortedStatusKeys.map((status) => (
                   <div key={status} className="mb-8">
                     <h2 className="text-lg font-bold text-slate-900 mb-3 sm:mb-4">
-                      {getStatusLabel(status)} ({groupedByStatus[status]?.length || 0})
+                      {getStatusLabel(status)} (
+                      {groupedByStatus[status]?.length || 0})
                     </h2>
                     <div className="space-y-3 sm:space-y-4">
                       {groupedByStatus[status].map((order) => {
@@ -775,8 +785,12 @@ export default function Deliveries() {
                                         <option value="in_transit">
                                           In Transit
                                         </option>
-                                        <option value="delivered">Delivered</option>
-                                        <option value="cancelled">Cancelled</option>
+                                        <option value="delivered">
+                                          Delivered
+                                        </option>
+                                        <option value="cancelled">
+                                          Cancelled
+                                        </option>
                                         <option value="delivery_attempted_once">
                                           Delivery Attempted Once
                                         </option>
@@ -812,29 +826,36 @@ export default function Deliveries() {
                                             Composition:
                                           </p>
                                           <div className="space-y-1">
-                                            {item.composition.map((comp, idx) => {
-                                              const isCustom =
-                                                (comp as any).customName !==
-                                                undefined;
-                                              const itemName = isCustom
-                                                ? (comp as any).customName
-                                                : getItemName(comp.itemId);
-                                              const itemPrice = isCustom
-                                                ? (comp as any).customPrice || 0
-                                                : getItemPrice(
-                                                    comp.itemId,
-                                                    undefined,
-                                                  );
-                                              return (
-                                                <p
-                                                  key={idx}
-                                                  className="text-xs text-slate-600 ml-2"
-                                                >
-                                                  • {itemName} × {comp.quantity} @ ₹
-                                                  {(itemPrice || 0).toFixed(2)} each
-                                                </p>
-                                              );
-                                            })}
+                                            {item.composition.map(
+                                              (comp, idx) => {
+                                                const isCustom =
+                                                  (comp as any).customName !==
+                                                  undefined;
+                                                const itemName = isCustom
+                                                  ? (comp as any).customName
+                                                  : getItemName(comp.itemId);
+                                                const itemPrice = isCustom
+                                                  ? (comp as any).customPrice ||
+                                                    0
+                                                  : getItemPrice(
+                                                      comp.itemId,
+                                                      undefined,
+                                                    );
+                                                return (
+                                                  <p
+                                                    key={idx}
+                                                    className="text-xs text-slate-600 ml-2"
+                                                  >
+                                                    • {itemName} ×{" "}
+                                                    {comp.quantity} @ ₹
+                                                    {(itemPrice || 0).toFixed(
+                                                      2,
+                                                    )}{" "}
+                                                    each
+                                                  </p>
+                                                );
+                                              },
+                                            )}
                                           </div>
                                         </div>
                                       )}
@@ -899,7 +920,10 @@ export default function Deliveries() {
                                             Phone
                                           </p>
                                           <p className="font-medium text-slate-900">
-                                            {order.deliveryDetails.receiverPhone}
+                                            {
+                                              order.deliveryDetails
+                                                .receiverPhone
+                                            }
                                           </p>
                                         </div>
                                       </div>
@@ -910,7 +934,10 @@ export default function Deliveries() {
                                             Address
                                           </p>
                                           <p className="font-medium text-slate-900 text-sm">
-                                            {order.deliveryDetails.receiverAddress}
+                                            {
+                                              order.deliveryDetails
+                                                .receiverAddress
+                                            }
                                           </p>
                                         </div>
                                       </div>
