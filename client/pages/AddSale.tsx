@@ -1688,7 +1688,8 @@ export default function AddSale() {
               </div>
 
               <p className="text-sm text-slate-600 mb-4">
-                Please enter customer details. You can update these later if needed.
+                Please enter customer details. You can update these later if
+                needed.
               </p>
 
               <div className="space-y-4">

@@ -44,10 +44,8 @@ export default function Deliveries() {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const isToday =
-      deliveryDate.toDateString() === today.toDateString();
-    const isTomorrow =
-      deliveryDate.toDateString() === tomorrow.toDateString();
+    const isToday = deliveryDate.toDateString() === today.toDateString();
+    const isTomorrow = deliveryDate.toDateString() === tomorrow.toDateString();
 
     if (isToday) return "Today";
     if (isTomorrow) return "Tomorrow";
@@ -109,203 +107,222 @@ export default function Deliveries() {
                 </h2>
                 <div className="space-y-3 sm:space-y-4">
                   {groupedOrders[dateGroup].map((order) => (
-              <div
-                key={order.id}
-                className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
-              >
-                <div className="p-4 sm:p-6">
-                  {/* Header Row */}
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
-                    <div className="flex items-start gap-2 sm:gap-3 min-w-0">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                        <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
-                          Order {order.id.slice(-8).toUpperCase()}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                          Created: {formatDate(order.date)}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-medium border text-xs sm:text-sm bg-amber-100 text-amber-800 border-amber-200 whitespace-nowrap">
-                      Delivery
-                    </span>
-                  </div>
-
-                  {/* Items Summary */}
-                  <div className="mb-4 space-y-3">
-                    {order.items.map((item) => (
-                      <div
-                        key={item.id}
-                        className="p-4 bg-slate-50 rounded-lg border border-slate-200"
-                      >
-                        <p className="text-sm font-semibold text-slate-900 mb-2">
-                          {item.name} × {item.quantity} @ ₹
-                          {item.price.toFixed(2)} each
-                        </p>
-
-                        {/* Product Composition */}
-                        {item.composition && item.composition.length > 0 && (
-                          <div className="ml-4 mt-2 pt-2 border-t border-slate-300">
-                            <p className="text-xs font-semibold text-slate-700 mb-2">
-                              Composition:
-                            </p>
-                            <div className="space-y-1">
-                              {item.composition.map((comp, idx) => {
-                                const isCustom =
-                                  (comp as any).customName !== undefined;
-                                const itemName = isCustom
-                                  ? (comp as any).customName
-                                  : getItemName(comp.itemId);
-                                const itemPrice = isCustom
-                                  ? (comp as any).customPrice || 0
-                                  : getItemPrice(comp.itemId, undefined);
-                                return (
-                                  <p
-                                    key={idx}
-                                    className="text-xs text-slate-600 ml-2"
-                                  >
-                                    • {itemName} × {comp.quantity} @ ₹
-                                    {(itemPrice || 0).toFixed(2)} each
-                                  </p>
-                                );
-                              })}
+                    <div
+                      key={order.id}
+                      className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
+                    >
+                      <div className="p-4 sm:p-6">
+                        {/* Header Row */}
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
+                          <div className="flex items-start gap-2 sm:gap-3 min-w-0">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+                              <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+                            </div>
+                            <div className="min-w-0">
+                              <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
+                                Order {order.id.slice(-8).toUpperCase()}
+                              </h3>
+                              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                                Created: {formatDate(order.date)}
+                              </p>
                             </div>
                           </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Schedule Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="flex items-start gap-3">
-                      <Calendar className="w-5 h-5 text-slate-500 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-slate-600">Delivery Date</p>
-                        <p className="font-semibold text-slate-900">
-                          {order.pickupDate
-                            ? formatDate(order.pickupDate)
-                            : "Not scheduled"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {order.pickupTime && (
-                      <div className="flex items-start gap-3">
-                        <Clock className="w-5 h-5 text-slate-500 mt-0.5" />
-                        <div>
-                          <p className="text-sm text-slate-600">
-                            Delivery Time
-                          </p>
-                          <p className="font-semibold text-slate-900">
-                            {formatTime(order.pickupTime)}
-                          </p>
+                          <span className="px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-medium border text-xs sm:text-sm bg-amber-100 text-amber-800 border-amber-200 whitespace-nowrap">
+                            Delivery
+                          </span>
                         </div>
-                      </div>
-                    )}
-                  </div>
 
-                  {/* Delivery Details */}
-                  {order.deliveryDetails && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                      <div>
-                        <p className="text-xs font-semibold text-slate-500 uppercase mb-2">
-                          Receiver
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex items-start gap-2">
-                            <User className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                            <div>
-                              <p className="text-sm text-slate-600">Name</p>
-                              <p className="font-medium text-slate-900">
-                                {order.deliveryDetails.receiverName}
+                        {/* Items Summary */}
+                        <div className="mb-4 space-y-3">
+                          {order.items.map((item) => (
+                            <div
+                              key={item.id}
+                              className="p-4 bg-slate-50 rounded-lg border border-slate-200"
+                            >
+                              <p className="text-sm font-semibold text-slate-900 mb-2">
+                                {item.name} × {item.quantity} @ ₹
+                                {item.price.toFixed(2)} each
                               </p>
+
+                              {/* Product Composition */}
+                              {item.composition &&
+                                item.composition.length > 0 && (
+                                  <div className="ml-4 mt-2 pt-2 border-t border-slate-300">
+                                    <p className="text-xs font-semibold text-slate-700 mb-2">
+                                      Composition:
+                                    </p>
+                                    <div className="space-y-1">
+                                      {item.composition.map((comp, idx) => {
+                                        const isCustom =
+                                          (comp as any).customName !==
+                                          undefined;
+                                        const itemName = isCustom
+                                          ? (comp as any).customName
+                                          : getItemName(comp.itemId);
+                                        const itemPrice = isCustom
+                                          ? (comp as any).customPrice || 0
+                                          : getItemPrice(
+                                              comp.itemId,
+                                              undefined,
+                                            );
+                                        return (
+                                          <p
+                                            key={idx}
+                                            className="text-xs text-slate-600 ml-2"
+                                          >
+                                            • {itemName} × {comp.quantity} @ ₹
+                                            {(itemPrice || 0).toFixed(2)} each
+                                          </p>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
                             </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <Phone className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                            <div>
-                              <p className="text-sm text-slate-600">Phone</p>
-                              <p className="font-medium text-slate-900">
-                                {order.deliveryDetails.receiverPhone}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <MapPin className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                            <div>
-                              <p className="text-sm text-slate-600">Address</p>
-                              <p className="font-medium text-slate-900 text-sm">
-                                {order.deliveryDetails.receiverAddress}
-                              </p>
-                            </div>
-                          </div>
+                          ))}
                         </div>
-                      </div>
 
-                      <div>
-                        <p className="text-xs font-semibold text-slate-500 uppercase mb-2">
-                          Sender
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex items-start gap-2">
-                            <User className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                        {/* Schedule Info */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div className="flex items-start gap-3">
+                            <Calendar className="w-5 h-5 text-slate-500 mt-0.5" />
                             <div>
-                              <p className="text-sm text-slate-600">Name</p>
-                              <p className="font-medium text-slate-900">
-                                {order.deliveryDetails.senderName}
+                              <p className="text-sm text-slate-600">
+                                Delivery Date
+                              </p>
+                              <p className="font-semibold text-slate-900">
+                                {order.pickupDate
+                                  ? formatDate(order.pickupDate)
+                                  : "Not scheduled"}
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-start gap-2">
-                            <Phone className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                            <div>
-                              <p className="text-sm text-slate-600">Phone</p>
-                              <p className="font-medium text-slate-900">
-                                {order.deliveryDetails.senderPhone}
-                              </p>
-                            </div>
-                          </div>
-                          {order.deliveryDetails.message && (
-                            <div className="flex items-start gap-2">
+
+                          {order.pickupTime && (
+                            <div className="flex items-start gap-3">
+                              <Clock className="w-5 h-5 text-slate-500 mt-0.5" />
                               <div>
                                 <p className="text-sm text-slate-600">
-                                  Message
+                                  Delivery Time
                                 </p>
-                                <p className="font-medium text-slate-900 text-sm">
-                                  {order.deliveryDetails.message}
+                                <p className="font-semibold text-slate-900">
+                                  {formatTime(order.pickupTime)}
                                 </p>
                               </div>
                             </div>
                           )}
                         </div>
-                      </div>
-                    </div>
-                  )}
 
-                  {/* Footer - Total and Payment */}
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                    <div>
-                      <p className="text-sm text-slate-600">Total Amount</p>
-                      <p className="text-2xl font-bold text-slate-900">
-                        ₹{order.total.toLocaleString("en-IN")}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-slate-600 capitalize mb-1">
-                        Payment: {order.paymentMode}
-                      </p>
-                      <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
-                        Pending Delivery
+                        {/* Delivery Details */}
+                        {order.deliveryDetails && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <div>
+                              <p className="text-xs font-semibold text-slate-500 uppercase mb-2">
+                                Receiver
+                              </p>
+                              <div className="space-y-2">
+                                <div className="flex items-start gap-2">
+                                  <User className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <p className="text-sm text-slate-600">
+                                      Name
+                                    </p>
+                                    <p className="font-medium text-slate-900">
+                                      {order.deliveryDetails.receiverName}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-start gap-2">
+                                  <Phone className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <p className="text-sm text-slate-600">
+                                      Phone
+                                    </p>
+                                    <p className="font-medium text-slate-900">
+                                      {order.deliveryDetails.receiverPhone}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-start gap-2">
+                                  <MapPin className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <p className="text-sm text-slate-600">
+                                      Address
+                                    </p>
+                                    <p className="font-medium text-slate-900 text-sm">
+                                      {order.deliveryDetails.receiverAddress}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                              <p className="text-xs font-semibold text-slate-500 uppercase mb-2">
+                                Sender
+                              </p>
+                              <div className="space-y-2">
+                                <div className="flex items-start gap-2">
+                                  <User className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <p className="text-sm text-slate-600">
+                                      Name
+                                    </p>
+                                    <p className="font-medium text-slate-900">
+                                      {order.deliveryDetails.senderName}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-start gap-2">
+                                  <Phone className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                  <div>
+                                    <p className="text-sm text-slate-600">
+                                      Phone
+                                    </p>
+                                    <p className="font-medium text-slate-900">
+                                      {order.deliveryDetails.senderPhone}
+                                    </p>
+                                  </div>
+                                </div>
+                                {order.deliveryDetails.message && (
+                                  <div className="flex items-start gap-2">
+                                    <div>
+                                      <p className="text-sm text-slate-600">
+                                        Message
+                                      </p>
+                                      <p className="font-medium text-slate-900 text-sm">
+                                        {order.deliveryDetails.message}
+                                      </p>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Footer - Total and Payment */}
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                          <div>
+                            <p className="text-sm text-slate-600">
+                              Total Amount
+                            </p>
+                            <p className="text-2xl font-bold text-slate-900">
+                              ₹{order.total.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm text-slate-600 capitalize mb-1">
+                              Payment: {order.paymentMode}
+                            </p>
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                              Pending Delivery
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-                ))}
+                  ))}
                 </div>
               </div>
             ))
