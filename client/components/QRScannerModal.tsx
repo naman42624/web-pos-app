@@ -16,6 +16,7 @@ export function QRScannerModal({ onScan, onClose }: QRScannerModalProps) {
   const [scannerActive, setScannerActive] = useState(false);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
   const qrReaderRef = useRef<HTMLDivElement>(null);
+  const scanCompleteRef = useRef(false);
 
   useEffect(() => {
     let isMounted = true;
