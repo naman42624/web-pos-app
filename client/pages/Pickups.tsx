@@ -106,12 +106,18 @@ export default function Pickups() {
 
   const handleStatusChange = async (
     saleId: string,
-    newStatus: "pending" | "confirmed" | "pick_up_ready" | "picked_up" | "cancelled",
+    newStatus:
+      | "pending"
+      | "confirmed"
+      | "pick_up_ready"
+      | "picked_up"
+      | "cancelled",
   ) => {
     try {
       await updateSaleStatus(saleId, newStatus as any);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Failed to update status:", errorMsg);
     }
   };

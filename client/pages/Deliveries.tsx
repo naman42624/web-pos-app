@@ -473,12 +473,19 @@ export default function Deliveries() {
 
   const handleStatusChange = async (
     saleId: string,
-    newStatus: "pending" | "confirmed" | "in_transit" | "delivered" | "pick_up_ready" | "cancelled",
+    newStatus:
+      | "pending"
+      | "confirmed"
+      | "in_transit"
+      | "delivered"
+      | "pick_up_ready"
+      | "cancelled",
   ) => {
     try {
       await updateSaleStatus(saleId, newStatus);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Failed to update status:", errorMsg);
     }
   };
@@ -629,7 +636,9 @@ export default function Deliveries() {
                                   >
                                     <option value="pending">Pending</option>
                                     <option value="confirmed">Confirmed</option>
-                                    <option value="in_transit">In Transit</option>
+                                    <option value="in_transit">
+                                      In Transit
+                                    </option>
                                     <option value="delivered">Delivered</option>
                                     <option value="cancelled">Cancelled</option>
                                   </select>

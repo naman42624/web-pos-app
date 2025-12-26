@@ -62,7 +62,14 @@ export interface Sale {
   discountValue?: number;
   discountAmount?: number;
   deliveryCharges?: number;
-  status?: "pending" | "confirmed" | "in_transit" | "delivered" | "pick_up_ready" | "picked_up" | "cancelled";
+  status?:
+    | "pending"
+    | "confirmed"
+    | "in_transit"
+    | "delivered"
+    | "pick_up_ready"
+    | "picked_up"
+    | "cancelled";
 }
 
 export interface Address {
@@ -634,7 +641,14 @@ export function usePOS() {
 
   const updateSaleStatus = async (
     saleId: string,
-    status: "pending" | "confirmed" | "in_transit" | "delivered" | "pick_up_ready" | "picked_up" | "cancelled",
+    status:
+      | "pending"
+      | "confirmed"
+      | "in_transit"
+      | "delivered"
+      | "pick_up_ready"
+      | "picked_up"
+      | "cancelled",
   ) => {
     const { error } = await supabase
       .from("sales")
@@ -642,15 +656,14 @@ export function usePOS() {
       .eq("id", saleId);
 
     if (error) {
-      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Error updating sale status:", errorMsg);
       throw error;
     }
 
     setSales(
-      sales.map((sale) =>
-        sale.id === saleId ? { ...sale, status } : sale,
-      ),
+      sales.map((sale) => (sale.id === saleId ? { ...sale, status } : sale)),
     );
   };
 
