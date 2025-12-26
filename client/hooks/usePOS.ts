@@ -70,6 +70,7 @@ export interface Sale {
     | "cancelled"
     | "delivery_attempted_once"
     | "delivery_attempted_twice";
+  paymentStatus?: "pending" | "paid";
 }
 
 export interface Address {
