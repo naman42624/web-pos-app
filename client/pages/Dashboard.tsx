@@ -175,36 +175,51 @@ export default function Dashboard() {
               </h3>
             </div>
             <div className="space-y-2">
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              <Link
+                to="/deliveries?status=pending"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Pending</span>
                 <span className="font-semibold text-slate-900">
                   {deliveryStatusCounts.pending}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              </Link>
+              <Link
+                to="/deliveries?status=pick_up_ready"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Ready for Pickup</span>
                 <span className="font-semibold text-slate-900">
                   {deliveryStatusCounts.pick_up_ready}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              </Link>
+              <Link
+                to="/deliveries?status=in_transit"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">In Transit</span>
                 <span className="font-semibold text-slate-900">
                   {deliveryStatusCounts.in_transit}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              </Link>
+              <Link
+                to="/deliveries?status=delivered"
+                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Delivered</span>
                 <span className="font-semibold text-slate-900">
                   {deliveryStatusCounts.delivered}
                 </span>
-              </div>
-              <div className="flex justify-between items-center py-2">
+              </Link>
+              <Link
+                to="/deliveries?status=cancelled"
+                className="flex justify-between items-center py-2 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
+              >
                 <span className="text-slate-600 text-sm">Cancelled</span>
                 <span className="font-semibold text-slate-900">
                   {deliveryStatusCounts.cancelled}
                 </span>
-              </div>
+              </Link>
             </div>
           </div>
 
