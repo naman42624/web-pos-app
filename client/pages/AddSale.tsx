@@ -642,6 +642,114 @@ export default function AddSale() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            {/* Customer Selection */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">
+                Customer Information
+              </h2>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Customer Phone Number
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="tel"
+                      value={phoneLookupInput}
+                      onChange={(e) => setPhoneLookupInput(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && handlePhoneLookup()
+                      }
+                      placeholder="Enter customer phone number"
+                      className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                    <button
+                      onClick={handlePhoneLookup}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+
+                {matchingCustomers.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Select Matching Customer
+                    </label>
+                    <div className="space-y-2">
+                      {matchingCustomers.map((customer) => (
+                        <button
+                          key={customer.id}
+                          onClick={() => handleSelectExistingCustomer(customer.id)}
+                          className="w-full text-left p-3 border border-slate-300 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-colors"
+                        >
+                          <p className="font-medium text-slate-900">
+                            {customer.name}
+                          </p>
+                          <p className="text-sm text-slate-600">
+                            {customer.phone}
+                            {customer.altPhone && ` / ${customer.altPhone}`}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {showNewCustomerForm && (
+                  <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                    <p className="text-sm font-medium text-slate-900 mb-3">
+                      Create New Customer
+                    </p>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                          Customer Name
+                        </label>
+                        <input
+                          type="text"
+                          value={newCustomerName}
+                          onChange={(e) => setNewCustomerName(e.target.value)}
+                          placeholder="Enter customer name"
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                          Email (Optional)
+                        </label>
+                        <input
+                          type="email"
+                          value={newCustomerEmail}
+                          onChange={(e) => setNewCustomerEmail(e.target.value)}
+                          placeholder="Enter email"
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                        />
+                      </div>
+                      <button
+                        onClick={handleCreateNewCustomerFromLookup}
+                        className="w-full px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors text-sm"
+                      >
+                        Create Customer
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {selectedCustomerId && (
+                  <div className="p-3 bg-green-50 border border-green-300 rounded-lg">
+                    <p className="text-sm font-medium text-green-700">
+                      ✓ Customer selected:{" "}
+                      {customers.find((c) => c.id === selectedCustomerId)
+                        ?.name || "Unknown"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Unified Add Product/Items Form */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
