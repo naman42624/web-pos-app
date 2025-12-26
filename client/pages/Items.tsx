@@ -114,103 +114,174 @@ export default function Items() {
         {/* Items Table/Grid */}
         <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           {items.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Image
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Item Name
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Price (₹)
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Stock
-                    </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {items.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="hover:bg-slate-50 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        {item.image ? (
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-12 h-12 rounded-lg object-cover"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center">
-                            <ImageIcon className="w-6 h-6 text-slate-400" />
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-slate-900">
+            <>
+              {/* Mobile Card Layout */}
+              <div className="md:hidden divide-y divide-slate-200">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-4 space-y-3 hover:bg-slate-50 transition-colors"
+                  >
+                    <div className="flex gap-3 items-start">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                          <ImageIcon className="w-8 h-8 text-slate-400" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-slate-900 text-sm truncate">
                           {item.name}
                         </p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="font-semibold text-slate-900">
+                        <p className="text-sm text-slate-600 mt-1">
                           ₹{item.price.toFixed(2)}
                         </p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={cn(
-                              "px-3 py-1 rounded-full text-sm font-semibold",
-                              item.stock > 10
-                                ? "bg-green-100 text-green-700"
-                                : item.stock > 0
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-red-100 text-red-700",
-                            )}
-                          >
-                            {item.stock}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => handleEditItem(item)}
-                            className="text-blue-600 hover:text-blue-700 transition-colors p-2"
-                            title="Edit item"
-                          >
-                            <Edit2 className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (
-                                confirm(
-                                  `Are you sure you want to delete "${item.name}"?`,
-                                )
-                              ) {
-                                deleteItem(item.id);
-                              }
-                            }}
-                            className="text-red-600 hover:text-red-700 transition-colors p-2"
-                            title="Delete item"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </td>
+                        <span
+                          className={cn(
+                            "inline-block px-2 py-1 rounded-full text-xs font-semibold mt-2",
+                            item.stock > 10
+                              ? "bg-green-100 text-green-700"
+                              : item.stock > 0
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700",
+                          )}
+                        >
+                          Stock: {item.stock}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 justify-end pt-2 border-t border-slate-100">
+                      <button
+                        onClick={() => handleEditItem(item)}
+                        className="text-blue-600 hover:text-blue-700 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                        title="Edit item"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (
+                            confirm(
+                              `Are you sure you want to delete "${item.name}"?`,
+                            )
+                          ) {
+                            deleteItem(item.id);
+                          }
+                        }}
+                        className="text-red-600 hover:text-red-700 transition-colors p-2 hover:bg-red-50 rounded-lg"
+                        title="Delete item"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-slate-200 bg-slate-50">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                        Image
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                        Item Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                        Price (₹)
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                        Stock
+                      </th>
+                      <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {items.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="hover:bg-slate-50 transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-12 h-12 rounded-lg object-cover"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center">
+                              <ImageIcon className="w-6 h-6 text-slate-400" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="font-medium text-slate-900">
+                            {item.name}
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="font-semibold text-slate-900">
+                            ₹{item.price.toFixed(2)}
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "px-3 py-1 rounded-full text-sm font-semibold",
+                                item.stock > 10
+                                  ? "bg-green-100 text-green-700"
+                                  : item.stock > 0
+                                    ? "bg-yellow-100 text-yellow-700"
+                                    : "bg-red-100 text-red-700",
+                              )}
+                            >
+                              {item.stock}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => handleEditItem(item)}
+                              className="text-blue-600 hover:text-blue-700 transition-colors p-2"
+                              title="Edit item"
+                            >
+                              <Edit2 className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    `Are you sure you want to delete "${item.name}"?`,
+                                  )
+                                ) {
+                                  deleteItem(item.id);
+                                }
+                              }}
+                              className="text-red-600 hover:text-red-700 transition-colors p-2"
+                              title="Delete item"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           ) : (
             <div className="text-center py-12">
               <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center mx-auto mb-4">
