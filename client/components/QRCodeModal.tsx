@@ -157,13 +157,10 @@ export function QRCodeModal({ product, onClose, autoprint = false }: QRCodeModal
         </div>
 
         {/* QR Code */}
-        <div ref={qrRef} className="flex justify-center mb-6 p-4 bg-white border-2 border-slate-200 rounded-lg">
-          <QRCode
-            value={encodedData}
-            size={280}
-            level="H"
-            includeMargin={true}
-            quietZone={10}
+        <div className="flex justify-center mb-6 p-4 bg-white border-2 border-slate-200 rounded-lg">
+          <canvas
+            ref={canvasRef}
+            className="w-full max-w-xs"
           />
         </div>
 
