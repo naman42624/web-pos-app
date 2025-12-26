@@ -672,7 +672,7 @@ export function usePOS() {
     );
   };
 
-  const recordPayment = async (saleId: string) => {
+  const recordPayment = async (saleId: string, amountReceived: number) => {
     const sale = sales.find((s) => s.id === saleId);
     if (!sale) {
       throw new Error("Sale not found");
@@ -682,10 +682,22 @@ export function usePOS() {
       throw new Error("Only credit sales can be marked as paid");
     }
 
-    // Update sale payment status to paid
+    if (amountReceived <= 0) {
+      throw new Error("Amount received must be greater than 0");
+    }
+
+    if (amountReceived > sale.total) {
+      throw new Error(
+        `Amount received cannot exceed ₹${sale.total.toLocaleString("en-IN")}`,
+      );
+    }
+
+    const isPaid = amountReceived === sale.total;
+
+    // Update sale payment status
     const { error: saleError } = await supabase
       .from("sales")
-      .update({ payment_status: "paid" })
+      .update({ payment_status: isPaid ? "paid" : "pending" })
       .eq("id", saleId);
 
     if (saleError) {
@@ -699,7 +711,7 @@ export function usePOS() {
     if (sale.customerId) {
       const customer = customers.find((c) => c.id === sale.customerId);
       if (customer) {
-        const newTotalCredit = Math.max(0, customer.totalCredit - sale.total);
+        const newTotalCredit = Math.max(0, customer.totalCredit - amountReceived);
         const { error: customerError } = await supabase
           .from("customers")
           .update({ total_credit: newTotalCredit })
@@ -719,7 +731,7 @@ export function usePOS() {
     // Update local state
     setSales(
       sales.map((s) =>
-        s.id === saleId ? { ...s, paymentStatus: "paid" } : s,
+        s.id === saleId ? { ...s, paymentStatus: isPaid ? "paid" : s.paymentStatus } : s,
       ),
     );
 
