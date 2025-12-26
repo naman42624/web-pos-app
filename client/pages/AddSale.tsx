@@ -383,9 +383,10 @@ export default function AddSale() {
       return;
     }
 
-    // If no customer is selected, show modal to create one
+    // If no customer is selected, show phone lookup modal
     if (!selectedCustomerId) {
-      setShowAddCustomerModal(true);
+      setIsCapturingCustomer(true);
+      setShowPhoneLookupModal(true);
       return;
     }
 
