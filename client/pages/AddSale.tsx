@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
-import { usePOSContext } from "@/contexts/POSContext";
+import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleItem, DeliveryDetails } from "@/hooks/usePOS";
 import {
   Trash2,
