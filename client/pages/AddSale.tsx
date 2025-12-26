@@ -449,11 +449,11 @@ export default function AddSale() {
               </h2>
 
               {/* Mode Toggle */}
-              <div className="flex gap-3 mb-6">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6">
                 <button
                   onClick={() => setAddMode("ready")}
                   className={cn(
-                    "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
+                    "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "ready"
                       ? "bg-blue-600 text-white shadow-md"
                       : "bg-slate-200 text-slate-700 hover:bg-slate-300"
@@ -464,7 +464,7 @@ export default function AddSale() {
                 <button
                   onClick={() => setAddMode("custom")}
                   className={cn(
-                    "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
+                    "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "custom"
                       ? "bg-blue-600 text-white shadow-md"
                       : "bg-slate-200 text-slate-700 hover:bg-slate-300"
