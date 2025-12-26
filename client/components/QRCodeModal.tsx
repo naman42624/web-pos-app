@@ -115,7 +115,7 @@ export function QRCodeModal({
               </div>
               <div class="product-info">
                 <h2>${product.name}</h2>
-                <p>Price: ₹${product.price.toFixed(2)}</p>
+                <p>Price: ₹${(product.price || 0).toFixed(2)}</p>
                 <p>Generated: ${new Date().toLocaleDateString("en-IN")}</p>
               </div>
             </body>
