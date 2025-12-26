@@ -1156,11 +1156,12 @@ export default function QuickSale() {
 
               {/* Product Image */}
               {scannedProduct.image && (
-                <div className="mb-6 rounded-lg overflow-hidden">
+                <div className="mb-6 rounded-lg overflow-hidden bg-slate-100">
                   <img
                     src={scannedProduct.image}
                     alt={scannedProduct.name}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-auto max-h-64 object-contain"
+                    loading="eager"
                   />
                 </div>
               )}
