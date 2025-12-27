@@ -510,7 +510,22 @@ export default function AddSale() {
   };
 
   const handleQRScanned = (data: QRCodeData) => {
-    setScannedProduct(data);
+    // Look up the full product details by ID
+    const fullProduct = readyProducts.find((p) => p.id === data.id);
+    if (!fullProduct) {
+      alert("Product not found. Please check the QR code.");
+      return;
+    }
+    const enrichedData: QRCodeData = {
+      type: "product",
+      id: fullProduct.id,
+      name: fullProduct.name,
+      price: fullProduct.price,
+      image: fullProduct.image,
+      items: fullProduct.items,
+      timestamp: new Date().toISOString(),
+    };
+    setScannedProduct(enrichedData);
     setShowQRScanner(false);
     setShowScannedConfirm(true);
   };
