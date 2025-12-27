@@ -667,6 +667,7 @@ export function usePOS() {
       deliveryCharges: sale.deliveryCharges,
       deliveryDetails: sale.deliveryDetails,
       paymentStatus: "pending",
+      status: "pending",
     };
 
     setSales([...sales, newSale]);
