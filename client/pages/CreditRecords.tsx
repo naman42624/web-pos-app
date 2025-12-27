@@ -54,7 +54,7 @@ export default function CreditRecords() {
 
         {/* Credit Records Table */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          {creditSales.length > 0 ? (
+          {pendingCreditSales.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -69,9 +69,6 @@ export default function CreditRecords() {
                       Amount
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
                       Date
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900">
@@ -80,7 +77,7 @@ export default function CreditRecords() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {creditSales.map((sale) => (
+                  {pendingCreditSales.map((sale) => (
                     <tr
                       key={sale.id}
                       className="hover:bg-slate-50 transition-colors"
