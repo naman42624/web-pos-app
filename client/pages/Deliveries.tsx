@@ -286,11 +286,47 @@ export default function Deliveries() {
       | "delivery_attempted_twice",
   ) => {
     try {
+      if (newStatus === "in_transit") {
+        setPendingStatusChange({ saleId, newStatus });
+        setShowDeliveryBoyModal(true);
+        setSelectedDeliveryBoy(null);
+        return;
+      }
       await updateSaleStatus(saleId, newStatus);
     } catch (error) {
       const errorMsg =
         error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Failed to update status:", errorMsg);
+    }
+  };
+
+  const handleAssignAndUpdateStatus = async () => {
+    if (!pendingStatusChange || !selectedDeliveryBoy) {
+      alert("Please select a delivery boy");
+      return;
+    }
+
+    try {
+      await assignDeliveryBoy(pendingStatusChange.saleId, selectedDeliveryBoy);
+      await updateSaleStatus(
+        pendingStatusChange.saleId,
+        pendingStatusChange.newStatus as
+          | "pending"
+          | "pick_up_ready"
+          | "in_transit"
+          | "delivered"
+          | "cancelled"
+          | "delivery_attempted_once"
+          | "delivery_attempted_twice",
+      );
+      setShowDeliveryBoyModal(false);
+      setPendingStatusChange(null);
+      setSelectedDeliveryBoy(null);
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
+      console.error("Failed to assign and update status:", errorMsg);
+      alert("Failed to assign delivery boy and update status");
     }
   };
 
