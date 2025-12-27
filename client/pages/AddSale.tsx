@@ -626,24 +626,44 @@ export default function AddSale() {
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Customer Phone Number
                   </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="tel"
-                      value={phoneLookupInput}
-                      onChange={(e) => setPhoneLookupInput(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && handlePhoneLookup()
+                  <input
+                    type="tel"
+                    value={phoneLookupInput}
+                    onChange={(e) => {
+                      const phone = e.target.value.trim();
+                      setPhoneLookupInput(phone);
+
+                      if (phone.length === 0) {
+                        setMatchingCustomers([]);
+                        setShowNewCustomerForm(false);
+                      } else {
+                        // Search for customers with this phone number in real-time
+                        const matching = customers.filter(
+                          (customer) =>
+                            customer.phone === phone ||
+                            customer.altPhone === phone,
+                        );
+
+                        setMatchingCustomers(matching);
+
+                        if (matching.length === 0) {
+                          // No matching customer, show form to create new one
+                          setShowNewCustomerForm(true);
+                          setNewCustomerPhone(phone);
+                        } else {
+                          // Matching customers found, hide new customer form
+                          setShowNewCustomerForm(false);
+                        }
                       }
-                      placeholder="Enter customer phone number"
-                      className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                    />
-                    <button
-                      onClick={handlePhoneLookup}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-                    >
-                      Search
-                    </button>
-                  </div>
+                    }}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" &&
+                      matchingCustomers.length === 1 &&
+                      handleSelectExistingCustomer(matchingCustomers[0].id)
+                    }
+                    placeholder="Enter customer phone number"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
                 </div>
 
                 {matchingCustomers.length > 0 && (
