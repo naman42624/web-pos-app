@@ -39,7 +39,7 @@ export function QRCodeModal({
       type: "image/png",
       quality: 0.95,
       margin: 1,
-      width: 300,
+      width: 250,
     });
 
     // Extract data URL without state update
