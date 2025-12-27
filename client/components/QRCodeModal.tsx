@@ -60,7 +60,7 @@ export function QRCodeModal({
 
   const handlePrint = () => {
     if (qrDataUrlRef.current) {
-      const printWindow = window.open("", "", "height=400,width=400");
+      const printWindow = window.open("", "", "height=500,width=500");
       if (printWindow) {
         printWindow.document.write(`
           <!DOCTYPE html>
