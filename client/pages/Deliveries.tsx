@@ -662,37 +662,58 @@ export default function Deliveries() {
                           </div>
 
                           {/* Delivery Boy Info - Show when In Transit */}
-                          {order.status === "in_transit" && order.assignedDeliveryBoyId && (
-                            <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                              <p className="text-xs font-semibold text-slate-500 uppercase mb-3">
-                                Delivery Agent
-                              </p>
-                              {deliveryBoys.find((b) => b.id === order.assignedDeliveryBoyId) ? (
-                                <div className="space-y-2">
-                                  <div className="flex items-start gap-2">
-                                    <User className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                                    <div>
-                                      <p className="text-sm text-slate-600">Name</p>
-                                      <p className="font-medium text-slate-900">
-                                        {deliveryBoys.find((b) => b.id === order.assignedDeliveryBoyId)?.name}
-                                      </p>
+                          {order.status === "in_transit" &&
+                            order.assignedDeliveryBoyId && (
+                              <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                <p className="text-xs font-semibold text-slate-500 uppercase mb-3">
+                                  Delivery Agent
+                                </p>
+                                {deliveryBoys.find(
+                                  (b) => b.id === order.assignedDeliveryBoyId,
+                                ) ? (
+                                  <div className="space-y-2">
+                                    <div className="flex items-start gap-2">
+                                      <User className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                                      <div>
+                                        <p className="text-sm text-slate-600">
+                                          Name
+                                        </p>
+                                        <p className="font-medium text-slate-900">
+                                          {
+                                            deliveryBoys.find(
+                                              (b) =>
+                                                b.id ===
+                                                order.assignedDeliveryBoyId,
+                                            )?.name
+                                          }
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-start gap-2">
+                                      <Phone className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                                      <div>
+                                        <p className="text-sm text-slate-600">
+                                          Phone
+                                        </p>
+                                        <p className="font-medium text-slate-900">
+                                          {
+                                            deliveryBoys.find(
+                                              (b) =>
+                                                b.id ===
+                                                order.assignedDeliveryBoyId,
+                                            )?.phone
+                                          }
+                                        </p>
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="flex items-start gap-2">
-                                    <Phone className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                                    <div>
-                                      <p className="text-sm text-slate-600">Phone</p>
-                                      <p className="font-medium text-slate-900">
-                                        {deliveryBoys.find((b) => b.id === order.assignedDeliveryBoyId)?.phone}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <p className="text-sm text-slate-500">No delivery agent assigned</p>
-                              )}
-                            </div>
-                          )}
+                                ) : (
+                                  <p className="text-sm text-slate-500">
+                                    No delivery agent assigned
+                                  </p>
+                                )}
+                              </div>
+                            )}
 
                           {/* Delivery Details */}
                           {order.deliveryDetails && (
@@ -989,37 +1010,59 @@ export default function Deliveries() {
                               </div>
 
                               {/* Delivery Boy Info - Show when In Transit */}
-                              {order.status === "in_transit" && order.assignedDeliveryBoyId && (
-                                <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                                  <p className="text-xs font-semibold text-slate-500 uppercase mb-3">
-                                    Delivery Agent
-                                  </p>
-                                  {deliveryBoys.find((b) => b.id === order.assignedDeliveryBoyId) ? (
-                                    <div className="space-y-2">
-                                      <div className="flex items-start gap-2">
-                                        <User className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                                        <div>
-                                          <p className="text-sm text-slate-600">Name</p>
-                                          <p className="font-medium text-slate-900">
-                                            {deliveryBoys.find((b) => b.id === order.assignedDeliveryBoyId)?.name}
-                                          </p>
+                              {order.status === "in_transit" &&
+                                order.assignedDeliveryBoyId && (
+                                  <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                    <p className="text-xs font-semibold text-slate-500 uppercase mb-3">
+                                      Delivery Agent
+                                    </p>
+                                    {deliveryBoys.find(
+                                      (b) =>
+                                        b.id === order.assignedDeliveryBoyId,
+                                    ) ? (
+                                      <div className="space-y-2">
+                                        <div className="flex items-start gap-2">
+                                          <User className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                                          <div>
+                                            <p className="text-sm text-slate-600">
+                                              Name
+                                            </p>
+                                            <p className="font-medium text-slate-900">
+                                              {
+                                                deliveryBoys.find(
+                                                  (b) =>
+                                                    b.id ===
+                                                    order.assignedDeliveryBoyId,
+                                                )?.name
+                                              }
+                                            </p>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                          <Phone className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                                          <div>
+                                            <p className="text-sm text-slate-600">
+                                              Phone
+                                            </p>
+                                            <p className="font-medium text-slate-900">
+                                              {
+                                                deliveryBoys.find(
+                                                  (b) =>
+                                                    b.id ===
+                                                    order.assignedDeliveryBoyId,
+                                                )?.phone
+                                              }
+                                            </p>
+                                          </div>
                                         </div>
                                       </div>
-                                      <div className="flex items-start gap-2">
-                                        <Phone className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                                        <div>
-                                          <p className="text-sm text-slate-600">Phone</p>
-                                          <p className="font-medium text-slate-900">
-                                            {deliveryBoys.find((b) => b.id === order.assignedDeliveryBoyId)?.phone}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <p className="text-sm text-slate-500">No delivery agent assigned</p>
-                                  )}
-                                </div>
-                              )}
+                                    ) : (
+                                      <p className="text-sm text-slate-500">
+                                        No delivery agent assigned
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
 
                               {/* Delivery Details */}
                               {order.deliveryDetails && (
