@@ -540,6 +540,7 @@ export function usePOS() {
             : undefined,
           status: sale.status || "pending",
           paymentStatus: sale.payment_status || "pending",
+          assignedDeliveryBoyId: sale.delivery_boy_id,
         };
       }),
     );
