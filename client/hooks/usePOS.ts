@@ -1029,6 +1029,7 @@ export function usePOS() {
     customers,
     creditRecords,
     products,
+    deliveryBoys,
     loading,
     addSale,
     updateSaleStatus,
@@ -1045,5 +1046,12 @@ export function usePOS() {
     addProduct,
     updateProduct,
     deleteProduct,
+    addDeliveryBoy,
+    updateDeliveryBoy,
+    deleteDeliveryBoy,
+    verifyDeliveryBoyPin,
+    assignDeliveryBoy,
+    getDeliveryBoyAssignments,
+    loadDeliveryBoys,
   };
 }
