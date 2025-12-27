@@ -16,7 +16,6 @@ export default function Dashboard() {
   const {
     sales,
     customers,
-    creditRecords,
     getTodaySalesTotal,
     getTodayTransactionCount,
     loading,
