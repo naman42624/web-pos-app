@@ -89,10 +89,10 @@ export function QRCodeModal({
                   page-break-inside: avoid;
                 }
                 .qr-container img {
-                  max-width: 300px;
+                  max-width: 350px;
                   width: 100%;
-                  border: 2px solid #333;
-                  padding: 5px;
+                  border: 3px solid #333;
+                  padding: 8px;
                 }
                 .product-info {
                   margin-top: 10px;
