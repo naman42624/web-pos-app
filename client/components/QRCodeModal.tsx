@@ -33,13 +33,13 @@ export function QRCodeModal({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Generate QR code to canvas
+    // Generate QR code to canvas with lower error correction for simpler, more readable QR
     QRCode.toCanvas(canvas, encodedData, {
-      errorCorrectionLevel: "H",
+      errorCorrectionLevel: "L",
       type: "image/png",
       quality: 0.95,
-      margin: 1,
-      width: 250,
+      margin: 2,
+      width: 350,
     });
 
     // Extract data URL without state update
