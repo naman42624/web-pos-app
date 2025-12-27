@@ -37,13 +37,13 @@ export default function CreditRecords() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-500 text-sm font-medium">
-                Total Credit Issued
+                Pending Credit
               </p>
               <p className="text-4xl font-bold text-slate-900 mt-2">
-                ₹{totalCredit.toLocaleString("en-IN")}
+                ₹{pendingCredit.toLocaleString("en-IN")}
               </p>
               <p className="text-slate-500 text-sm mt-2">
-                Across {creditRecords.length} transactions
+                Across {pendingCreditSales.length} transactions
               </p>
             </div>
             <div className="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center">
