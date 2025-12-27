@@ -103,17 +103,6 @@ export default function CreditRecords() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                            sale.paymentStatus === "paid"
-                              ? "bg-green-100 text-green-700 border border-green-200"
-                              : "bg-amber-100 text-amber-700 border border-amber-200"
-                          }`}
-                        >
-                          {sale.paymentStatus === "paid" ? "Paid" : "Pending"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
                         <p className="text-slate-600 text-sm">
                           {new Date(sale.date).toLocaleDateString("en-IN", {
                             year: "numeric",
