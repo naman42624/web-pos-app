@@ -101,6 +101,24 @@ export interface CreditRecord {
   saleId: string;
 }
 
+export interface DeliveryBoy {
+  id: string;
+  name: string;
+  phone: string;
+  pin: string;
+  idProofUrl?: string;
+  status: "available" | "busy";
+  createdAt: string;
+}
+
+export interface DeliveryAssignment {
+  id: string;
+  saleId: string;
+  deliveryBoyId: string;
+  assignedAt: string;
+  status: "assigned" | "in_transit" | "delivered" | "cancelled";
+}
+
 export function usePOS() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [items, setItems] = useState<Item[]>([]);
