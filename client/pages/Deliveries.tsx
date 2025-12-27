@@ -1094,6 +1094,103 @@ export default function Deliveries() {
             </div>
           )}
         </div>
+
+        {/* Delivery Boy Selection Modal */}
+        {showDeliveryBoyModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-slate-900">
+                  Select Delivery Boy
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowDeliveryBoyModal(false);
+                    setPendingStatusChange(null);
+                    setSelectedDeliveryBoy(null);
+                  }}
+                  className="text-slate-500 hover:text-slate-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6">
+                {deliveryBoys.length > 0 ? (
+                  <div className="space-y-3">
+                    {deliveryBoys.map((boy) => (
+                      <button
+                        key={boy.id}
+                        onClick={() => setSelectedDeliveryBoy(boy.id)}
+                        className={cn(
+                          "w-full text-left p-4 rounded-lg border-2 transition-all",
+                          selectedDeliveryBoy === boy.id
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-slate-200 bg-white hover:border-slate-300",
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
+                            <User className="w-5 h-5 text-slate-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-slate-900">
+                              {boy.name}
+                            </p>
+                            <p className="text-sm text-slate-600">{boy.phone}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span
+                                className={cn(
+                                  "text-xs font-medium px-2 py-1 rounded-full",
+                                  boy.status === "available"
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-yellow-100 text-yellow-700",
+                                )}
+                              >
+                                {boy.status === "available"
+                                  ? "Available"
+                                  : "Busy"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-slate-500">No delivery boys available</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 border-t border-slate-200 space-y-3">
+                <button
+                  onClick={handleAssignAndUpdateStatus}
+                  disabled={!selectedDeliveryBoy}
+                  className={cn(
+                    "w-full px-4 py-2 rounded-lg font-medium transition-colors",
+                    selectedDeliveryBoy
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-slate-300 text-slate-500 cursor-not-allowed",
+                  )}
+                >
+                  Assign & Mark In Transit
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDeliveryBoyModal(false);
+                    setPendingStatusChange(null);
+                    setSelectedDeliveryBoy(null);
+                  }}
+                  className="w-full px-4 py-2 rounded-lg font-medium border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </SharedLayout>
   );
