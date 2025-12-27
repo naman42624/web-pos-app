@@ -26,9 +26,9 @@ export default function CreditRecords() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Credit Records</h1>
+          <h1 className="text-3xl font-bold text-slate-900">Pending Credit</h1>
           <p className="text-slate-500 mt-2">
-            View all credit transactions and customer credit history
+            View pending credit payments and customer payment status
           </p>
         </div>
 
