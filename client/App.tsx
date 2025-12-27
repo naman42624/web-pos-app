@@ -16,6 +16,7 @@ import CustomerDetail from "./pages/CustomerDetail";
 import Deliveries from "./pages/Deliveries";
 import Pickups from "./pages/Pickups";
 import CreditRecords from "./pages/CreditRecords";
+import DeliveryBoys from "./pages/admin/DeliveryBoys";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
