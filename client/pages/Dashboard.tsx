@@ -38,7 +38,9 @@ export default function Dashboard() {
   const todayTotal = getTodaySalesTotal();
   const todayCount = getTodayTransactionCount();
   const totalCustomers = customers.length;
-  const totalCredit = creditRecords.reduce((sum, c) => sum + c.amount, 0);
+  const pendingCreditIssued = sales
+    .filter((sale) => sale.paymentMode === "credit" && sale.paymentStatus !== "paid")
+    .reduce((sum, sale) => sum + sale.total, 0);
 
   const today = new Date().toISOString().split("T")[0];
 
