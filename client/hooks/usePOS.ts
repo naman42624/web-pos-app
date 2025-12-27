@@ -222,16 +222,23 @@ export function usePOS() {
   const loadProducts = async () => {
     const { data, error } = await supabase.from("products").select("*");
     if (error) {
-      console.error("Error loading products:", error);
+      console.error("Error loading products:", error.message || error);
       return;
     }
 
     const productsWithItems = await Promise.all(
       data.map(async (product: any) => {
-        const { data: itemsData } = await supabase
+        const { data: itemsData, error: itemsError } = await supabase
           .from("product_items")
           .select("*")
           .eq("product_id", product.id);
+
+        if (itemsError) {
+          console.error(
+            "Error loading product items:",
+            itemsError.message || itemsError,
+          );
+        }
 
         return {
           id: product.id,
