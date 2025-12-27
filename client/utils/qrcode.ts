@@ -35,25 +35,22 @@ export function encodeQRData(data: QRCodeData): string {
 
 export function decodeQRData(encodedData: string): QRCodeData | null {
   try {
-    console.log(
-      "Attempting to decode QR data:",
-      encodedData.substring(0, 100) + "...",
-    );
-    const data = JSON.parse(encodedData);
-    console.log("Successfully parsed JSON, data type:", data.type);
-    if (data.type === "product") {
-      console.log("Valid product QR data found");
-      return data;
-    }
-    console.log("Invalid data type, expected 'product' but got:", data.type);
-    return null;
+    // The QR code now just contains the product ID
+    // In a real application, you would look up the product details from this ID
+    console.log("Decoded product ID from QR:", encodedData);
+
+    // Return a minimal QRCodeData object with just the ID
+    // In production, you'd fetch the full product details from your database
+    return {
+      type: "product",
+      id: encodedData,
+      name: "Product",
+      price: 0,
+      items: [],
+      timestamp: new Date().toISOString(),
+    };
   } catch (error) {
-    console.error(
-      "Error decoding QR data:",
-      error,
-      "Raw data:",
-      encodedData.substring(0, 100) + "...",
-    );
+    console.error("Error decoding QR data:", error);
     return null;
   }
 }
