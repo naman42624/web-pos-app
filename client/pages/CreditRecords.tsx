@@ -54,7 +54,7 @@ export default function CreditRecords() {
 
         {/* Credit Records Table */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          {creditRecords.length > 0 ? (
+          {creditSales.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -69,6 +69,9 @@ export default function CreditRecords() {
                       Amount
                     </th>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
                       Date
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-slate-900">
@@ -77,39 +80,52 @@ export default function CreditRecords() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {creditRecords.map((record) => (
+                  {creditSales.map((sale) => (
                     <tr
-                      key={record.id}
+                      key={sale.id}
                       className="hover:bg-slate-50 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <Link
-                          to={`/customer/${record.customerId}`}
+                          to={`/customer/${sale.customerId}`}
                           className="font-medium text-blue-600 hover:text-blue-700"
                         >
-                          {getCustomerName(record.customerId)}
+                          {sale.customerId
+                            ? getCustomerName(sale.customerId)
+                            : "Walk-in"}
                         </Link>
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-slate-600 font-mono text-sm">
-                          {record.saleId}
+                          {sale.id.slice(-8).toUpperCase()}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span className="font-bold text-slate-900">
-                          ₹{record.amount.toLocaleString("en-IN")}
+                          ₹{sale.total.toLocaleString("en-IN")}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            sale.paymentStatus === "paid"
+                              ? "bg-green-100 text-green-700 border border-green-200"
+                              : "bg-amber-100 text-amber-700 border border-amber-200"
+                          }`}
+                        >
+                          {sale.paymentStatus === "paid" ? "Paid" : "Pending"}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-slate-600 text-sm">
-                          {new Date(record.date).toLocaleDateString("en-IN", {
+                          {new Date(sale.date).toLocaleDateString("en-IN", {
                             year: "numeric",
                             month: "short",
                             day: "numeric",
                           })}
                         </p>
                         <p className="text-slate-500 text-xs mt-1">
-                          {new Date(record.date).toLocaleTimeString("en-IN", {
+                          {new Date(sale.date).toLocaleTimeString("en-IN", {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
@@ -117,7 +133,7 @@ export default function CreditRecords() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <Link
-                          to={`/customer/${record.customerId}`}
+                          to={`/customer/${sale.customerId}`}
                           className="text-blue-600 hover:text-blue-700 font-medium text-sm"
                         >
                           View
