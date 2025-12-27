@@ -805,6 +805,224 @@ export function usePOS() {
       .length;
   };
 
+  // Load Delivery Boys
+  const loadDeliveryBoys = async () => {
+    const { data, error } = await supabase
+      .from("delivery_boys")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error loading delivery boys:", error);
+      return;
+    }
+
+    setDeliveryBoys(
+      data.map((boy: any) => ({
+        id: boy.id,
+        name: boy.name,
+        phone: boy.phone,
+        pin: boy.pin,
+        idProofUrl: boy.id_proof_url,
+        status: boy.status,
+        createdAt: boy.created_at,
+      })),
+    );
+  };
+
+  const addDeliveryBoy = async (
+    boy: Omit<DeliveryBoy, "id" | "createdAt">,
+    idProofFile?: File,
+  ) => {
+    let idProofUrl: string | undefined;
+
+    if (idProofFile) {
+      const fileExt = idProofFile.name.split(".").pop();
+      const fileName = `${boy.phone}-${Date.now()}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("delivery_boy_id_proofs")
+        .upload(fileName, idProofFile, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Error uploading ID proof:", uploadError);
+        throw uploadError;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("delivery_boy_id_proofs")
+        .getPublicUrl(uploadData.path);
+
+      idProofUrl = publicUrlData.publicUrl;
+    }
+
+    const { data, error } = await supabase
+      .from("delivery_boys")
+      .insert([
+        {
+          name: boy.name,
+          phone: boy.phone,
+          pin: boy.pin,
+          id_proof_url: idProofUrl,
+          status: boy.status,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding delivery boy:", error);
+      throw error;
+    }
+
+    const newBoy: DeliveryBoy = {
+      id: data.id,
+      name: data.name,
+      phone: data.phone,
+      pin: data.pin,
+      idProofUrl: data.id_proof_url,
+      status: data.status,
+      createdAt: data.created_at,
+    };
+
+    setDeliveryBoys([newBoy, ...deliveryBoys]);
+    return newBoy;
+  };
+
+  const updateDeliveryBoy = async (
+    id: string,
+    updates: Partial<Omit<DeliveryBoy, "id" | "createdAt">>,
+    idProofFile?: File,
+  ) => {
+    let idProofUrl = updates.idProofUrl;
+
+    if (idProofFile) {
+      const fileExt = idProofFile.name.split(".").pop();
+      const fileName = `${updates.phone || id}-${Date.now()}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("delivery_boy_id_proofs")
+        .upload(fileName, idProofFile, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Error uploading ID proof:", uploadError);
+        throw uploadError;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("delivery_boy_id_proofs")
+        .getPublicUrl(uploadData.path);
+
+      idProofUrl = publicUrlData.publicUrl;
+    }
+
+    const updateData: any = {};
+    if (updates.name) updateData.name = updates.name;
+    if (updates.phone) updateData.phone = updates.phone;
+    if (updates.pin) updateData.pin = updates.pin;
+    if (updates.status) updateData.status = updates.status;
+    if (idProofUrl) updateData.id_proof_url = idProofUrl;
+
+    const { error } = await supabase
+      .from("delivery_boys")
+      .update(updateData)
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating delivery boy:", error);
+      throw error;
+    }
+
+    setDeliveryBoys(
+      deliveryBoys.map((boy) =>
+        boy.id === id ? { ...boy, ...updates, idProofUrl } : boy,
+      ),
+    );
+  };
+
+  const deleteDeliveryBoy = async (id: string) => {
+    const { error } = await supabase
+      .from("delivery_boys")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting delivery boy:", error);
+      throw error;
+    }
+
+    setDeliveryBoys(deliveryBoys.filter((boy) => boy.id !== id));
+  };
+
+  const verifyDeliveryBoyPin = async (phone: string, pin: string) => {
+    const boy = deliveryBoys.find((b) => b.phone === phone && b.pin === pin);
+    return boy || null;
+  };
+
+  const assignDeliveryBoy = async (saleId: string, deliveryBoyId: string) => {
+    const { data, error } = await supabase
+      .from("delivery_assignments")
+      .upsert({
+        sale_id: saleId,
+        delivery_boy_id: deliveryBoyId,
+        assigned_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error assigning delivery boy:", error);
+      throw error;
+    }
+
+    // Update sale with delivery_boy_id
+    const { error: saleError } = await supabase
+      .from("sales")
+      .update({ delivery_boy_id: deliveryBoyId })
+      .eq("id", saleId);
+
+    if (saleError) {
+      console.error("Error updating sale with delivery boy:", saleError);
+      throw saleError;
+    }
+
+    // Update local sales state
+    setSales(
+      sales.map((s) =>
+        s.id === saleId ? { ...s, assignedDeliveryBoyId: deliveryBoyId } : s,
+      ),
+    );
+
+    return data;
+  };
+
+  const getDeliveryBoyAssignments = async (deliveryBoyId: string) => {
+    const { data, error } = await supabase
+      .from("delivery_assignments")
+      .select("*")
+      .eq("delivery_boy_id", deliveryBoyId)
+      .in("status", ["assigned", "in_transit"]);
+
+    if (error) {
+      console.error("Error fetching delivery boy assignments:", error);
+      return [];
+    }
+
+    return data.map((assignment: any) => ({
+      id: assignment.id,
+      saleId: assignment.sale_id,
+      deliveryBoyId: assignment.delivery_boy_id,
+      assignedAt: assignment.assigned_at,
+      status: assignment.status,
+    }));
+  };
+
   return {
     sales,
     items,
