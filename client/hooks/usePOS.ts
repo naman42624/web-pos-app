@@ -135,12 +135,12 @@ export function usePOS() {
       try {
         setLoading(true);
         await Promise.all([
-          loadItems(),
-          loadProducts(),
-          loadCustomers(),
-          loadSales(),
-          loadCreditRecords(),
-          loadDeliveryBoys(),
+          loadItems().catch((e) => console.error("Error loading items:", e)),
+          loadProducts().catch((e) => console.error("Error loading products:", e)),
+          loadCustomers().catch((e) => console.error("Error loading customers:", e)),
+          loadSales().catch((e) => console.error("Error loading sales:", e)),
+          loadCreditRecords().catch((e) => console.error("Error loading credit records:", e)),
+          loadDeliveryBoys().catch((e) => console.error("Error loading delivery boys:", e)),
         ]);
       } catch (error) {
         console.error("Error loading data:", error);
