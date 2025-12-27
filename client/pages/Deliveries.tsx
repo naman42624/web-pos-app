@@ -8,6 +8,7 @@ import {
   User,
   Calendar,
   Printer,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
@@ -16,12 +17,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function Deliveries() {
-  const { sales, items: inventoryItems, updateSaleStatus } = usePOSContext();
+  const { sales, items: inventoryItems, updateSaleStatus, deliveryBoys, assignDeliveryBoy } = usePOSContext();
   const [searchParams] = useSearchParams();
 
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [showDeliveryBoyModal, setShowDeliveryBoyModal] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState<{
+    saleId: string;
+    newStatus: string;
+  } | null>(null);
+  const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState<string | null>(null);
 
   useEffect(() => {
     const statusFromUrl = searchParams.get("status");
