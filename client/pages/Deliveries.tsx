@@ -524,6 +524,7 @@ export default function Deliveries() {
                         className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
                       >
                         <div className="p-4 sm:p-6">
+                          {/* Delivery Boy Info Container */}
                           {/* Header Row */}
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
                             <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
