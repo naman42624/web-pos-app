@@ -68,43 +68,56 @@ export function QRCodeModal({
             <head>
               <title>Print QR Code - ${product.name}</title>
               <style>
+                * {
+                  margin: 0;
+                  padding: 0;
+                  box-sizing: border-box;
+                }
                 body {
                   display: flex;
                   flex-direction: column;
                   align-items: center;
-                  justify-content: center;
-                  min-height: 100vh;
-                  margin: 0;
-                  padding: 20px;
+                  justify-content: flex-start;
+                  height: auto;
+                  padding: 10px;
                   font-family: Arial, sans-serif;
                   background: white;
                 }
                 .qr-container {
                   text-align: center;
-                  margin: 20px 0;
+                  margin: 10px 0;
+                  page-break-inside: avoid;
                 }
                 .qr-container img {
-                  max-width: 400px;
+                  max-width: 300px;
                   width: 100%;
                   border: 2px solid #333;
-                  padding: 10px;
+                  padding: 5px;
                 }
                 .product-info {
-                  margin-top: 20px;
+                  margin-top: 10px;
                   text-align: center;
+                  page-break-inside: avoid;
                 }
                 .product-info h2 {
-                  margin: 10px 0;
-                  font-size: 24px;
+                  margin: 5px 0;
+                  font-size: 18px;
                 }
                 .product-info p {
-                  margin: 5px 0;
-                  font-size: 16px;
+                  margin: 3px 0;
+                  font-size: 12px;
                   color: #666;
                 }
                 @media print {
                   body {
-                    padding: 0;
+                    padding: 5px;
+                    height: auto;
+                  }
+                  .qr-container {
+                    margin: 5px 0;
+                  }
+                  .product-info {
+                    margin-top: 5px;
                   }
                 }
               </style>
