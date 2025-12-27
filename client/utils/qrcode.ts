@@ -28,7 +28,9 @@ export function generateQRCodeData(product: Product): QRCodeData {
 }
 
 export function encodeQRData(data: QRCodeData): string {
-  return JSON.stringify(data);
+  // Only encode the product ID for a simpler, more readable QR code
+  // The full product details can be looked up by ID
+  return data.id;
 }
 
 export function decodeQRData(encodedData: string): QRCodeData | null {
