@@ -38,7 +38,9 @@ export default function Dashboard() {
   const todayCount = getTodayTransactionCount();
   const totalCustomers = customers.length;
   const pendingCreditIssued = sales
-    .filter((sale) => sale.paymentMode === "credit" && sale.paymentStatus !== "paid")
+    .filter(
+      (sale) => sale.paymentMode === "credit" && sale.paymentStatus !== "paid",
+    )
     .reduce((sum, sale) => sum + sale.total, 0);
 
   const today = new Date().toISOString().split("T")[0];
@@ -58,7 +60,8 @@ export default function Dashboard() {
 
   const deliveryStatusCounts = {
     pending: deliveryOrders.filter((o) => o.status === "pending").length,
-    pick_up_ready: deliveryOrders.filter((o) => o.status === "pick_up_ready").length,
+    pick_up_ready: deliveryOrders.filter((o) => o.status === "pick_up_ready")
+      .length,
     in_transit: deliveryOrders.filter((o) => o.status === "in_transit").length,
     delivered: deliveryOrders.filter((o) => o.status === "delivered").length,
     cancelled: deliveryOrders.filter((o) => o.status === "cancelled").length,
@@ -66,7 +69,8 @@ export default function Dashboard() {
 
   const pickupStatusCounts = {
     pending: pickupOrders.filter((o) => o.status === "pending").length,
-    pick_up_ready: pickupOrders.filter((o) => o.status === "pick_up_ready").length,
+    pick_up_ready: pickupOrders.filter((o) => o.status === "pick_up_ready")
+      .length,
     picked_up: pickupOrders.filter((o) => o.status === "picked_up").length,
     cancelled: pickupOrders.filter((o) => o.status === "cancelled").length,
   };

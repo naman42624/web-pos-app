@@ -540,7 +540,6 @@ export default function AddSale() {
     }
   };
 
-
   const handleSelectExistingCustomer = (customerId: string) => {
     setSelectedCustomerId(customerId);
     setPhoneLookupInput("");

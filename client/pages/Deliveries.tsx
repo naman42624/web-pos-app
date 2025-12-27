@@ -17,7 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function Deliveries() {
-  const { sales, items: inventoryItems, updateSaleStatus, deliveryBoys, assignDeliveryBoy } = usePOSContext();
+  const {
+    sales,
+    items: inventoryItems,
+    updateSaleStatus,
+    deliveryBoys,
+    assignDeliveryBoy,
+  } = usePOSContext();
   const [searchParams] = useSearchParams();
 
   const today = new Date().toISOString().split("T")[0];
@@ -28,7 +34,9 @@ export default function Deliveries() {
     saleId: string;
     newStatus: string;
   } | null>(null);
-  const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState<string | null>(null);
+  const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     const statusFromUrl = searchParams.get("status");
@@ -1137,7 +1145,9 @@ export default function Deliveries() {
                             <p className="font-semibold text-slate-900">
                               {boy.name}
                             </p>
-                            <p className="text-sm text-slate-600">{boy.phone}</p>
+                            <p className="text-sm text-slate-600">
+                              {boy.phone}
+                            </p>
                             <div className="flex items-center gap-2 mt-1">
                               <span
                                 className={cn(

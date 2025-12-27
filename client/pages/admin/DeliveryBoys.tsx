@@ -95,9 +95,7 @@ export default function DeliveryBoys() {
   };
 
   const handleDelete = async (id: string) => {
-    if (
-      window.confirm("Are you sure you want to delete this delivery boy?")
-    ) {
+    if (window.confirm("Are you sure you want to delete this delivery boy?")) {
       try {
         await deleteDeliveryBoy(id);
         alert("Delivery boy deleted successfully");
@@ -203,7 +201,9 @@ export default function DeliveryBoys() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      onChange={(e) =>
+                        setSelectedFile(e.target.files?.[0] || null)
+                      }
                       className="hidden"
                     />
                   </label>
@@ -245,7 +245,8 @@ export default function DeliveryBoys() {
                       : "bg-blue-600 hover:bg-blue-700 text-white",
                   )}
                 >
-                  {isLoading ? "Saving..." : editingId ? "Update" : "Add"} Delivery Boy
+                  {isLoading ? "Saving..." : editingId ? "Update" : "Add"}{" "}
+                  Delivery Boy
                 </button>
                 <button
                   type="button"
@@ -308,9 +309,7 @@ export default function DeliveryBoys() {
                               : "bg-yellow-100 text-yellow-800",
                           )}
                         >
-                          {boy.status === "available"
-                            ? "Available"
-                            : "Busy"}
+                          {boy.status === "available" ? "Available" : "Busy"}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm">

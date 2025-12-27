@@ -66,7 +66,9 @@ export default function DeliveryBoyLogin() {
           <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg mx-auto mb-4">
             <ShoppingCart className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Delivery Portal</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            Delivery Portal
+          </h1>
           <p className="text-slate-500">Sign in to manage your deliveries</p>
         </div>
 
@@ -83,7 +85,10 @@ export default function DeliveryBoyLogin() {
 
             {/* Phone Number Field */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Phone Number
               </label>
               <input
@@ -99,7 +104,10 @@ export default function DeliveryBoyLogin() {
 
             {/* PIN Field */}
             <div>
-              <label htmlFor="pin" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="pin"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 PIN
               </label>
               <input

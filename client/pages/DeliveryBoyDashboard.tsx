@@ -68,7 +68,9 @@ export default function DeliveryBoyDashboard() {
     return null;
   }
 
-  const inTransitDeliveries = myDeliveries.filter((s) => s.status === "in_transit");
+  const inTransitDeliveries = myDeliveries.filter(
+    (s) => s.status === "in_transit",
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
@@ -117,7 +119,8 @@ export default function DeliveryBoyDashboard() {
                     )}
                   />
                   <span className="text-sm font-medium text-slate-600">
-                    Status: {session.status === "available" ? "Available" : "Busy"}
+                    Status:{" "}
+                    {session.status === "available" ? "Available" : "Busy"}
                   </span>
                 </div>
               </div>
@@ -135,7 +138,9 @@ export default function DeliveryBoyDashboard() {
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <p className="text-sm text-slate-600 mb-2">Completed Today</p>
-            <p className="text-3xl font-bold text-green-600">{completedCount}</p>
+            <p className="text-3xl font-bold text-green-600">
+              {completedCount}
+            </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <p className="text-sm text-slate-600 mb-2">Total Assigned</p>
@@ -225,7 +230,9 @@ export default function DeliveryBoyDashboard() {
                             <div className="flex items-start gap-2">
                               <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                               <div>
-                                <p className="text-xs text-slate-600">Address</p>
+                                <p className="text-xs text-slate-600">
+                                  Address
+                                </p>
                                 <p className="text-sm font-medium text-slate-900">
                                   {delivery.deliveryDetails.receiverAddress}
                                 </p>

@@ -43,8 +43,14 @@ export function App() {
               <Route path="/pickups" element={<Pickups />} />
               <Route path="/credit-records" element={<CreditRecords />} />
               <Route path="/admin/delivery-boys" element={<DeliveryBoys />} />
-              <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
-              <Route path="/delivery-boy/dashboard" element={<DeliveryBoyDashboard />} />
+              <Route
+                path="/delivery-boy/login"
+                element={<DeliveryBoyLogin />}
+              />
+              <Route
+                path="/delivery-boy/dashboard"
+                element={<DeliveryBoyDashboard />}
+              />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
