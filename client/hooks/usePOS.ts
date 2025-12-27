@@ -125,6 +125,7 @@ export function usePOS() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [creditRecords, setCreditRecords] = useState<CreditRecord[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [deliveryBoys, setDeliveryBoys] = useState<DeliveryBoy[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Initial load of all data
@@ -138,6 +139,7 @@ export function usePOS() {
           loadCustomers(),
           loadSales(),
           loadCreditRecords(),
+          loadDeliveryBoys(),
         ]);
       } catch (error) {
         console.error("Error loading data:", error);
