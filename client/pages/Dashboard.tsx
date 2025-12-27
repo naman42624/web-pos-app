@@ -163,10 +163,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-slate-500 text-xs sm:text-sm font-medium">
-                  Credit Issued
+                  Credit Issued (Pending)
                 </p>
                 <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2 truncate">
-                  ₹{totalCredit.toLocaleString("en-IN")}
+                  ₹{pendingCreditIssued.toLocaleString("en-IN")}
                 </p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
