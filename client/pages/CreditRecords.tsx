@@ -4,17 +4,22 @@ import { usePOSContext } from "@/contexts/usePOSContext";
 import { CreditCard, TrendingUp } from "lucide-react";
 
 export default function CreditRecords() {
-  const { creditRecords, customers, sales } = usePOSContext();
+  const { customers, sales } = usePOSContext();
 
   const getCustomerName = (customerId: string) => {
     return customers.find((c) => c.id === customerId)?.name || "Unknown";
   };
 
-  const getSaleDetails = (saleId: string) => {
-    return sales.find((s) => s.id === saleId);
-  };
+  const creditSales = sales.filter((sale) => sale.paymentMode === "credit");
+  const pendingCreditSales = creditSales.filter(
+    (sale) => sale.paymentStatus !== "paid",
+  );
 
-  const totalCredit = creditRecords.reduce((sum, c) => sum + c.amount, 0);
+  const totalCredit = creditSales.reduce((sum, sale) => sum + sale.total, 0);
+  const pendingCredit = pendingCreditSales.reduce(
+    (sum, sale) => sum + sale.total,
+    0,
+  );
 
   return (
     <SharedLayout>
