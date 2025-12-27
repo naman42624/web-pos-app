@@ -128,8 +128,8 @@ export function QRCodeModal({
               </div>
               <div class="product-info">
                 <h2>${product.name}</h2>
-                <p style="font-size: 12px; color: #666; margin-top: 10px;">Manual Entry Code: <strong>${product.id}</strong></p>
-                <p style="font-size: 12px; margin-top: 10px;">Generated: ${new Date().toLocaleDateString("en-IN")}</p>
+                <p style="font-size: 11px; color: #666; margin-top: 5px;">Code: <strong>${product.id}</strong></p>
+                <p style="font-size: 10px; margin-top: 3px;">${new Date().toLocaleDateString("en-IN")}</p>
               </div>
             </body>
           </html>
