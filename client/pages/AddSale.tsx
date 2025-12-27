@@ -540,26 +540,6 @@ export default function AddSale() {
     }
   };
 
-  const handlePhoneLookup = () => {
-    const phone = phoneLookupInput.trim();
-    if (!phone) {
-      alert("Please enter a phone number");
-      return;
-    }
-
-    // Search for customers with this phone number
-    const matching = customers.filter(
-      (customer) => customer.phone === phone || customer.altPhone === phone,
-    );
-
-    setMatchingCustomers(matching);
-
-    if (matching.length === 0) {
-      // No matching customer, show form to create new one
-      setShowNewCustomerForm(true);
-      setNewCustomerPhone(phone);
-    }
-  };
 
   const handleSelectExistingCustomer = (customerId: string) => {
     setSelectedCustomerId(customerId);
