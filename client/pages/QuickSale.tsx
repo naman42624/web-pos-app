@@ -474,9 +474,9 @@ export default function QuickSale() {
                     {/* QR Code Scanner Button */}
                     <button
                       onClick={() => setShowQRScanner(true)}
-                      className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 text-sm sm:text-base"
+                      className="w-full inline-flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-5 px-6 sm:py-2 sm:px-4 rounded-lg shadow-md transition-all duration-200 text-lg sm:text-base"
                     >
-                      <QrCode className="w-5 h-5" />
+                      <QrCode className="w-7 h-7 sm:w-5 sm:h-5" />
                       Scan QR Code
                     </button>
 
