@@ -329,13 +329,56 @@ export default function DeliveryBoyDashboard() {
                         </div>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="mb-4 space-y-2">
                         {delivery.items.map((item) => (
                           <div key={item.id} className="text-sm text-slate-600">
                             • {item.name} × {item.quantity}
                           </div>
                         ))}
                       </div>
+
+                      {delivery.deliveryDetails && (
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                          <p className="text-sm font-semibold text-slate-900 mb-3">
+                            Delivery Details
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <User className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs text-slate-600">
+                                  Receiver Name
+                                </p>
+                                <p className="text-sm font-medium text-slate-900">
+                                  {delivery.deliveryDetails.receiverName}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <Phone className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs text-slate-600">
+                                  Receiver Phone
+                                </p>
+                                <p className="text-sm font-medium text-slate-900">
+                                  {delivery.deliveryDetails.receiverPhone}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <MapPin className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs text-slate-600">
+                                  Address
+                                </p>
+                                <p className="text-sm font-medium text-slate-900">
+                                  {delivery.deliveryDetails.receiverAddress}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
