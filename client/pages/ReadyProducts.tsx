@@ -342,7 +342,7 @@ export default function ReadyProducts() {
               Create your first ready product by combining items
             </p>
             <button
-              onClick={openAddModal}
+              onClick={() => navigate("/create-product")}
               className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200 inline-flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
