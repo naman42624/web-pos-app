@@ -51,6 +51,8 @@ export interface Sale {
   id: string;
   items: SaleItem[];
   paymentMode: "cash" | "upi" | "credit";
+  paymentModes?: ("cash" | "upi" | "credit" | "cod")[];
+  paymentAmounts?: Record<string, number>;
   customerId?: string;
   total: number;
   date: string;
