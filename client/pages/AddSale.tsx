@@ -112,6 +112,8 @@ export default function AddSale() {
     [],
   );
   const [showNewCustomerForm, setShowNewCustomerForm] = useState(false);
+  const [createdSale, setCreatedSale] = useState<Sale | null>(null);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
 
   const subtotal = saleItems.reduce(
     (sum, item) => sum + item.quantity * item.price,
