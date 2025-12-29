@@ -95,6 +95,7 @@ export default function AddSale() {
   const [discountValue, setDiscountValue] = useState("");
   const [deliveryCharges, setDeliveryCharges] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [newCustomerName, setNewCustomerName] = useState("");
   const [newCustomerPhone, setNewCustomerPhone] = useState("");
@@ -274,7 +275,7 @@ export default function AddSale() {
     }, 0);
   };
 
-  const handleAddCustomProduct = () => {
+  const handleAddCustomProduct = async () => {
     if (!customProductName.trim()) {
       alert("Please enter product name");
       return;
@@ -290,23 +291,28 @@ export default function AddSale() {
       return;
     }
 
-    const quantity = parseInt(customProductQuantity) || 1;
-    const newItem: SaleItem = {
-      id: `product-${Date.now()}`,
-      name: customProductName.trim(),
-      quantity: quantity,
-      price: parseFloat(customProductPrice),
-      image: undefined,
-      composition: customProductItems,
-    };
+    setIsCreatingProduct(true);
+    try {
+      const quantity = parseInt(customProductQuantity) || 1;
+      const newItem: SaleItem = {
+        id: `product-${Date.now()}`,
+        name: customProductName.trim(),
+        quantity: quantity,
+        price: parseFloat(customProductPrice),
+        image: undefined,
+        composition: customProductItems,
+      };
 
-    const newSaleItems = [...saleItems, newItem];
-    setSaleItems(newSaleItems);
-    setCustomProductName("");
-    setCustomProductPrice("");
-    setCustomProductQuantity("1");
-    setCustomProductItems([]);
-    setItemSearchTerm("");
+      const newSaleItems = [...saleItems, newItem];
+      setSaleItems(newSaleItems);
+      setCustomProductName("");
+      setCustomProductPrice("");
+      setCustomProductQuantity("1");
+      setCustomProductItems([]);
+      setItemSearchTerm("");
+    } finally {
+      setIsCreatingProduct(false);
+    }
   };
 
   const togglePaymentMode = (mode: PaymentMode) => {
@@ -1129,6 +1135,7 @@ export default function AddSale() {
                     <button
                       onClick={handleAddCustomProduct}
                       disabled={
+                        isCreatingProduct ||
                         !customProductName.trim() ||
                         !customProductPrice ||
                         parseFloat(customProductPrice) <= 0 ||
@@ -1136,7 +1143,8 @@ export default function AddSale() {
                       }
                       className={cn(
                         "w-full font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base",
-                        !customProductName.trim() ||
+                        isCreatingProduct ||
+                          !customProductName.trim() ||
                           !customProductPrice ||
                           parseFloat(customProductPrice) <= 0 ||
                           customProductItems.length === 0
@@ -1144,8 +1152,17 @@ export default function AddSale() {
                           : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white",
                       )}
                     >
-                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Add Product to Sale
+                      {isCreatingProduct ? (
+                        <>
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                          Add Product to Sale
+                        </>
+                      )}
                     </button>
                   </>
                 )}
