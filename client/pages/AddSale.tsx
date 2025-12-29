@@ -293,7 +293,10 @@ export default function AddSale() {
     }
 
     setIsCreatingProduct(true);
+    toast.loading("Creating product...");
     try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const quantity = parseInt(customProductQuantity) || 1;
       const newItem: SaleItem = {
         id: `product-${Date.now()}`,
@@ -311,6 +314,10 @@ export default function AddSale() {
       setCustomProductQuantity("1");
       setCustomProductItems([]);
       setItemSearchTerm("");
+
+      toast.success(`Product "${customProductName.trim()}" created successfully`);
+    } catch (error) {
+      toast.error("Failed to create product");
     } finally {
       setIsCreatingProduct(false);
     }
