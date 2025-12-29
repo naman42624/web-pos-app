@@ -181,6 +181,9 @@ export function usePOS() {
           loadDeliveryBoys().catch((e) =>
             console.error("Error loading delivery boys:", e),
           ),
+          loadSettings().catch((e) =>
+            console.error("Error loading settings:", e),
+          ),
         ]);
 
         // Load products last to avoid database overload
