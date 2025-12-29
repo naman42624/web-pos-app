@@ -22,6 +22,7 @@ export default function ReadyProducts() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    stock: "",
     image: "",
     selectedItems: [] as Array<{
       itemId?: string;
