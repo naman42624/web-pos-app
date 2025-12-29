@@ -36,6 +36,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
   const navItems = [
     { path: "/", label: "Dashboard", icon: BarChart3 },
     { path: "/add-sale", label: "Add Sale", icon: ShoppingCart },
+    { path: "/quick-sale", label: "Quick Sale", icon: Zap },
     { path: "/items", label: "Items", icon: Package },
     { path: "/ready-products", label: "Ready Products", icon: Box },
     { path: "/customers", label: "Customers", icon: Users },
