@@ -522,6 +522,8 @@ export function usePOS() {
           id: sale.id,
           items: saleItems,
           paymentMode: sale.payment_mode,
+          paymentModes: sale.payment_modes,
+          paymentAmounts: sale.payment_amounts,
           customerId: sale.customer_id,
           total: parseFloat(sale.total),
           date: sale.date,
