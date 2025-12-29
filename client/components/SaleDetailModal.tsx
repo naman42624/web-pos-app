@@ -72,7 +72,7 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
               <div className="bg-slate-50 p-4 rounded-lg">
                 <p className="text-sm text-slate-600 mb-1">Status</p>
                 <p className="text-lg font-semibold text-slate-900 capitalize">
-                  {sale.status || "pending"}
+                  {sale.isQuickSale ? "Quick Sale" : sale.status || "pending"}
                 </p>
               </div>
               <div className="bg-slate-50 p-4 rounded-lg">
