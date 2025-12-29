@@ -750,6 +750,7 @@ export function usePOS() {
       deliveryDetails: sale.deliveryDetails,
       paymentStatus: "pending",
       status: "pending",
+      isQuickSale: sale.isQuickSale || false,
     };
 
     setSales([...sales, newSale]);
