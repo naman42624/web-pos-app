@@ -84,7 +84,6 @@ export default function Deliveries() {
     return `${hours}:${minutes}`;
   };
 
-
   const handlePrintDeliverySlip = (
     order: (typeof deliveryOrders)[0],
     orderNumber: string,
