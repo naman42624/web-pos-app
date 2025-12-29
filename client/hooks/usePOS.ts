@@ -259,13 +259,10 @@ export function usePOS() {
   // Load Products
   const loadProducts = async () => {
     try {
-      // Only fetch basic product info - items are loaded on-demand
-      // Don't use ORDER BY to avoid timeout on unindexed columns
-      // Limit to 1000 products to prevent memory/performance issues
+      // Fetch without image column first (image may be large base64 data causing timeout)
       const { data: productsData, error: productsError } = await supabase
         .from("products")
-        .select("id, name, price, image")
-        .limit(1000);
+        .select("id, name, price");
 
       if (productsError) {
         console.error(
@@ -281,19 +278,46 @@ export function usePOS() {
         return;
       }
 
-      // Set products without items - they're loaded on-demand when needed
-      setProducts(
-        productsData.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          price: parseFloat(product.price) || 0,
-          image: product.image,
-          items: [],
-        })),
-      );
+      const productsWithoutImages = productsData.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price) || 0,
+        image: undefined,
+        items: [],
+      }));
+
+      setProducts(productsWithoutImages);
+
+      // Load images separately in the background
+      loadProductImages(productsData.map((p: any) => p.id));
     } catch (error) {
       console.error("Error in loadProducts:", error);
       setProducts([]);
+    }
+  };
+
+  // Load product images separately to avoid timeout
+  const loadProductImages = async (productIds: string[]) => {
+    try {
+      for (const productId of productIds) {
+        const { data: productData, error } = await supabase
+          .from("products")
+          .select("id, image")
+          .eq("id", productId)
+          .single();
+
+        if (!error && productData) {
+          setProducts((prev) =>
+            prev.map((p) =>
+              p.id === productId
+                ? { ...p, image: productData.image }
+                : p
+            ),
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error loading product images:", error);
     }
   };
 
