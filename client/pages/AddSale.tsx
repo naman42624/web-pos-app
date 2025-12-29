@@ -1517,8 +1517,8 @@ export default function AddSale() {
                   <div className="space-y-3">
                     {Array.from(selectedPaymentModes).map((mode) => (
                       <div key={mode} className="flex items-center gap-3">
-                        <label className="min-w-20 text-sm font-medium text-slate-700 capitalize">
-                          {mode}:
+                        <label className="min-w-32 text-sm font-medium text-slate-700 capitalize">
+                          {mode === "cod" ? "Cash on Delivery" : mode}:
                         </label>
                         <div className="flex items-center gap-1">
                           <span className="text-slate-600">₹</span>
