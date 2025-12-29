@@ -138,19 +138,7 @@ export default function ReadyProducts() {
 
     if (editingProductId) {
       await updateProduct(editingProductId, productData);
-      closeModal();
-    } else {
-      const newProduct = await addProduct(productData);
-      closeModal();
-
-      // Auto-print QR code for new products
-      if (newProduct) {
-        setTimeout(() => {
-          setSelectedProductForQR(newProduct);
-          setShowQRModal(true);
-          setAutoprint(true);
-        }, 500);
-      }
+      closeEditModal();
     }
   };
 
