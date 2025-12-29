@@ -290,13 +290,56 @@ export default function DeliveryBoyDashboard() {
                       </div>
                     )}
 
-                    <button
-                      onClick={() => handleMarkDelivered(delivery.id)}
-                      className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
-                    >
-                      <CheckCircle2 className="w-5 h-5" />
-                      Mark as Delivered
-                    </button>
+                    {delivery.paymentModes?.includes("cod") && (
+                      <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <DollarSign className="w-5 h-5 text-amber-600" />
+                            <div>
+                              <p className="text-xs font-medium text-amber-700">
+                                Cash to Collect
+                              </p>
+                              <p className="text-lg font-bold text-amber-900">
+                                ₹{getCODAmount(delivery).toLocaleString("en-IN")}
+                              </p>
+                            </div>
+                          </div>
+                          {delivery.paymentStatus !== "paid" && (
+                            <button
+                              onClick={() => handleMarkCashReceived(delivery.id)}
+                              className="px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-colors"
+                            >
+                              Mark Received
+                            </button>
+                          )}
+                          {delivery.paymentStatus === "paid" && (
+                            <span className="px-3 py-2 bg-green-100 text-green-700 text-sm font-semibold rounded-lg">
+                              ✓ Received
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      {delivery.paymentModes?.includes("cod") ? (
+                        <button
+                          onClick={() => handleMarkDelivered(delivery.id)}
+                          className="w-full px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                        >
+                          <CheckCircle2 className="w-5 h-5" />
+                          Mark Delivery Complete
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleMarkDelivered(delivery.id)}
+                          className="w-full px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                        >
+                          <CheckCircle2 className="w-5 h-5" />
+                          Mark as Delivered
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
