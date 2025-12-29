@@ -448,7 +448,7 @@ export default function QuickSale() {
                   className={cn(
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "ready"
-                      ? "bg-blue-600 text-white shadow-md"
+                      ? "bg-cyan-600 text-white shadow-md"
                       : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                   )}
                 >
@@ -459,8 +459,8 @@ export default function QuickSale() {
                   className={cn(
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "custom"
-                      ? "bg-blue-600 text-white shadow-md"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300",
+                      ? "bg-cyan-600 text-white shadow-md"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
                   )}
                 >
                   Add Items
@@ -474,7 +474,7 @@ export default function QuickSale() {
                     {/* QR Code Scanner Button */}
                     <button
                       onClick={() => setShowQRScanner(true)}
-                      className="w-full inline-flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-5 px-6 sm:py-2 sm:px-4 rounded-lg shadow-md transition-all duration-200 text-lg sm:text-base"
+                      className="w-full inline-flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold py-5 px-6 sm:py-2 sm:px-4 rounded-lg shadow-md transition-all duration-200 text-lg sm:text-base"
                     >
                       <QrCode className="w-7 h-7 sm:w-5 sm:h-5" />
                       Scan QR Code
@@ -523,7 +523,7 @@ export default function QuickSale() {
                                 key={product.id}
                                 type="button"
                                 onClick={() => selectReadyProduct(product)}
-                                className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                                className="w-full text-left px-4 py-3 hover:bg-cyan-50 transition-colors border-b border-slate-100 last:border-b-0"
                               >
                                 <div className="flex items-center gap-3">
                                   {product.image ? (
@@ -644,7 +644,7 @@ export default function QuickSale() {
                                 key={item.id}
                                 type="button"
                                 onClick={() => addItemToCustomProduct(item)}
-                                className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                                className="w-full text-left px-4 py-3 hover:bg-cyan-50 transition-colors border-b border-slate-100 last:border-b-0"
                               >
                                 <div className="flex items-center gap-3">
                                   {item.image ? (
@@ -1010,7 +1010,7 @@ export default function QuickSale() {
                                 customer.name,
                               )
                             }
-                            className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                            className="w-full text-left px-4 py-3 hover:bg-cyan-50 transition-colors border-b border-slate-100 last:border-b-0"
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-medium text-slate-900">
