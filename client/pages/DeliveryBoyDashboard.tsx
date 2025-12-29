@@ -152,47 +152,163 @@ export default function DeliveryBoyDashboard() {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <p className="text-sm text-slate-600 mb-2">Pending Deliveries</p>
-            <p className="text-3xl font-bold text-slate-900">
-              {inTransitDeliveries.length}
+        {/* Section 1: Pending Deliveries */}
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Pending Deliveries
+            </h2>
+            <p className="text-slate-600 mt-1">
+              {inTransitDeliveries.length} order{inTransitDeliveries.length !== 1 ? "s" : ""} waiting for delivery
             </p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <p className="text-sm text-slate-600 mb-2">Completed Today</p>
-            <p className="text-3xl font-bold text-green-600">
-              {completedCount}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <p className="text-sm text-slate-600 mb-2">Total Assigned</p>
-            <p className="text-3xl font-bold text-blue-600">
-              {myDeliveries.length}
-            </p>
-          </div>
+
+          {inTransitDeliveries.length > 0 ? (
+            <div className="space-y-4 mb-12">
+              {inTransitDeliveries.map((delivery, index) => (
+                <div
+                  key={delivery.id}
+                  className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
+                >
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+                          <Truck className="w-6 h-6 text-amber-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-slate-900">
+                            Order #{index + 1}
+                          </h3>
+                          <p className="text-sm text-slate-600">
+                            Order ID: {delivery.id}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-slate-900">
+                          ₹{delivery.total.toLocaleString("en-IN")}
+                        </p>
+                        <p className="text-sm text-slate-600 capitalize">
+                          {delivery.paymentMode}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mb-4 space-y-2">
+                      {delivery.items.map((item) => (
+                        <div key={item.id} className="text-sm text-slate-600">
+                          • {item.name} × {item.quantity}
+                        </div>
+                      ))}
+                    </div>
+
+                    {delivery.deliveryDetails && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <p className="text-sm font-semibold text-slate-900 mb-3">
+                          Delivery Details
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <User className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-slate-600">
+                                Receiver Name
+                              </p>
+                              <p className="text-sm font-medium text-slate-900">
+                                {delivery.deliveryDetails.receiverName}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Phone className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-slate-600">
+                                Receiver Phone
+                              </p>
+                              <p className="text-sm font-medium text-slate-900">
+                                {delivery.deliveryDetails.receiverPhone}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-slate-600">
+                                Address
+                              </p>
+                              <p className="text-sm font-medium text-slate-900">
+                                {delivery.deliveryDetails.receiverAddress}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {delivery.pickupDate && (
+                      <div className="flex items-center gap-4 mb-4 text-sm text-slate-600">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(delivery.pickupDate).toLocaleDateString(
+                            "en-IN",
+                          )}
+                        </div>
+                        {delivery.pickupTime && (
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            {delivery.pickupTime}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => handleMarkDelivered(delivery.id)}
+                      className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle2 className="w-5 h-5" />
+                      Mark as Delivered
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-blue-50 rounded-xl border border-blue-200 mb-12">
+              <Truck className="w-12 h-12 text-blue-300 mx-auto mb-2" />
+              <p className="text-slate-600 font-medium">
+                No pending deliveries
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Deliveries List */}
-        <div className="space-y-6">
-          {inTransitDeliveries.length > 0 ? (
-            <>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Deliveries to Complete ({inTransitDeliveries.length})
-              </h2>
-              <div className="space-y-4">
-                {inTransitDeliveries.map((delivery, index) => (
+        {/* Section 2: Completed Today */}
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Completed Today
+            </h2>
+            <p className="text-slate-600 mt-1">
+              {completedCount} order{completedCount !== 1 ? "s" : ""} delivered
+            </p>
+          </div>
+
+          {completedCount > 0 ? (
+            <div className="space-y-4 mb-12">
+              {myDeliveries
+                .filter((s) => s.status === "delivered")
+                .map((delivery, index) => (
                   <div
                     key={delivery.id}
-                    className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
+                    className="bg-white rounded-xl shadow-sm border border-green-200 overflow-hidden"
                   >
                     <div className="p-6">
-                      {/* Order Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-                            <Truck className="w-6 h-6 text-amber-600" />
+                          <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-6 h-6 text-green-600" />
                           </div>
                           <div>
                             <h3 className="text-lg font-semibold text-slate-900">
@@ -207,114 +323,112 @@ export default function DeliveryBoyDashboard() {
                           <p className="text-2xl font-bold text-slate-900">
                             ₹{delivery.total.toLocaleString("en-IN")}
                           </p>
-                          <p className="text-sm text-slate-600 capitalize">
-                            {delivery.paymentMode}
-                          </p>
+                          <span className="inline-block mt-1 px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                            Delivered
+                          </span>
                         </div>
                       </div>
 
-                      {/* Items */}
-                      <div className="mb-4 space-y-2">
+                      <div className="space-y-2">
                         {delivery.items.map((item) => (
                           <div key={item.id} className="text-sm text-slate-600">
                             • {item.name} × {item.quantity}
                           </div>
                         ))}
                       </div>
-
-                      {/* Delivery Details */}
-                      {delivery.deliveryDetails && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                          <p className="text-sm font-semibold text-slate-900 mb-3">
-                            Delivery Details
-                          </p>
-                          <div className="space-y-2">
-                            <div className="flex items-start gap-2">
-                              <User className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="text-xs text-slate-600">
-                                  Receiver Name
-                                </p>
-                                <p className="text-sm font-medium text-slate-900">
-                                  {delivery.deliveryDetails.receiverName}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <Phone className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="text-xs text-slate-600">
-                                  Receiver Phone
-                                </p>
-                                <p className="text-sm font-medium text-slate-900">
-                                  {delivery.deliveryDetails.receiverPhone}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="text-xs text-slate-600">
-                                  Address
-                                </p>
-                                <p className="text-sm font-medium text-slate-900">
-                                  {delivery.deliveryDetails.receiverAddress}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Schedule */}
-                      {delivery.pickupDate && (
-                        <div className="flex items-center gap-4 mb-4 text-sm text-slate-600">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4" />
-                            {new Date(delivery.pickupDate).toLocaleDateString(
-                              "en-IN",
-                            )}
-                          </div>
-                          {delivery.pickupTime && (
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4" />
-                              {delivery.pickupTime}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Action Button */}
-                      <button
-                        onClick={() => handleMarkDelivered(delivery.id)}
-                        className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
-                      >
-                        <CheckCircle2 className="w-5 h-5" />
-                        Mark as Delivered
-                      </button>
                     </div>
                   </div>
                 ))}
-              </div>
-            </>
-          ) : completedCount > 0 ? (
-            <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
-              <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <p className="text-slate-900 font-semibold text-lg mb-2">
-                All Deliveries Completed!
-              </p>
-              <p className="text-slate-600">
-                You've completed {completedCount} deliveries today
-              </p>
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
-              <Truck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-medium text-lg">
-                No deliveries assigned yet
+            <div className="text-center py-12 bg-green-50 rounded-xl border border-green-200 mb-12">
+              <CheckCircle2 className="w-12 h-12 text-green-300 mx-auto mb-2" />
+              <p className="text-slate-600 font-medium">
+                No deliveries completed yet
               </p>
-              <p className="text-slate-400 text-sm mt-2">
-                You will see deliveries here once they're assigned
+            </div>
+          )}
+        </div>
+
+        {/* Section 3: All Orders */}
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-slate-900">
+              All Orders
+            </h2>
+            <p className="text-slate-600 mt-1">
+              {myDeliveries.length} total order{myDeliveries.length !== 1 ? "s" : ""} assigned
+            </p>
+          </div>
+
+          {myDeliveries.length > 0 ? (
+            <div className="space-y-4">
+              {myDeliveries.map((delivery, index) => (
+                <div
+                  key={delivery.id}
+                  className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
+                >
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={cn(
+                            "w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0",
+                            delivery.status === "delivered"
+                              ? "bg-green-100"
+                              : "bg-blue-100",
+                          )}
+                        >
+                          {delivery.status === "delivered" ? (
+                            <CheckCircle2 className="w-6 h-6 text-green-600" />
+                          ) : (
+                            <Truck className="w-6 h-6 text-blue-600" />
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-slate-900">
+                            Order #{index + 1}
+                          </h3>
+                          <p className="text-sm text-slate-600">
+                            Order ID: {delivery.id}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-slate-900">
+                          ₹{delivery.total.toLocaleString("en-IN")}
+                        </p>
+                        <span
+                          className={cn(
+                            "inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full",
+                            delivery.status === "delivered"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-amber-100 text-amber-700",
+                          )}
+                        >
+                          {delivery.status === "delivered"
+                            ? "Delivered"
+                            : "In Transit"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      {delivery.items.map((item) => (
+                        <div key={item.id} className="text-sm text-slate-600">
+                          • {item.name} × {item.quantity}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-slate-50 rounded-xl border border-slate-200">
+              <Truck className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+              <p className="text-slate-600 font-medium">
+                No orders assigned yet
               </p>
             </div>
           )}
