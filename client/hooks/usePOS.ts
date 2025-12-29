@@ -251,67 +251,77 @@ export function usePOS() {
 
   // Load Products
   const loadProducts = async () => {
-    const { data: productsData, error: productsError } = await supabase
-      .from("products")
-      .select("*");
+    try {
+      // Select only needed columns to reduce data transfer
+      const { data: productsData, error: productsError } = await supabase
+        .from("products")
+        .select("id, name, price, image")
+        .timeout(10000); // 10 second timeout
 
-    if (productsError) {
-      console.error("Error loading products:", productsError.message || productsError);
-      return;
-    }
+      if (productsError) {
+        console.error("Error loading products:", productsError.message || productsError);
+        setProducts([]);
+        return;
+      }
 
-    if (!productsData || productsData.length === 0) {
-      setProducts([]);
-      return;
-    }
+      if (!productsData || productsData.length === 0) {
+        setProducts([]);
+        return;
+      }
 
-    // Fetch all product items in one query instead of per-product
-    const { data: allItemsData, error: itemsError } = await supabase
-      .from("product_items")
-      .select("*");
+      // Fetch all product items in one query with column selection
+      const { data: allItemsData, error: itemsError } = await supabase
+        .from("product_items")
+        .select("product_id, item_id, custom_name, custom_price, quantity")
+        .timeout(10000); // 10 second timeout
 
-    if (itemsError) {
-      console.error("Error loading product items:", itemsError.message || itemsError);
-      setProducts(
-        productsData.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          price: parseFloat(product.price) || 0,
-          image: product.image,
-          items: [],
+      if (itemsError) {
+        console.error("Error loading product items:", itemsError.message || itemsError);
+        // Still show products without items if items fail to load
+        setProducts(
+          productsData.map((product: any) => ({
+            id: product.id,
+            name: product.name,
+            price: parseFloat(product.price) || 0,
+            image: product.image,
+            items: [],
+          })),
+        );
+        return;
+      }
+
+      // Group items by product_id for efficient lookup
+      const itemsByProductId = new Map<string, any[]>();
+      if (allItemsData) {
+        allItemsData.forEach((item: any) => {
+          const productId = item.product_id;
+          if (!itemsByProductId.has(productId)) {
+            itemsByProductId.set(productId, []);
+          }
+          itemsByProductId.get(productId)!.push(item);
+        });
+      }
+
+      const productsWithItems = productsData.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price) || 0,
+        image: product.image,
+        items: (itemsByProductId.get(product.id) || []).map((pi: any) => ({
+          itemId: pi.item_id,
+          customName: pi.custom_name,
+          customPrice: pi.custom_price
+            ? parseFloat(pi.custom_price)
+            : undefined,
+          quantity: pi.quantity,
         })),
-      );
-      return;
+      }));
+
+      setProducts(productsWithItems);
+    } catch (error) {
+      console.error("Error in loadProducts:", error);
+      setProducts([]);
     }
-
-    // Group items by product_id for efficient lookup
-    const itemsByProductId = new Map<string, any[]>();
-    if (allItemsData) {
-      allItemsData.forEach((item: any) => {
-        const productId = item.product_id;
-        if (!itemsByProductId.has(productId)) {
-          itemsByProductId.set(productId, []);
-        }
-        itemsByProductId.get(productId)!.push(item);
-      });
-    }
-
-    const productsWithItems = productsData.map((product: any) => ({
-      id: product.id,
-      name: product.name,
-      price: parseFloat(product.price) || 0,
-      image: product.image,
-      items: (itemsByProductId.get(product.id) || []).map((pi: any) => ({
-        itemId: pi.item_id,
-        customName: pi.custom_name,
-        customPrice: pi.custom_price
-          ? parseFloat(pi.custom_price)
-          : undefined,
-        quantity: pi.quantity,
-      })),
-    }));
-
-    setProducts(productsWithItems);
   };
 
   const addProduct = async (product: Omit<Product, "id">) => {
