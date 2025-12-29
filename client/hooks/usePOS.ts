@@ -260,10 +260,12 @@ export function usePOS() {
   const loadProducts = async () => {
     try {
       // Only fetch basic product info - items are loaded on-demand
+      // Don't use ORDER BY to avoid timeout on unindexed columns
+      // Limit to 1000 products to prevent memory/performance issues
       const { data: productsData, error: productsError } = await supabase
         .from("products")
         .select("id, name, price, image")
-        .order("created_at", { ascending: false });
+        .limit(1000);
 
       if (productsError) {
         console.error(
