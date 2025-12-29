@@ -24,6 +24,14 @@ export default function Dashboard() {
     loading,
   } = usePOSContext();
 
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [showSaleDetail, setShowSaleDetail] = useState(false);
+
+  const handleSaleClick = (sale: Sale) => {
+    setSelectedSale(sale);
+    setShowSaleDetail(true);
+  };
+
   if (loading) {
     return (
       <SharedLayout>
