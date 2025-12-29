@@ -1241,6 +1241,7 @@ export function usePOS() {
     creditRecords,
     products,
     deliveryBoys,
+    settings,
     loading,
     addSale,
     updateSaleStatus,
@@ -1266,5 +1267,6 @@ export function usePOS() {
     assignDeliveryBoy,
     getDeliveryBoyAssignments,
     loadDeliveryBoys,
+    updateSettings,
   };
 }
