@@ -1717,7 +1717,10 @@ export default function AddSale() {
                   <div className="flex justify-between">
                     <span className="text-slate-600">Payment</span>
                     <span className="font-medium text-slate-900 capitalize">
-                      {Array.from(selectedPaymentModes)[0]}
+                      {(() => {
+                        const mode = Array.from(selectedPaymentModes)[0];
+                        return mode === "cod" ? "Cash on Delivery" : mode;
+                      })()}
                     </span>
                   </div>
                 ) : (
