@@ -261,9 +261,20 @@ export default function ReadyProducts() {
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 line-clamp-2">
                       {product.name}
                     </h3>
-                    <p className="text-xl sm:text-2xl font-bold text-cyan-600 mt-1">
-                      ₹{(product.price || 0).toFixed(2)}
-                    </p>
+                    <div className="flex items-center justify-between gap-2 mt-2">
+                      <p className="text-xl sm:text-2xl font-bold text-cyan-600">
+                        ₹{(product.price || 0).toFixed(2)}
+                      </p>
+                      <span
+                        className={`text-xs sm:text-sm font-semibold px-3 py-1 rounded-full ${
+                          product.stock > 0
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {product.stock} in stock
+                      </span>
+                    </div>
                   </div>
 
                   <div className="border-t border-slate-200 pt-3">
