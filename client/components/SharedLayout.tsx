@@ -58,7 +58,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200",
               active
-                ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600"
+                ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-600"
                 : "text-slate-700 hover:bg-slate-50",
             )}
           >
@@ -76,7 +76,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
       <header className="border-b border-slate-200 bg-white shadow-sm sticky top-0 z-50">
         <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg flex-shrink-0">
               <ShoppingCart className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
