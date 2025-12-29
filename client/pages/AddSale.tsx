@@ -455,7 +455,11 @@ export default function AddSale() {
       const paymentAmountsRecord: Record<string, number> = {};
 
       Array.from(selectedPaymentModes).forEach((mode) => {
-        const amount = parseFloat(paymentAmounts[mode]) || 0;
+        let amount = parseFloat(paymentAmounts[mode]) || 0;
+        // For single payment mode, use the total if no amount was entered
+        if (selectedPaymentModes.size === 1 && amount === 0) {
+          amount = total;
+        }
         paymentAmountsRecord[mode] = amount;
       });
 
