@@ -340,16 +340,16 @@ export default function ReadyProducts() {
           </div>
         )}
 
-        {/* Add/Edit Product Modal */}
-        {showAddModal && (
+        {/* Edit Product Modal */}
+        {showEditModal && editingProductId && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-slate-900">
-                  {editingProductId ? "Edit Product" : "Add New Product"}
+                  Edit Product
                 </h2>
                 <button
-                  onClick={closeModal}
+                  onClick={closeEditModal}
                   className="text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <X className="w-6 h-6" />
