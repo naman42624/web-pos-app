@@ -712,6 +712,26 @@ export function usePOS() {
     );
   };
 
+  const markCashOnDeliveryReceived = async (saleId: string) => {
+    const { error } = await supabase
+      .from("sales")
+      .update({ payment_status: "paid" })
+      .eq("id", saleId);
+
+    if (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : JSON.stringify(error);
+      console.error("Error marking COD as received:", errorMsg);
+      throw error;
+    }
+
+    setSales(
+      sales.map((sale) =>
+        sale.id === saleId ? { ...sale, paymentStatus: "paid" } : sale,
+      ),
+    );
+  };
+
   const recordPayment = async (saleId: string, amountReceived: number) => {
     const sale = sales.find((s) => s.id === saleId);
     if (!sale) {
