@@ -486,7 +486,7 @@ export default function AddSale() {
         paymentAmountsRecord[mode] = amount;
       });
 
-      addSale({
+      const sale = await addSale({
         items: saleItems,
         paymentMode: primaryMode,
         paymentModes: Array.from(selectedPaymentModes),
@@ -511,6 +511,9 @@ export default function AddSale() {
             ? parseFloat(deliveryCharges)
             : undefined,
       });
+
+      setCreatedSale(sale);
+      setShowReceiptModal(true);
 
       setSaleItems([]);
       setOrderRemarks("");
@@ -537,13 +540,21 @@ export default function AddSale() {
       setShowNewCustomerForm(false);
       setIsCapturingCustomer(false);
 
-      navigate("/");
+      toast.success("✓ Sale created successfully!", {
+        description: "Receipt is ready for printing",
+      });
     } catch (error) {
       console.error("Error saving sale:", error);
-      alert("Failed to save sale. Please try again.");
+      toast.error("Failed to save sale. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleReceiptModalClose = () => {
+    setShowReceiptModal(false);
+    setCreatedSale(null);
+    navigate("/");
   };
 
   const handleQRScanned = (data: QRCodeData) => {
