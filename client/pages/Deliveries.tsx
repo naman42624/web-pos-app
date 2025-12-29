@@ -10,7 +10,7 @@ import {
   Printer,
   X,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getOrderNumber } from "@/lib/utils";
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
