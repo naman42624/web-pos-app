@@ -679,7 +679,7 @@ export default function ReadyProducts() {
               {/* Modal Footer */}
               <div className="sticky bottom-0 bg-white border-t border-slate-200 p-6 flex gap-3 justify-end">
                 <button
-                  onClick={closeModal}
+                  onClick={closeEditModal}
                   className="px-6 py-2 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors"
                 >
                   Cancel
@@ -688,7 +688,7 @@ export default function ReadyProducts() {
                   onClick={handleSaveProduct}
                   className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200"
                 >
-                  {editingProductId ? "Update" : "Create"} Product
+                  Update Product
                 </button>
               </div>
             </div>
