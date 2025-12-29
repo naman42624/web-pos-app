@@ -239,6 +239,26 @@ export default function CreateProduct() {
               )}
             </div>
 
+            {/* Stock Quantity */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+              <label className="block text-sm font-semibold text-slate-700 mb-3">
+                Stock Quantity <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                value={formData.stock}
+                onChange={(e) =>
+                  setFormData({ ...formData, stock: e.target.value })
+                }
+                placeholder="0"
+                min="0"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-base"
+              />
+              <p className="text-xs text-slate-500 mt-2">
+                Number of units available for sale
+              </p>
+            </div>
+
             {/* Product Image */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <label className="block text-sm font-semibold text-slate-700 mb-4">
