@@ -251,44 +251,65 @@ export function usePOS() {
 
   // Load Products
   const loadProducts = async () => {
-    const { data, error } = await supabase.from("products").select("*");
-    if (error) {
-      console.error("Error loading products:", error.message || error);
+    const { data: productsData, error: productsError } = await supabase
+      .from("products")
+      .select("*");
+
+    if (productsError) {
+      console.error("Error loading products:", productsError.message || productsError);
       return;
     }
 
-    const productsWithItems = await Promise.all(
-      data.map(async (product: any) => {
-        const { data: itemsData, error: itemsError } = await supabase
-          .from("product_items")
-          .select("*")
-          .eq("product_id", product.id);
+    if (!productsData || productsData.length === 0) {
+      setProducts([]);
+      return;
+    }
 
-        if (itemsError) {
-          console.error(
-            "Error loading product items:",
-            itemsError.message || itemsError,
-          );
-        }
+    // Fetch all product items in one query instead of per-product
+    const { data: allItemsData, error: itemsError } = await supabase
+      .from("product_items")
+      .select("*");
 
-        return {
+    if (itemsError) {
+      console.error("Error loading product items:", itemsError.message || itemsError);
+      setProducts(
+        productsData.map((product: any) => ({
           id: product.id,
           name: product.name,
           price: parseFloat(product.price) || 0,
           image: product.image,
-          items: itemsData
-            ? itemsData.map((pi: any) => ({
-                itemId: pi.item_id,
-                customName: pi.custom_name,
-                customPrice: pi.custom_price
-                  ? parseFloat(pi.custom_price)
-                  : undefined,
-                quantity: pi.quantity,
-              }))
-            : [],
-        };
-      }),
-    );
+          items: [],
+        })),
+      );
+      return;
+    }
+
+    // Group items by product_id for efficient lookup
+    const itemsByProductId = new Map<string, any[]>();
+    if (allItemsData) {
+      allItemsData.forEach((item: any) => {
+        const productId = item.product_id;
+        if (!itemsByProductId.has(productId)) {
+          itemsByProductId.set(productId, []);
+        }
+        itemsByProductId.get(productId)!.push(item);
+      });
+    }
+
+    const productsWithItems = productsData.map((product: any) => ({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price) || 0,
+      image: product.image,
+      items: (itemsByProductId.get(product.id) || []).map((pi: any) => ({
+        itemId: pi.item_id,
+        customName: pi.custom_name,
+        customPrice: pi.custom_price
+          ? parseFloat(pi.custom_price)
+          : undefined,
+        quantity: pi.quantity,
+      })),
+    }));
 
     setProducts(productsWithItems);
   };
