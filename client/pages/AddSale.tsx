@@ -2334,6 +2334,15 @@ export default function AddSale() {
             </div>
           </div>
         )}
+
+        {/* Receipt Modal */}
+        {createdSale && (
+          <ReceiptModal
+            sale={createdSale}
+            isOpen={showReceiptModal}
+            onClose={handleReceiptModalClose}
+          />
+        )}
       </div>
     </SharedLayout>
   );
