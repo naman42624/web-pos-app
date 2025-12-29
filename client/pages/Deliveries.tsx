@@ -458,7 +458,7 @@ export default function Deliveries() {
                 }
                 className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   selectedStatus === status
-                    ? "bg-blue-600 text-white shadow-md"
+                    ? "bg-cyan-600 text-white shadow-md"
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
