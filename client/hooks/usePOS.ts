@@ -1124,6 +1124,7 @@ export function usePOS() {
     addProduct,
     updateProduct,
     deleteProduct,
+    loadProductItems,
     addDeliveryBoy,
     updateDeliveryBoy,
     deleteDeliveryBoy,
