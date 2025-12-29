@@ -1483,7 +1483,11 @@ export default function AddSale() {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-                {(["cash", "upi", "credit"] as PaymentMode[]).map((mode) => (
+                {(
+                  orderType === "delivery"
+                    ? (["cash", "upi", "credit", "cod"] as PaymentMode[])
+                    : (["cash", "upi", "credit"] as PaymentMode[])
+                ).map((mode) => (
                   <button
                     key={mode}
                     onClick={() => togglePaymentMode(mode)}
@@ -1497,7 +1501,9 @@ export default function AddSale() {
                     {selectedPaymentModes.has(mode) && (
                       <Check className="w-5 h-5 absolute top-2 right-2" />
                     )}
-                    <span className="capitalize block">{mode}</span>
+                    <span className="capitalize block">
+                      {mode === "cod" ? "Cash on Delivery" : mode}
+                    </span>
                   </button>
                 ))}
               </div>
