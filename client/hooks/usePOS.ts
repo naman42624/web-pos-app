@@ -156,6 +156,7 @@ export function usePOS() {
   const [creditRecords, setCreditRecords] = useState<CreditRecord[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [deliveryBoys, setDeliveryBoys] = useState<DeliveryBoy[]>([]);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Initial load of all data
