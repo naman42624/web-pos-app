@@ -261,7 +261,7 @@ export default function ReadyProducts() {
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 line-clamp-2">
                       {product.name}
                     </h3>
-                    <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">
+                    <p className="text-xl sm:text-2xl font-bold text-cyan-600 mt-1">
                       ₹{(product.price || 0).toFixed(2)}
                     </p>
                   </div>
