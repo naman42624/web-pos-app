@@ -398,13 +398,18 @@ export default function QuickSale() {
         customerId = newCustomer.id;
       }
 
-      addSale({
+      const sale = await addSale({
         items: saleItems,
         paymentMode: primaryMode,
+        paymentModes: [primaryMode],
+        paymentAmounts: { [primaryMode]: total },
         total,
         customerId,
         orderType: "pickup",
       });
+
+      setCreatedSale(sale);
+      setShowReceiptModal(true);
 
       setSaleItems([]);
       setSelectedPaymentModes(new Set(["cash"]));
@@ -413,14 +418,21 @@ export default function QuickSale() {
       setCreditCustomerSearch("");
       setSelectedCustomerId(null);
 
-      alert("Sale registered successfully!");
-      navigate("/");
+      toast.success("✓ Sale registered successfully!", {
+        description: "Receipt is ready for printing",
+      });
     } catch (error) {
       console.error("Error saving sale:", error);
-      alert("Failed to save sale. Please try again.");
+      toast.error("Failed to save sale. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleReceiptModalClose = () => {
+    setShowReceiptModal(false);
+    setCreatedSale(null);
+    navigate("/");
   };
 
   return (
