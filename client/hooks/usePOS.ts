@@ -279,9 +279,11 @@ export function usePOS() {
       }
 
       // Fetch all product items with column selection to optimize query
+      // Add limit to prevent timeout issues with large datasets
       const { data: allItemsData, error: itemsError } = await supabase
         .from("product_items")
-        .select("product_id, item_id, custom_name, custom_price, quantity");
+        .select("product_id, item_id, custom_name, custom_price, quantity")
+        .limit(10000);
 
       if (itemsError) {
         console.error(
