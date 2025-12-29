@@ -115,6 +115,13 @@ export default function DeliveryBoyAllOrders() {
     return 0;
   });
 
+  const getCODAmount = (delivery: (typeof sales)[0]) => {
+    if (delivery.paymentAmounts && delivery.paymentAmounts.cod) {
+      return delivery.paymentAmounts.cod;
+    }
+    return 0;
+  };
+
   if (!session) {
     return null;
   }
