@@ -737,7 +737,7 @@ export default function AddSale() {
                   className={cn(
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "ready"
-                      ? "bg-blue-600 text-white shadow-md"
+                      ? "bg-cyan-600 text-white shadow-md"
                       : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                   )}
                 >
@@ -748,8 +748,8 @@ export default function AddSale() {
                   className={cn(
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "custom"
-                      ? "bg-blue-600 text-white shadow-md"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300",
+                      ? "bg-cyan-600 text-white shadow-md"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
                   )}
                 >
                   Create Product from Items
@@ -1495,7 +1495,7 @@ export default function AddSale() {
 
               {selectedPaymentModes.size > 1 && (
                 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm font-medium text-blue-700 mb-4">
+                  <p className="text-sm font-medium text-cyan-700 mb-4">
                     Enter amount for each payment method (must sum to ₹
                     {total.toFixed(2)})
                   </p>
@@ -1588,7 +1588,7 @@ export default function AddSale() {
                     className={cn(
                       "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
                       discountType === "percentage"
-                        ? "bg-blue-600 text-white shadow-md"
+                        ? "bg-cyan-600 text-white shadow-md"
                         : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                     )}
                   >
@@ -1599,8 +1599,8 @@ export default function AddSale() {
                     className={cn(
                       "flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-all",
                       discountType === "fixed"
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "bg-slate-200 text-slate-700 hover:bg-slate-300",
+                        ? "bg-cyan-600 text-white shadow-md"
+                        : "bg-slate-200 text-slate-700 hover:bg-slate-300"
                     )}
                   >
                     ₹ Fixed Amount
@@ -1653,7 +1653,7 @@ export default function AddSale() {
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl shadow-sm border border-blue-200 p-4 sm:p-6 lg:sticky lg:top-24 space-y-4 sm:space-y-6">
               <h2 className="text-lg font-bold text-slate-900">Summary</h2>
 
-              <div className="space-y-3 border-b border-blue-200 pb-6">
+              <div className="space-y-3 border-b border-cyan-200 pb-6">
                 {saleItems.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-slate-600">
@@ -1706,7 +1706,7 @@ export default function AddSale() {
                     </span>
                   </div>
                 ) : (
-                  <div className="pt-2 border-t border-blue-200 mt-2">
+                  <div className="pt-2 border-t border-cyan-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-2">
                       Payment Breakdown
                     </p>
@@ -1732,7 +1732,7 @@ export default function AddSale() {
                 )}
 
                 {(orderType === "pickup_later" || orderType === "delivery") && (
-                  <div className="pt-2 border-t border-blue-200 mt-2">
+                  <div className="pt-2 border-t border-cyan-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-1">
                       {orderType === "pickup_later" ? "Pickup" : "Delivery"}
                     </p>
@@ -1745,7 +1745,7 @@ export default function AddSale() {
                 )}
 
                 {orderType === "delivery" && deliveryDetails.receiverName && (
-                  <div className="pt-2 border-t border-blue-200 mt-2">
+                  <div className="pt-2 border-t border-cyan-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-2">
                       Delivery Info
                     </p>
@@ -1767,7 +1767,7 @@ export default function AddSale() {
                 )}
 
                 {selectedCustomerId && (
-                  <div className="pt-2 border-t border-blue-200 mt-2">
+                  <div className="pt-2 border-t border-cyan-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-2">
                       Customer
                     </p>
@@ -1793,7 +1793,7 @@ export default function AddSale() {
                 )}
 
                 {orderRemarks && (
-                  <div className="pt-2 border-t border-blue-200 mt-2">
+                  <div className="pt-2 border-t border-cyan-200 mt-2">
                     <p className="text-xs text-slate-500 font-medium mb-1">
                       Remarks
                     </p>
@@ -1804,7 +1804,7 @@ export default function AddSale() {
                 )}
               </div>
 
-              <div className="space-y-2 pt-4 border-t-2 border-blue-300">
+              <div className="space-y-2 pt-4 border-t-2 border-cyan-300">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Subtotal</span>
                   <span className="font-medium text-slate-900">
@@ -1840,7 +1840,7 @@ export default function AddSale() {
 
                 <div className="flex justify-between text-lg pt-2">
                   <span className="font-bold text-slate-900">Total</span>
-                  <span className="font-bold text-blue-700">
+                  <span className="font-bold text-cyan-700">
                     ₹{total.toFixed(2)}
                   </span>
                 </div>
