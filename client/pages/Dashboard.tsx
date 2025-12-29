@@ -319,12 +319,13 @@ export default function Dashboard() {
           {recentSales.length > 0 ? (
             <div className="space-y-3">
               {recentSales.map((sale) => (
-                <div
+                <button
                   key={sale.id}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                  onClick={() => handleSaleClick(sale)}
+                  className="w-full text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors cursor-pointer group"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-slate-900 text-sm sm:text-base">
+                    <p className="font-medium text-slate-900 text-sm sm:text-base group-hover:text-blue-600 transition-colors">
                       {sale.items.length} item
                       {sale.items.length !== 1 ? "s" : ""}
                     </p>
@@ -343,7 +344,7 @@ export default function Dashboard() {
                       {sale.paymentMode}
                     </p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           ) : (
