@@ -972,6 +972,75 @@ export function usePOS() {
     }
   };
 
+  // Load Settings
+  const loadSettings = async () => {
+    const { data, error } = await supabase
+      .from("settings")
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("Error loading settings:", error);
+      return;
+    }
+
+    setSettings({
+      id: data.id,
+      businessName: data.business_name,
+      businessEmail: data.business_email,
+      businessPhone: data.business_phone,
+      logoUrl: data.logo_url,
+      businessAddress: data.business_address,
+      businessCity: data.business_city,
+      businessState: data.business_state,
+      businessZip: data.business_zip,
+      taxId: data.tax_id,
+      billingEmail: data.billing_email,
+      billingName: data.billing_name,
+      billingAddress: data.billing_address,
+      billingCity: data.billing_city,
+      billingState: data.billing_state,
+      billingZip: data.billing_zip,
+      paymentTerms: data.payment_terms,
+      currency: data.currency,
+      timezone: data.timezone,
+      theme: data.theme,
+      language: data.language,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    });
+  };
+
+  // Update Settings
+  const updateSettings = async (updatedSettings: Partial<Settings>) => {
+    const updateData: Record<string, any> = {};
+
+    // Map camelCase to snake_case for database
+    Object.entries(updatedSettings).forEach(([key, value]) => {
+      const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+      if (snakeKey !== "id" && snakeKey !== "created_at" && snakeKey !== "updated_at") {
+        updateData[snakeKey] = value;
+      }
+    });
+
+    updateData.updated_at = new Date().toISOString();
+
+    const { error } = await supabase
+      .from("settings")
+      .update(updateData)
+      .eq("id", settings?.id || "");
+
+    if (error) {
+      console.error("Error updating settings:", error);
+      throw error;
+    }
+
+    // Update local state
+    if (settings) {
+      setSettings({ ...settings, ...updatedSettings, updatedAt: new Date().toISOString() });
+    }
+  };
+
   const addDeliveryBoy = async (
     boy: Omit<DeliveryBoy, "id" | "createdAt">,
     idProofFile?: File,
