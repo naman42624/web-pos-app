@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Settings,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
