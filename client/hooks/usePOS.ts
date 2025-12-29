@@ -74,6 +74,7 @@ export interface Sale {
     | "delivery_attempted_twice";
   paymentStatus?: "pending" | "paid";
   assignedDeliveryBoyId?: string;
+  isQuickSale?: boolean;
 }
 
 export interface Address {
