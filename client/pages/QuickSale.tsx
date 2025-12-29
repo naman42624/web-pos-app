@@ -510,7 +510,7 @@ export default function QuickSale() {
                           }
                         }}
                         placeholder="Search ready products..."
-                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none"
                         onKeyDown={(e) =>
                           e.key === "Enter" && handleAddReadyProduct()
                         }
@@ -584,7 +584,7 @@ export default function QuickSale() {
                         !productName ||
                           !readyProducts.find((p) => p.name === productName)
                           ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                          : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white",
+                          : "bg-gradient-to-r from-lime-500 to-green-600 hover:from-lime-600 hover:to-green-700 text-white",
                       )}
                     >
                       <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -827,7 +827,7 @@ export default function QuickSale() {
                           parseFloat(customProductPrice) <= 0 ||
                           customProductItems.length === 0
                           ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                          : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white",
+                          : "bg-gradient-to-r from-lime-500 to-green-600 hover:from-lime-600 hover:to-green-700 text-white",
                       )}
                     >
                       <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
