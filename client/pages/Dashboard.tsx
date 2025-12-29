@@ -93,14 +93,14 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Link
               to="/quick-sale"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold text-base sm:text-sm py-4 sm:py-3 px-6 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-2 sm:order-1"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold text-base sm:text-sm py-4 sm:py-3 px-6 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-2 sm:order-1"
             >
               <ShoppingCart className="w-6 h-6 sm:w-5 sm:h-5" />
               Quick Sale
             </Link>
             <Link
               to="/add-sale"
-              className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-base sm:text-sm py-4 sm:py-3 px-6 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-1 sm:order-2"
+              className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-base sm:text-sm py-4 sm:py-3 px-6 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-1 sm:order-2"
             >
               <ShoppingCart className="w-6 h-6 sm:w-5 sm:h-5" />
               New Sale
@@ -121,8 +121,8 @@ export default function Dashboard() {
                   ₹{todayTotal.toLocaleString("en-IN")}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-600" />
               </div>
             </div>
           </div>
@@ -138,8 +138,8 @@ export default function Dashboard() {
                   {todayCount}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-lime-600" />
               </div>
             </div>
           </div>
@@ -155,8 +155,8 @@ export default function Dashboard() {
                   {totalCustomers}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
               </div>
             </div>
           </div>
@@ -172,8 +172,8 @@ export default function Dashboard() {
                   ₹{pendingCreditIssued.toLocaleString("en-IN")}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
               </div>
             </div>
           </div>
@@ -184,8 +184,8 @@ export default function Dashboard() {
           {/* Deliveries */}
           <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">
                 Delivery Status
@@ -243,8 +243,8 @@ export default function Dashboard() {
           {/* Pickups */}
           <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">
                 Pickup Status
