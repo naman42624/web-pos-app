@@ -10,6 +10,7 @@ import {
   User,
   Clock,
   Calendar,
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
