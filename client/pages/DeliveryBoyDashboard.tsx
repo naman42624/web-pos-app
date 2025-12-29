@@ -65,7 +65,10 @@ export default function DeliveryBoyDashboard() {
 
       const updatedSession = { ...session, status: newStatus };
       setSession(updatedSession);
-      localStorage.setItem("deliveryBoySession", JSON.stringify(updatedSession));
+      localStorage.setItem(
+        "deliveryBoySession",
+        JSON.stringify(updatedSession),
+      );
     } catch (error) {
       console.error("Error updating status:", error);
       alert("Failed to update status");
@@ -145,7 +148,8 @@ export default function DeliveryBoyDashboard() {
                     )}
                   />
                   <span className="text-sm">
-                    Status: {session.status === "available" ? "Available" : "Busy"}
+                    Status:{" "}
+                    {session.status === "available" ? "Available" : "Busy"}
                   </span>
                 </button>
               </div>
@@ -160,7 +164,8 @@ export default function DeliveryBoyDashboard() {
               Pending Deliveries
             </h2>
             <p className="text-slate-600 mt-1">
-              {inTransitDeliveries.length} order{inTransitDeliveries.length !== 1 ? "s" : ""} waiting for delivery
+              {inTransitDeliveries.length} order
+              {inTransitDeliveries.length !== 1 ? "s" : ""} waiting for delivery
             </p>
           </div>
 
@@ -235,9 +240,7 @@ export default function DeliveryBoyDashboard() {
                           <div className="flex items-start gap-2">
                             <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                             <div>
-                              <p className="text-xs text-slate-600">
-                                Address
-                              </p>
+                              <p className="text-xs text-slate-600">Address</p>
                               <p className="text-sm font-medium text-slate-900">
                                 {delivery.deliveryDetails.receiverAddress}
                               </p>
@@ -411,7 +414,9 @@ export default function DeliveryBoyDashboard() {
                       All Orders
                     </h3>
                     <p className="text-sm text-slate-600">
-                      {myDeliveries.length} total order{myDeliveries.length !== 1 ? "s" : ""} assigned • View with filters & search
+                      {myDeliveries.length} total order
+                      {myDeliveries.length !== 1 ? "s" : ""} assigned • View
+                      with filters & search
                     </p>
                   </div>
                 </div>

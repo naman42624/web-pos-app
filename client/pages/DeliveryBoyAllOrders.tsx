@@ -29,8 +29,12 @@ export default function DeliveryBoyAllOrders() {
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "in_transit" | "delivered">("all");
-  const [sortBy, setSortBy] = useState<"recent" | "amount" | "status">("recent");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "in_transit" | "delivered"
+  >("all");
+  const [sortBy, setSortBy] = useState<"recent" | "amount" | "status">(
+    "recent",
+  );
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
@@ -65,9 +69,8 @@ export default function DeliveryBoyAllOrders() {
       const query = searchQuery.toLowerCase();
       const matchesOrderId = delivery.id.toLowerCase().includes(query);
       const matchesReceiverName =
-        delivery.deliveryDetails?.receiverName
-          .toLowerCase()
-          .includes(query) || false;
+        delivery.deliveryDetails?.receiverName.toLowerCase().includes(query) ||
+        false;
 
       if (!matchesOrderId && !matchesReceiverName) {
         return false;
@@ -247,7 +250,8 @@ export default function DeliveryBoyAllOrders() {
         {/* Results Count */}
         <div className="mb-4">
           <p className="text-sm text-slate-600">
-            Showing <span className="font-semibold">{sortedDeliveries.length}</span> of{" "}
+            Showing{" "}
+            <span className="font-semibold">{sortedDeliveries.length}</span> of{" "}
             <span className="font-semibold">{myDeliveries.length}</span> orders
           </p>
         </div>
