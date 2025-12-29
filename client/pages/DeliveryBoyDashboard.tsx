@@ -394,159 +394,31 @@ export default function DeliveryBoyDashboard() {
           )}
         </div>
 
-        {/* Section 3: All Orders */}
+        {/* Section 3: All Orders Link */}
         <div>
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-slate-900">
-              All Orders
-            </h2>
-            <p className="text-slate-600 mt-1">
-              {myDeliveries.length} total order{myDeliveries.length !== 1 ? "s" : ""} assigned
-            </p>
-          </div>
-
-          {myDeliveries.length > 0 ? (
-            <div className="space-y-4">
-              {myDeliveries.map((delivery, index) => (
-                <div
-                  key={delivery.id}
-                  className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={cn(
-                            "w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0",
-                            delivery.status === "delivered"
-                              ? "bg-green-100"
-                              : "bg-blue-100",
-                          )}
-                        >
-                          {delivery.status === "delivered" ? (
-                            <CheckCircle2 className="w-6 h-6 text-green-600" />
-                          ) : (
-                            <Truck className="w-6 h-6 text-blue-600" />
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-slate-900">
-                            Order #{index + 1}
-                          </h3>
-                          <p className="text-sm text-slate-600">
-                            Order ID: {delivery.id}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-slate-900">
-                          ₹{delivery.total.toLocaleString("en-IN")}
-                        </p>
-                        <span
-                          className={cn(
-                            "inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full",
-                            delivery.status === "delivered"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-amber-100 text-amber-700",
-                          )}
-                        >
-                          {delivery.status === "delivered"
-                            ? "Delivered"
-                            : "In Transit"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mb-4 space-y-2">
-                      {delivery.items.map((item) => (
-                        <div key={item.id} className="text-sm text-slate-600">
-                          • {item.name} × {item.quantity}
-                        </div>
-                      ))}
-                    </div>
-
-                    {delivery.deliveryDetails && (
-                      <div
-                        className={cn(
-                          "rounded-lg p-4",
-                          delivery.status === "delivered"
-                            ? "bg-green-50 border border-green-200"
-                            : "bg-blue-50 border border-blue-200",
-                        )}
-                      >
-                        <p className="text-sm font-semibold text-slate-900 mb-3">
-                          Delivery Details
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex items-start gap-2">
-                            <User
-                              className={cn(
-                                "w-4 h-4 mt-0.5 flex-shrink-0",
-                                delivery.status === "delivered"
-                                  ? "text-green-600"
-                                  : "text-blue-600",
-                              )}
-                            />
-                            <div>
-                              <p className="text-xs text-slate-600">
-                                Receiver Name
-                              </p>
-                              <p className="text-sm font-medium text-slate-900">
-                                {delivery.deliveryDetails.receiverName}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <Phone
-                              className={cn(
-                                "w-4 h-4 mt-0.5 flex-shrink-0",
-                                delivery.status === "delivered"
-                                  ? "text-green-600"
-                                  : "text-blue-600",
-                              )}
-                            />
-                            <div>
-                              <p className="text-xs text-slate-600">
-                                Receiver Phone
-                              </p>
-                              <p className="text-sm font-medium text-slate-900">
-                                {delivery.deliveryDetails.receiverPhone}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <MapPin
-                              className={cn(
-                                "w-4 h-4 mt-0.5 flex-shrink-0",
-                                delivery.status === "delivered"
-                                  ? "text-green-600"
-                                  : "text-blue-600",
-                              )}
-                            />
-                            <div>
-                              <p className="text-xs text-slate-600">
-                                Address
-                              </p>
-                              <p className="text-sm font-medium text-slate-900">
-                                {delivery.deliveryDetails.receiverAddress}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+          <button
+            onClick={() => navigate("/delivery-boy/all-orders")}
+            className="w-full bg-white hover:bg-slate-50 rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200"
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center">
+                    <Truck className="w-7 h-7 text-blue-600" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-semibold text-slate-900">
+                      All Orders
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      {myDeliveries.length} total order{myDeliveries.length !== 1 ? "s" : ""} assigned • View with filters & search
+                    </p>
                   </div>
                 </div>
-              ))}
+                <ChevronRight className="w-6 h-6 text-slate-400" />
+              </div>
             </div>
-          ) : (
-            <div className="text-center py-12 bg-slate-50 rounded-xl border border-slate-200">
-              <Truck className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-              <p className="text-slate-600 font-medium">
-                No orders assigned yet
-              </p>
-            </div>
-          )}
+          </button>
         </div>
       </div>
     </div>
