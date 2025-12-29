@@ -10,6 +10,7 @@ import {
   User,
   Search,
   Calendar,
+  DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
