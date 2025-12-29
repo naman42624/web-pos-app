@@ -312,7 +312,7 @@ export default function DeliveryBoyAllOrders() {
                     </div>
                     <div className="text-right">
                       <div>
-                        {delivery.paymentModes?.includes("cod") ? (
+                        {isCODOrder(delivery) ? (
                           <>
                             <p className="text-xs text-slate-600 mb-1">
                               Cash to Collect
