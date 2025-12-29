@@ -31,6 +31,7 @@ export interface SaleItem {
   quantity: number;
   price: number;
   image?: string;
+  productId?: string;
   composition?: Array<{
     itemId?: string;
     customName?: string;
