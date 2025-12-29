@@ -489,6 +489,14 @@ export function usePOS() {
     setProducts(products.filter((p) => p.id !== id));
   };
 
+  const decrementProductStock = async (productId: string, quantity: number) => {
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+
+    const newStock = Math.max(0, product.stock - quantity);
+    await updateProduct(productId, { stock: newStock });
+  };
+
   // Load Customers
   const loadCustomers = async () => {
     const { data, error } = await supabase.from("customers").select("*");
