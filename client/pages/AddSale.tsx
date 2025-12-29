@@ -480,7 +480,7 @@ export default function AddSale() {
       setOrderRemarks("");
       setSelectedCustomerId("");
       setSelectedPaymentModes(new Set(["cash"]));
-      setPaymentAmounts({ cash: "", upi: "", credit: "" });
+      setPaymentAmounts({ cash: "", upi: "", credit: "", cod: "" });
       setOrderType("pickup");
       setPickupDate("");
       setPickupTime("");
