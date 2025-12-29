@@ -259,8 +259,7 @@ export function usePOS() {
   // Load Products
   const loadProducts = async () => {
     try {
-      // Fetch only essential columns to avoid timeout
-      // Images are loaded only when viewing/editing a product
+      // Fetch products without images first (fast)
       const { data: productsData, error: productsError } = await supabase
         .from("products")
         .select("id, name, price");
@@ -279,18 +278,51 @@ export function usePOS() {
         return;
       }
 
-      setProducts(
-        productsData.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          price: parseFloat(product.price) || 0,
-          image: undefined,
-          items: [],
-        })),
-      );
+      const initialProducts = productsData.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price) || 0,
+        image: undefined,
+        items: [],
+      }));
+
+      setProducts(initialProducts);
+
+      // Load images in batches in the background
+      loadProductImagesInBatches(productsData.map((p: any) => p.id));
     } catch (error) {
       console.error("Error in loadProducts:", error);
       setProducts([]);
+    }
+  };
+
+  // Load product images in batches to avoid timeout
+  const loadProductImagesInBatches = async (productIds: string[]) => {
+    const batchSize = 10;
+
+    for (let i = 0; i < productIds.length; i += batchSize) {
+      const batch = productIds.slice(i, i + batchSize);
+
+      try {
+        const { data: batchProducts, error } = await supabase
+          .from("products")
+          .select("id, image")
+          .in("id", batch);
+
+        if (!error && batchProducts) {
+          setProducts((prev) =>
+            prev.map((product) => {
+              const updated = batchProducts.find((p: any) => p.id === product.id);
+              return updated ? { ...product, image: updated.image } : product;
+            }),
+          );
+        }
+      } catch (err) {
+        console.error(`Error loading images batch ${i / batchSize + 1}:`, err);
+      }
+
+      // Small delay between batches to avoid overwhelming the database
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   };
 
