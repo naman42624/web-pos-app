@@ -259,7 +259,8 @@ export function usePOS() {
   // Load Products
   const loadProducts = async () => {
     try {
-      // Fetch without image column first (image may be large base64 data causing timeout)
+      // Fetch only essential columns to avoid timeout
+      // Images are loaded only when viewing/editing a product
       const { data: productsData, error: productsError } = await supabase
         .from("products")
         .select("id, name, price");
@@ -278,46 +279,18 @@ export function usePOS() {
         return;
       }
 
-      const productsWithoutImages = productsData.map((product: any) => ({
-        id: product.id,
-        name: product.name,
-        price: parseFloat(product.price) || 0,
-        image: undefined,
-        items: [],
-      }));
-
-      setProducts(productsWithoutImages);
-
-      // Load images separately in the background
-      loadProductImages(productsData.map((p: any) => p.id));
+      setProducts(
+        productsData.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          price: parseFloat(product.price) || 0,
+          image: undefined,
+          items: [],
+        })),
+      );
     } catch (error) {
       console.error("Error in loadProducts:", error);
       setProducts([]);
-    }
-  };
-
-  // Load product images separately to avoid timeout
-  const loadProductImages = async (productIds: string[]) => {
-    try {
-      for (const productId of productIds) {
-        const { data: productData, error } = await supabase
-          .from("products")
-          .select("id, image")
-          .eq("id", productId)
-          .single();
-
-        if (!error && productData) {
-          setProducts((prev) =>
-            prev.map((p) =>
-              p.id === productId
-                ? { ...p, image: productData.image }
-                : p
-            ),
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Error loading product images:", error);
     }
   };
 
