@@ -14,6 +14,7 @@ export default function CreateProduct() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    stock: "",
     image: "",
     selectedItems: [] as ProductItem[],
   });
