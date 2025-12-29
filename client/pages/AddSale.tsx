@@ -293,14 +293,18 @@ export default function AddSale() {
     }
 
     setIsCreatingProduct(true);
-    toast.loading("Creating product...");
+    const productName = customProductName.trim();
+    toast("Creating your product...", {
+      description: `Adding "${productName}" to sale`,
+    });
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       const quantity = parseInt(customProductQuantity) || 1;
       const newItem: SaleItem = {
         id: `product-${Date.now()}`,
-        name: customProductName.trim(),
+        name: productName,
         quantity: quantity,
         price: parseFloat(customProductPrice),
         image: undefined,
@@ -315,9 +319,9 @@ export default function AddSale() {
       setCustomProductItems([]);
       setItemSearchTerm("");
 
-      toast.success(
-        `Product "${customProductName.trim()}" created successfully`,
-      );
+      toast.success(`✓ "${productName}" added to sale`, {
+        description: "Product is ready for checkout",
+      });
     } catch (error) {
       toast.error("Failed to create product");
     } finally {
