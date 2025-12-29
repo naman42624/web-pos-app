@@ -60,11 +60,11 @@ export default function ReadyProducts() {
       selectedItems: product.items,
     });
     setEditingProductId(product.id);
-    setShowAddModal(true);
+    setShowEditModal(true);
   };
 
-  const closeModal = () => {
-    setShowAddModal(false);
+  const closeEditModal = () => {
+    setShowEditModal(false);
     resetForm();
   };
 
