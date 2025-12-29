@@ -213,7 +213,7 @@ export default function ReadyProducts() {
             </p>
           </div>
           <button
-            onClick={openAddModal}
+            onClick={() => navigate("/create-product")}
             className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center sm:justify-start gap-2 shadow-md hover:shadow-lg w-full sm:w-auto"
           >
             <Plus className="w-5 h-5" />
