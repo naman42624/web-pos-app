@@ -771,6 +771,15 @@ export function usePOS() {
       }
     }
 
+    // Decrement product stock for ready products sold
+    if (sale.items && sale.items.length > 0) {
+      for (const item of sale.items) {
+        if (item.productId) {
+          await decrementProductStock(item.productId, item.quantity);
+        }
+      }
+    }
+
     await loadSales();
     await loadCreditRecords();
     if (sale.customerId) await loadCustomers();
