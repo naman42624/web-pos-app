@@ -615,6 +615,8 @@ export default function CreateProduct() {
                     !formData.name.trim() ||
                     !formData.price ||
                     parseFloat(formData.price) <= 0 ||
+                    !formData.stock ||
+                    parseInt(formData.stock) < 0 ||
                     formData.selectedItems.length === 0
                   }
                   className={cn(
@@ -623,6 +625,8 @@ export default function CreateProduct() {
                       !formData.name.trim() ||
                       !formData.price ||
                       parseFloat(formData.price) <= 0 ||
+                      !formData.stock ||
+                      parseInt(formData.stock) < 0 ||
                       formData.selectedItems.length === 0
                       ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                       : "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white",
