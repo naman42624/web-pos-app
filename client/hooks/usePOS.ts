@@ -1073,6 +1073,7 @@ export function usePOS() {
     addSale,
     updateSaleStatus,
     recordPayment,
+    markCashOnDeliveryReceived,
     addItem,
     updateItem,
     deleteItem,
