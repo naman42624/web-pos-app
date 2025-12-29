@@ -406,6 +406,7 @@ export default function QuickSale() {
         total,
         customerId,
         orderType: "pickup",
+        isQuickSale: true,
       });
 
       setCreatedSale(sale);
