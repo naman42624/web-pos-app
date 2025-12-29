@@ -435,6 +435,26 @@ export default function ReadyProducts() {
                   )}
                 </div>
 
+                {/* Stock Quantity */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Stock Quantity *
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.stock}
+                    onChange={(e) =>
+                      setFormData({ ...formData, stock: e.target.value })
+                    }
+                    placeholder="0"
+                    min="0"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Number of units available for sale
+                  </p>
+                </div>
+
                 {/* Product Image */}
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
