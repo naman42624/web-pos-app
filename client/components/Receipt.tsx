@@ -14,22 +14,15 @@ export function Receipt({ sale }: ReceiptProps) {
   const orderNumber = getOrderNumber(sale.id);
   const saleDate = new Date(sale.date);
 
-  const getItemName = (
-    itemId?: string,
-    customName?: string,
-  ): string => {
+  const getItemName = (itemId?: string, customName?: string): string => {
     if (customName) return customName;
     if (!itemId) return "Custom Item";
     const item = inventoryItems.find((i) => i.id === itemId);
     return item?.name || "Unknown Item";
   };
 
-  const getItemPrice = (
-    itemId?: string,
-    customPrice?: number,
-  ): number => {
-    if (customPrice !== undefined && customPrice !== null)
-      return customPrice;
+  const getItemPrice = (itemId?: string, customPrice?: number): number => {
+    if (customPrice !== undefined && customPrice !== null) return customPrice;
     if (!itemId) return 0;
     const item = inventoryItems.find((i) => i.id === itemId);
     return item?.price || 0;
@@ -110,7 +103,8 @@ export function Receipt({ sale }: ReceiptProps) {
                   {item.composition.map((comp, compIdx) => (
                     <div key={compIdx} className="flex justify-between mb-0.5">
                       <span>
-                        {getItemName(comp.itemId, comp.customName)} × {comp.quantity}
+                        {getItemName(comp.itemId, comp.customName)} ×{" "}
+                        {comp.quantity}
                       </span>
                       <span className="ml-2">
                         ₹
@@ -143,22 +137,32 @@ export function Receipt({ sale }: ReceiptProps) {
         {sale.discountAmount && sale.discountAmount > 0 && (
           <div className="flex justify-between text-xs text-green-600">
             <span>
-              Discount ({sale.discountType === "percentage" ? `${sale.discountValue}%` : "Fixed"}):
+              Discount (
+              {sale.discountType === "percentage"
+                ? `${sale.discountValue}%`
+                : "Fixed"}
+              ):
             </span>
-            <span className="font-semibold">-₹{sale.discountAmount.toFixed(2)}</span>
+            <span className="font-semibold">
+              -₹{sale.discountAmount.toFixed(2)}
+            </span>
           </div>
         )}
 
         {sale.deliveryCharges && sale.deliveryCharges > 0 && (
           <div className="flex justify-between text-xs">
             <span>Delivery Charges:</span>
-            <span className="font-semibold">+₹{sale.deliveryCharges.toFixed(2)}</span>
+            <span className="font-semibold">
+              +₹{sale.deliveryCharges.toFixed(2)}
+            </span>
           </div>
         )}
 
         <div className="flex justify-between text-sm font-bold border-t border-slate-300 pt-2 print:pt-1 mt-2 print:mt-1">
           <span>Total:</span>
-          <span className="text-lg print:text-base">₹{sale.total.toFixed(2)}</span>
+          <span className="text-lg print:text-base">
+            ₹{sale.total.toFixed(2)}
+          </span>
         </div>
       </div>
 
@@ -171,19 +175,14 @@ export function Receipt({ sale }: ReceiptProps) {
               <div key={mode} className="flex justify-between">
                 <span className="capitalize">{mode}:</span>
                 <span className="font-semibold">
-                  ₹
-                  {(
-                    sale.paymentAmounts?.[mode] || 0
-                  ).toFixed(2)}
+                  ₹{(sale.paymentAmounts?.[mode] || 0).toFixed(2)}
                 </span>
               </div>
             ))}
           </div>
         ) : (
           <div className="flex justify-between">
-            <span className="capitalize">
-              {sale.paymentMode || "Cash"}:
-            </span>
+            <span className="capitalize">{sale.paymentMode || "Cash"}:</span>
             <span className="font-semibold">₹{sale.total.toFixed(2)}</span>
           </div>
         )}
@@ -193,12 +192,16 @@ export function Receipt({ sale }: ReceiptProps) {
       {sale.orderType !== "pickup" && (
         <div className="mb-6 print:mb-4 text-xs border-t border-slate-300 pt-3 print:pt-2">
           <div className="font-semibold mb-2">
-            {sale.orderType === "pickup_later" ? "Pickup Details" : "Delivery Details"}
+            {sale.orderType === "pickup_later"
+              ? "Pickup Details"
+              : "Delivery Details"}
           </div>
           {sale.pickupDate && (
             <div className="flex justify-between mb-1">
               <span>
-                {sale.orderType === "pickup_later" ? "Pickup Date:" : "Delivery Date:"}
+                {sale.orderType === "pickup_later"
+                  ? "Pickup Date:"
+                  : "Delivery Date:"}
               </span>
               <span>{sale.pickupDate}</span>
             </div>
@@ -206,7 +209,9 @@ export function Receipt({ sale }: ReceiptProps) {
           {sale.pickupTime && (
             <div className="flex justify-between mb-2">
               <span>
-                {sale.orderType === "pickup_later" ? "Pickup Time:" : "Delivery Time:"}
+                {sale.orderType === "pickup_later"
+                  ? "Pickup Time:"
+                  : "Delivery Time:"}
               </span>
               <span>{sale.pickupTime}</span>
             </div>

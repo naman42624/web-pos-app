@@ -12,7 +12,11 @@ interface SaleDetailModalProps {
   onClose: () => void;
 }
 
-export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps) {
+export function SaleDetailModal({
+  sale,
+  isOpen,
+  onClose,
+}: SaleDetailModalProps) {
   const { customers, items: inventoryItems } = usePOSContext();
   const [showReceiptModal, setShowReceiptModal] = useState(false);
 
@@ -22,22 +26,15 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
   const orderNumber = getOrderNumber(sale.id);
   const saleDate = new Date(sale.date);
 
-  const getItemName = (
-    itemId?: string,
-    customName?: string,
-  ): string => {
+  const getItemName = (itemId?: string, customName?: string): string => {
     if (customName) return customName;
     if (!itemId) return "Custom Item";
     const item = inventoryItems.find((i) => i.id === itemId);
     return item?.name || "Unknown Item";
   };
 
-  const getItemPrice = (
-    itemId?: string,
-    customPrice?: number,
-  ): number => {
-    if (customPrice !== undefined && customPrice !== null)
-      return customPrice;
+  const getItemPrice = (itemId?: string, customPrice?: number): number => {
+    if (customPrice !== undefined && customPrice !== null) return customPrice;
     if (!itemId) return 0;
     const item = inventoryItems.find((i) => i.id === itemId);
     return item?.price || 0;
@@ -121,7 +118,10 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
               </h3>
               <div className="space-y-3">
                 {sale.items.map((item, idx) => (
-                  <div key={idx} className="border-b border-slate-100 pb-3 last:border-b-0">
+                  <div
+                    key={idx}
+                    className="border-b border-slate-100 pb-3 last:border-b-0"
+                  >
                     <div className="flex justify-between items-start mb-1">
                       <span className="font-medium text-slate-900">
                         {item.name}
@@ -173,7 +173,10 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
                   <span className="text-slate-900 font-medium">
                     ₹
                     {sale.items
-                      .reduce((sum, item) => sum + item.quantity * item.price, 0)
+                      .reduce(
+                        (sum, item) => sum + item.quantity * item.price,
+                        0,
+                      )
                       .toFixed(2)}
                   </span>
                 </div>
@@ -181,7 +184,11 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
                 {sale.discountAmount && sale.discountAmount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>
-                      Discount ({sale.discountType === "percentage" ? `${sale.discountValue}%` : "Fixed"}):
+                      Discount (
+                      {sale.discountType === "percentage"
+                        ? `${sale.discountValue}%`
+                        : "Fixed"}
+                      ):
                     </span>
                     <span className="font-medium">
                       -₹{sale.discountAmount.toFixed(2)}
@@ -210,7 +217,10 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
                   {sale.paymentModes && sale.paymentModes.length > 1 ? (
                     <div className="space-y-1">
                       {sale.paymentModes.map((mode) => (
-                        <div key={mode} className="flex justify-between text-sm">
+                        <div
+                          key={mode}
+                          className="flex justify-between text-sm"
+                        >
                           <span className="capitalize text-slate-700">
                             {mode}:
                           </span>
@@ -233,7 +243,9 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
             {sale.orderType !== "pickup" && (
               <div className="border border-slate-200 rounded-lg p-4">
                 <h3 className="font-semibold text-slate-900 mb-3">
-                  {sale.orderType === "pickup_later" ? "Pickup Details" : "Delivery Details"}
+                  {sale.orderType === "pickup_later"
+                    ? "Pickup Details"
+                    : "Delivery Details"}
                 </h3>
                 <div className="space-y-2 text-sm">
                   {sale.pickupDate && (
@@ -263,7 +275,9 @@ export function SaleDetailModal({ sale, isOpen, onClose }: SaleDetailModalProps)
 
                   {sale.deliveryDetails && sale.orderType === "delivery" && (
                     <div className="mt-3 pt-3 border-t border-slate-200 space-y-1">
-                      <p className="font-semibold text-slate-900">Delivery Address:</p>
+                      <p className="font-semibold text-slate-900">
+                        Delivery Address:
+                      </p>
                       <p className="text-slate-700">
                         <span className="font-medium">To:</span>{" "}
                         {sale.deliveryDetails.receiverName}

@@ -3,11 +3,7 @@ import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleDetailModal } from "@/components/SaleDetailModal";
 import { Sale } from "@/hooks/usePOS";
-import {
-  Search,
-  Filter,
-  ShoppingCart,
-} from "lucide-react";
+import { Search, Filter, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getOrderNumber } from "@/lib/utils";
 import { format } from "date-fns";
@@ -15,9 +11,15 @@ import { format } from "date-fns";
 export default function AllSales() {
   const { sales, customers } = usePOSContext();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "quick-sale" | "regular-sale">("all");
-  const [filterPaymentMode, setFilterPaymentMode] = useState<"all" | "cash" | "upi" | "credit">("all");
-  const [filterOrderType, setFilterOrderType] = useState<"all" | "pickup" | "pickup_later" | "delivery">("all");
+  const [filterType, setFilterType] = useState<
+    "all" | "quick-sale" | "regular-sale"
+  >("all");
+  const [filterPaymentMode, setFilterPaymentMode] = useState<
+    "all" | "cash" | "upi" | "credit"
+  >("all");
+  const [filterOrderType, setFilterOrderType] = useState<
+    "all" | "pickup" | "pickup_later" | "delivery"
+  >("all");
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [showSaleDetail, setShowSaleDetail] = useState(false);
 
@@ -48,7 +50,14 @@ export default function AllSales() {
 
       return matchesSearch;
     });
-  }, [sales, searchTerm, filterType, filterPaymentMode, filterOrderType, customers]);
+  }, [
+    sales,
+    searchTerm,
+    filterType,
+    filterPaymentMode,
+    filterOrderType,
+    customers,
+  ]);
 
   const handleSaleClick = (sale: Sale) => {
     setSelectedSale(sale);
@@ -56,7 +65,7 @@ export default function AllSales() {
   };
 
   const sortedSales = [...filteredSales].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
   return (
@@ -156,14 +165,19 @@ export default function AllSales() {
               Sales ({sortedSales.length})
             </h2>
             <p className="text-sm text-slate-500">
-              Total: ₹{sortedSales.reduce((sum, s) => sum + s.total, 0).toLocaleString("en-IN")}
+              Total: ₹
+              {sortedSales
+                .reduce((sum, s) => sum + s.total, 0)
+                .toLocaleString("en-IN")}
             </p>
           </div>
 
           {sortedSales.length > 0 ? (
             <div className="space-y-3">
               {sortedSales.map((sale) => {
-                const customer = customers.find((c) => c.id === sale.customerId);
+                const customer = customers.find(
+                  (c) => c.id === sale.customerId,
+                );
                 const orderNumber = getOrderNumber(sale.id);
                 const saleDate = new Date(sale.date);
 
@@ -189,7 +203,8 @@ export default function AllSales() {
                           {customer ? customer.name : "Unknown Customer"}
                         </p>
                         <p className="text-xs text-slate-500">
-                          {sale.items.length} item{sale.items.length !== 1 ? "s" : ""} •{" "}
+                          {sale.items.length} item
+                          {sale.items.length !== 1 ? "s" : ""} •{" "}
                           {format(saleDate, "MMM dd, yyyy HH:mm")}
                         </p>
                       </div>
