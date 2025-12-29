@@ -554,6 +554,15 @@ export default function CreateProduct() {
 
                 <div>
                   <p className="text-xs font-semibold text-slate-600 uppercase mb-1">
+                    Stock Quantity
+                  </p>
+                  <p className="text-lg font-semibold text-slate-900">
+                    {formData.stock || "—"} units
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-slate-600 uppercase mb-1">
                     Items Count
                   </p>
                   <p className="text-lg font-semibold text-slate-900">
