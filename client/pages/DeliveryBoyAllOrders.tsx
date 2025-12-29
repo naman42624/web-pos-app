@@ -115,9 +115,20 @@ export default function DeliveryBoyAllOrders() {
     return 0;
   });
 
+  const isCODOrder = (delivery: (typeof sales)[0]) => {
+    return (
+      delivery.paymentModes?.includes("cod") ||
+      delivery.paymentMode === "cod"
+    );
+  };
+
   const getCODAmount = (delivery: (typeof sales)[0]) => {
     if (delivery.paymentAmounts && delivery.paymentAmounts.cod) {
       return delivery.paymentAmounts.cod;
+    }
+    // Fallback to total if it's a COD order but no breakdown exists
+    if (isCODOrder(delivery)) {
+      return delivery.total;
     }
     return 0;
   };
