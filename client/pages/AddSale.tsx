@@ -1649,7 +1649,7 @@ export default function AddSale() {
           </div>
 
           {/* Summary Section */}
-          <div className="lg:fixed lg:right-8 lg:top-24 lg:w-80 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:col-span-1">
+          <div className="xl:fixed xl:right-8 xl:top-24 xl:w-80 xl:max-h-[calc(100vh-120px)] xl:overflow-y-auto lg:col-span-1">
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md border border-blue-200 p-6 space-y-4 sm:space-y-6">
               <h2 className="text-lg font-bold text-slate-900">Summary</h2>
 
