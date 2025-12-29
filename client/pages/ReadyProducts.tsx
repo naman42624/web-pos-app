@@ -14,6 +14,7 @@ export default function ReadyProducts() {
     updateProduct,
     deleteProduct,
     items: inventoryItems,
+    loadProductItems,
   } = usePOSContext();
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
