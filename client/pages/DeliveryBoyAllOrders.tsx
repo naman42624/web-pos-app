@@ -300,12 +300,30 @@ export default function DeliveryBoyAllOrders() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-slate-900">
-                        ₹{delivery.total.toLocaleString("en-IN")}
-                      </p>
+                      <div>
+                        {delivery.paymentModes?.includes("cod") ? (
+                          <>
+                            <p className="text-xs text-slate-600 mb-1">
+                              Cash to Collect
+                            </p>
+                            <p className="text-2xl font-bold text-amber-900">
+                              ₹{getCODAmount(delivery).toLocaleString("en-IN")}
+                            </p>
+                            {delivery.paymentStatus === "paid" && (
+                              <p className="text-xs font-semibold text-green-700 mt-1">
+                                ✓ Received
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <p className="text-2xl font-bold text-slate-900">
+                            ₹{delivery.total.toLocaleString("en-IN")}
+                          </p>
+                        )}
+                      </div>
                       <span
                         className={cn(
-                          "inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full",
+                          "inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full",
                           delivery.status === "delivered"
                             ? "bg-green-100 text-green-700"
                             : "bg-amber-100 text-amber-700",
