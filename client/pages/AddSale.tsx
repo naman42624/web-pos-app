@@ -72,6 +72,7 @@ export default function AddSale() {
     cash: "",
     upi: "",
     credit: "",
+    cod: "",
   });
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [orderRemarks, setOrderRemarks] = useState("");
