@@ -11,6 +11,7 @@ import AddSale from "./pages/AddSale";
 import QuickSale from "./pages/QuickSale";
 import Items from "./pages/Items";
 import ReadyProducts from "./pages/ReadyProducts";
+import CreateProduct from "./pages/CreateProduct";
 import Customers from "./pages/Customers";
 import CustomerDetail from "./pages/CustomerDetail";
 import Deliveries from "./pages/Deliveries";
