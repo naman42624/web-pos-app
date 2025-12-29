@@ -396,6 +396,7 @@ export function usePOS() {
         {
           name: product.name,
           price: product.price,
+          stock: product.stock || 0,
           image: product.image,
         },
       ])
@@ -431,6 +432,7 @@ export function usePOS() {
       id: productId,
       name: data.name,
       price: parseFloat(data.price) || 0,
+      stock: data.stock || 0,
       image: data.image,
       items: product.items,
     };
