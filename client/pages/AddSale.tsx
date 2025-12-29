@@ -163,13 +163,24 @@ export default function AddSale() {
       return;
     }
 
+    if (product.stock <= 0) {
+      alert("This product is out of stock");
+      return;
+    }
+
     const quantity = parseInt(productQuantity) || 1;
+    if (quantity > product.stock) {
+      alert(`Only ${product.stock} units available in stock`);
+      return;
+    }
+
     const newItem: SaleItem = {
       id: `product-${Date.now()}`,
       name: product.name,
       quantity: quantity,
       price: product.price,
       image: product.image || undefined,
+      productId: product.id,
       composition: product.items,
     };
 
