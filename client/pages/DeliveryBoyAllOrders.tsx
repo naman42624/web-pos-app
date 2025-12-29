@@ -302,7 +302,7 @@ export default function DeliveryBoyAllOrders() {
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-slate-900">
-                          Order #{index + 1}
+                          Order {getOrderNumber(delivery.id)}
                         </h3>
                         <p className="text-sm text-slate-600">
                           Order ID: {delivery.id}
