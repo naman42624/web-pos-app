@@ -1508,6 +1508,14 @@ export default function AddSale() {
                 ))}
               </div>
 
+              {orderType === "delivery" && selectedPaymentModes.has("cod") && (
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-sm text-amber-800">
+                    ℹ️ <span className="font-medium">Cash on Delivery:</span> Payment will be collected when the order is delivered
+                  </p>
+                </div>
+              )}
+
               {selectedPaymentModes.size > 1 && (
                 <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm font-medium text-cyan-700 mb-4">
