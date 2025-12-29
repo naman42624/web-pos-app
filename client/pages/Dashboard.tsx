@@ -360,6 +360,18 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Sale Detail Modal */}
+      {selectedSale && (
+        <SaleDetailModal
+          sale={selectedSale}
+          isOpen={showSaleDetail}
+          onClose={() => {
+            setShowSaleDetail(false);
+            setSelectedSale(null);
+          }}
+        />
+      )}
     </SharedLayout>
   );
 }
