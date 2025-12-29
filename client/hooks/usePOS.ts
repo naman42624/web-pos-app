@@ -123,6 +123,32 @@ export interface DeliveryAssignment {
   status: "assigned" | "in_transit" | "delivered" | "cancelled";
 }
 
+export interface Settings {
+  id: string;
+  businessName: string;
+  businessEmail?: string;
+  businessPhone?: string;
+  logoUrl?: string;
+  businessAddress?: string;
+  businessCity?: string;
+  businessState?: string;
+  businessZip?: string;
+  taxId?: string;
+  billingEmail?: string;
+  billingName?: string;
+  billingAddress?: string;
+  billingCity?: string;
+  billingState?: string;
+  billingZip?: string;
+  paymentTerms?: string;
+  currency: string;
+  timezone: string;
+  theme: string;
+  language: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function usePOS() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [items, setItems] = useState<Item[]>([]);
