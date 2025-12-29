@@ -55,28 +55,14 @@ export default function ReadyProducts() {
   };
 
   const openEditModal = async (product: Product) => {
-    setEditingProductId(product.id);
-    setShowEditModal(true);
-
-    // Load full product data including image and items
-    const { usePOSContext: context } = await import("@/contexts/usePOSContext");
-    const supabase = (await import("@supabase/supabase-js")).createClient(
-      import.meta.env.VITE_SUPABASE_URL,
-      import.meta.env.VITE_SUPABASE_ANON_KEY,
-    );
-
-    const { data: fullProduct } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", product.id)
-      .single();
-
     setFormData({
       name: product.name,
       price: (product.price || 0).toString(),
-      image: fullProduct?.image || "",
+      image: "",
       selectedItems: [],
     });
+    setEditingProductId(product.id);
+    setShowEditModal(true);
 
     // Load product items on-demand
     const items = await loadProductItems(product.id);
