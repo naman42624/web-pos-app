@@ -973,7 +973,7 @@ export function usePOS() {
   };
 
   // Load Settings
-  const loadSettings = async () => {
+  async function loadSettings() {
     const { data, error } = await supabase
       .from("settings")
       .select("*")
@@ -1009,10 +1009,10 @@ export function usePOS() {
       createdAt: data.created_at,
       updatedAt: data.updated_at,
     });
-  };
+  }
 
   // Update Settings
-  const updateSettings = async (updatedSettings: Partial<Settings>) => {
+  async function updateSettings(updatedSettings: Partial<Settings>) {
     const updateData: Record<string, any> = {};
 
     // Map camelCase to snake_case for database
@@ -1039,7 +1039,7 @@ export function usePOS() {
     if (settings) {
       setSettings({ ...settings, ...updatedSettings, updatedAt: new Date().toISOString() });
     }
-  };
+  }
 
   const addDeliveryBoy = async (
     boy: Omit<DeliveryBoy, "id" | "createdAt">,
