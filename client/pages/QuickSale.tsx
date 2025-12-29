@@ -74,6 +74,8 @@ export default function QuickSale() {
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
     null,
   );
+  const [createdSale, setCreatedSale] = useState<Sale | null>(null);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
 
   const subtotal = saleItems.reduce(
     (sum, item) => sum + item.quantity * item.price,
