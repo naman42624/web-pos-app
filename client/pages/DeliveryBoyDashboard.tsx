@@ -54,6 +54,23 @@ export default function DeliveryBoyDashboard() {
     navigate("/delivery-boy/login");
   };
 
+  const handleToggleStatus = async () => {
+    if (!session) return;
+
+    const newStatus = session.status === "available" ? "busy" : "available";
+
+    try {
+      await updateDeliveryBoy(session.id, { status: newStatus });
+
+      const updatedSession = { ...session, status: newStatus };
+      setSession(updatedSession);
+      localStorage.setItem("deliveryBoySession", JSON.stringify(updatedSession));
+    } catch (error) {
+      console.error("Error updating status:", error);
+      alert("Failed to update status");
+    }
+  };
+
   const handleMarkDelivered = async (saleId: string) => {
     try {
       await updateSaleStatus(saleId, "delivered");
