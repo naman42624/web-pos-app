@@ -126,7 +126,15 @@ export default function DeliveryBoyDashboard() {
                   {session.name}
                 </h2>
                 <p className="text-slate-600">Phone: {session.phone}</p>
-                <div className="flex items-center gap-2 mt-2">
+                <button
+                  onClick={handleToggleStatus}
+                  className={cn(
+                    "flex items-center gap-2 mt-2 px-3 py-1.5 rounded-lg font-medium transition-all duration-200",
+                    session.status === "available"
+                      ? "bg-green-100 text-green-700 hover:bg-green-200"
+                      : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
+                  )}
+                >
                   <div
                     className={cn(
                       "w-2 h-2 rounded-full",
@@ -135,11 +143,10 @@ export default function DeliveryBoyDashboard() {
                         : "bg-yellow-500",
                     )}
                   />
-                  <span className="text-sm font-medium text-slate-600">
-                    Status:{" "}
-                    {session.status === "available" ? "Available" : "Busy"}
+                  <span className="text-sm">
+                    Status: {session.status === "available" ? "Available" : "Busy"}
                   </span>
-                </div>
+                </button>
               </div>
             </div>
           </div>
