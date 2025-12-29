@@ -259,10 +259,11 @@ export function usePOS() {
   // Load Products
   const loadProducts = async () => {
     try {
-      // Select only needed columns to reduce data transfer and query time
+      // First, fetch products without items to show them quickly
       const { data: productsData, error: productsError } = await supabase
         .from("products")
-        .select("id, name, price, image");
+        .select("id, name, price, image")
+        .order("created_at", { ascending: false });
 
       if (productsError) {
         console.error(
@@ -278,43 +279,57 @@ export function usePOS() {
         return;
       }
 
-      // Fetch all product items with column selection to optimize query
-      // Add limit to prevent timeout issues with large datasets
-      const { data: allItemsData, error: itemsError } = await supabase
-        .from("product_items")
-        .select("product_id, item_id, custom_name, custom_price, quantity")
-        .limit(10000);
+      // Show products without items first for fast UI feedback
+      setProducts(
+        productsData.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          price: parseFloat(product.price) || 0,
+          image: product.image,
+          items: [],
+        })),
+      );
 
-      if (itemsError) {
-        console.error(
-          "Error loading product items:",
-          itemsError.message || itemsError,
-        );
-        // Still show products without items if items fail to load
-        setProducts(
-          productsData.map((product: any) => ({
-            id: product.id,
-            name: product.name,
-            price: parseFloat(product.price) || 0,
-            image: product.image,
-            items: [],
-          })),
-        );
-        return;
+      // Then fetch product items separately in smaller batches
+      // Get unique product IDs from products
+      const productIds = productsData.map((p: any) => p.id);
+
+      // Fetch items in batches of 100 products at a time
+      const batchSize = 100;
+      let allItemsData: any[] = [];
+
+      for (let i = 0; i < productIds.length; i += batchSize) {
+        const batch = productIds.slice(i, i + batchSize);
+        const { data: itemsData, error: itemsError } = await supabase
+          .from("product_items")
+          .select("product_id, item_id, custom_name, custom_price, quantity")
+          .in("product_id", batch);
+
+        if (itemsError) {
+          console.error(
+            `Error loading product items batch ${i / batchSize + 1}:`,
+            itemsError.message || itemsError,
+          );
+          // Continue with next batch even if one fails
+          continue;
+        }
+
+        if (itemsData) {
+          allItemsData = allItemsData.concat(itemsData);
+        }
       }
 
       // Group items by product_id for efficient lookup
       const itemsByProductId = new Map<string, any[]>();
-      if (allItemsData) {
-        allItemsData.forEach((item: any) => {
-          const productId = item.product_id;
-          if (!itemsByProductId.has(productId)) {
-            itemsByProductId.set(productId, []);
-          }
-          itemsByProductId.get(productId)!.push(item);
-        });
-      }
+      allItemsData.forEach((item: any) => {
+        const productId = item.product_id;
+        if (!itemsByProductId.has(productId)) {
+          itemsByProductId.set(productId, []);
+        }
+        itemsByProductId.get(productId)!.push(item);
+      });
 
+      // Update products with their items
       const productsWithItems = productsData.map((product: any) => ({
         id: product.id,
         name: product.name,
