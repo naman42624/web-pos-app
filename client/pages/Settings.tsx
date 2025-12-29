@@ -7,7 +7,9 @@ import { toast } from "sonner";
 export default function SettingsPage() {
   const { settings, updateSettings } = usePOSContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"business" | "billing" | "preferences">("business");
+  const [activeTab, setActiveTab] = useState<
+    "business" | "billing" | "preferences"
+  >("business");
   const [logoPreview, setLogoPreview] = useState<string>("");
 
   const [formData, setFormData] = useState({
@@ -63,7 +65,11 @@ export default function SettingsPage() {
     }
   }, [settings]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -527,7 +533,9 @@ export default function SettingsPage() {
               <div className="space-y-3 text-sm">
                 <div>
                   <p className="text-slate-600">Business</p>
-                  <p className="font-medium text-slate-900">{formData.businessName}</p>
+                  <p className="font-medium text-slate-900">
+                    {formData.businessName}
+                  </p>
                 </div>
 
                 {logoPreview && (
@@ -544,14 +552,18 @@ export default function SettingsPage() {
                 {formData.currency && (
                   <div>
                     <p className="text-slate-600">Currency</p>
-                    <p className="font-medium text-slate-900">{formData.currency}</p>
+                    <p className="font-medium text-slate-900">
+                      {formData.currency}
+                    </p>
                   </div>
                 )}
 
                 {formData.timezone && (
                   <div>
                     <p className="text-slate-600">Timezone</p>
-                    <p className="font-medium text-slate-900">{formData.timezone}</p>
+                    <p className="font-medium text-slate-900">
+                      {formData.timezone}
+                    </p>
                   </div>
                 )}
               </div>

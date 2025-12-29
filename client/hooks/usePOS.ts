@@ -1041,7 +1041,11 @@ export function usePOS() {
     // Map camelCase to snake_case for database
     Object.entries(updatedSettings).forEach(([key, value]) => {
       const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
-      if (snakeKey !== "id" && snakeKey !== "created_at" && snakeKey !== "updated_at") {
+      if (
+        snakeKey !== "id" &&
+        snakeKey !== "created_at" &&
+        snakeKey !== "updated_at"
+      ) {
         updateData[snakeKey] = value;
       }
     });
@@ -1060,7 +1064,11 @@ export function usePOS() {
 
     // Update local state
     if (settings) {
-      setSettings({ ...settings, ...updatedSettings, updatedAt: new Date().toISOString() });
+      setSettings({
+        ...settings,
+        ...updatedSettings,
+        updatedAt: new Date().toISOString(),
+      });
     }
   }
 
