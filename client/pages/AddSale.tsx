@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { SaleItem, DeliveryDetails } from "@/hooks/usePOS";
+import { SaleItem, DeliveryDetails, Sale } from "@/hooks/usePOS";
 import {
   Trash2,
   Plus,
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QRScannerModal } from "@/components/QRScannerModal";
+import { ReceiptModal } from "@/components/ReceiptModal";
 import { QRCodeData, convertQRDataToSaleItem } from "@/utils/qrcode";
 
 type PaymentMode = "cash" | "upi" | "credit" | "cod";
