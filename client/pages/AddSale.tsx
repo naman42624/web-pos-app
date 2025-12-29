@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { QRScannerModal } from "@/components/QRScannerModal";
 import { QRCodeData, convertQRDataToSaleItem } from "@/utils/qrcode";
 
-type PaymentMode = "cash" | "upi" | "credit";
+type PaymentMode = "cash" | "upi" | "credit" | "cod";
 
 export default function AddSale() {
   const navigate = useNavigate();
