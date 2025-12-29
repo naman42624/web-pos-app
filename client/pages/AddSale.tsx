@@ -680,6 +680,14 @@ export default function AddSale() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">
+                          Phone Number
+                        </label>
+                        <div className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-100 text-sm text-slate-900">
+                          {newCustomerPhone}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">
                           Customer Name
                         </label>
                         <input
@@ -688,6 +696,7 @@ export default function AddSale() {
                           onChange={(e) => setNewCustomerName(e.target.value)}
                           placeholder="Enter customer name"
                           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                          autoFocus
                         />
                       </div>
                       <div>
