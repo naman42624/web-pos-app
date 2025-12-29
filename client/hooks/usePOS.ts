@@ -565,6 +565,8 @@ export function usePOS() {
         {
           total: sale.total,
           payment_mode: sale.paymentMode,
+          payment_modes: sale.paymentModes,
+          payment_amounts: sale.paymentAmounts,
           customer_id: sale.customerId,
           order_type: sale.orderType,
           pickup_date: sale.pickupDate,
