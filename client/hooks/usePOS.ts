@@ -617,6 +617,7 @@ export function usePOS() {
           status: sale.status || "pending",
           paymentStatus: sale.payment_status || "pending",
           assignedDeliveryBoyId: sale.delivery_boy_id,
+          isQuickSale: sale.is_quick_sale || false,
         };
       }),
     );
