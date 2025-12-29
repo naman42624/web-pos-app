@@ -696,7 +696,6 @@ export default function AddSale() {
                           onChange={(e) => setNewCustomerName(e.target.value)}
                           placeholder="Enter customer name"
                           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
-                          autoFocus
                         />
                       </div>
                       <div>
