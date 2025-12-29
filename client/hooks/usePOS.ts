@@ -252,11 +252,10 @@ export function usePOS() {
   // Load Products
   const loadProducts = async () => {
     try {
-      // Select only needed columns to reduce data transfer
+      // Select only needed columns to reduce data transfer and query time
       const { data: productsData, error: productsError } = await supabase
         .from("products")
-        .select("id, name, price, image")
-        .timeout(10000); // 10 second timeout
+        .select("id, name, price, image");
 
       if (productsError) {
         console.error("Error loading products:", productsError.message || productsError);
@@ -269,11 +268,10 @@ export function usePOS() {
         return;
       }
 
-      // Fetch all product items in one query with column selection
+      // Fetch all product items with column selection to optimize query
       const { data: allItemsData, error: itemsError } = await supabase
         .from("product_items")
-        .select("product_id, item_id, custom_name, custom_price, quantity")
-        .timeout(10000); // 10 second timeout
+        .select("product_id, item_id, custom_name, custom_price, quantity");
 
       if (itemsError) {
         console.error("Error loading product items:", itemsError.message || itemsError);
