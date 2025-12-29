@@ -51,11 +51,6 @@ export default function ReadyProducts() {
     setShowItemDropdown(false);
   };
 
-  const openAddModal = () => {
-    resetForm();
-    setShowAddModal(true);
-  };
-
   const openEditModal = (product: Product) => {
     setFormData({
       name: product.name,
