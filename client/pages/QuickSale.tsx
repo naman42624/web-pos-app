@@ -960,7 +960,7 @@ export default function QuickSale() {
                     className={cn(
                       "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
                       selectedPaymentModes.has(mode)
-                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        ? "border-cyan-600 bg-cyan-50 text-cyan-700"
                         : "border-slate-300 bg-white text-slate-700 hover:border-slate-400",
                     )}
                   >
@@ -973,7 +973,7 @@ export default function QuickSale() {
               </div>
 
               {selectedPaymentModes.has("credit") && (
-                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Customer Name <span className="text-red-500">*</span>
                   </label>
@@ -996,7 +996,7 @@ export default function QuickSale() {
                         }
                       }}
                       placeholder="Search or enter customer name"
-                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none"
                     />
                     {showCustomerDropdown && filteredCustomers.length > 0 && (
                       <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto">
@@ -1114,9 +1114,9 @@ export default function QuickSale() {
                   </span>
                 </div>
 
-                <div className="flex justify-between text-lg font-bold pt-2 border-t border-blue-200">
+                <div className="flex justify-between text-lg font-bold pt-2 border-t border-cyan-200">
                   <span className="text-slate-900">Total</span>
-                  <span className="text-blue-600">₹{total.toFixed(2)}</span>
+                  <span className="text-cyan-600">₹{total.toFixed(2)}</span>
                 </div>
               </div>
 
