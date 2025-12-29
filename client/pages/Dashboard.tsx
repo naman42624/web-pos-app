@@ -325,10 +325,17 @@ export default function Dashboard() {
                   className="w-full text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors cursor-pointer group"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-slate-900 text-sm sm:text-base group-hover:text-blue-600 transition-colors">
-                      {sale.items.length} item
-                      {sale.items.length !== 1 ? "s" : ""}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-slate-900 text-sm sm:text-base group-hover:text-blue-600 transition-colors">
+                        {sale.items.length} item
+                        {sale.items.length !== 1 ? "s" : ""}
+                      </p>
+                      {sale.isQuickSale && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold whitespace-nowrap">
+                          Quick Sale
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs sm:text-sm text-slate-500 mt-1">
                       {new Date(sale.date).toLocaleTimeString("en-IN", {
                         hour: "2-digit",
