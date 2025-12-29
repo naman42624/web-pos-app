@@ -1496,10 +1496,9 @@ export default function AddSale() {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-                {(
-                  orderType === "delivery"
-                    ? (["cash", "upi", "credit", "cod"] as PaymentMode[])
-                    : (["cash", "upi", "credit"] as PaymentMode[])
+                {(orderType === "delivery"
+                  ? (["cash", "upi", "credit", "cod"] as PaymentMode[])
+                  : (["cash", "upi", "credit"] as PaymentMode[])
                 ).map((mode) => (
                   <button
                     key={mode}
@@ -1524,7 +1523,8 @@ export default function AddSale() {
               {orderType === "delivery" && selectedPaymentModes.has("cod") && (
                 <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
                   <p className="text-sm text-amber-800">
-                    ℹ️ <span className="font-medium">Cash on Delivery:</span> Payment will be collected when the order is delivered
+                    ℹ️ <span className="font-medium">Cash on Delivery:</span>{" "}
+                    Payment will be collected when the order is delivered
                   </p>
                 </div>
               )}

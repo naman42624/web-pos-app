@@ -137,7 +137,9 @@ export function usePOS() {
       try {
         setLoading(true);
         // Load items first (foundational data)
-        await loadItems().catch((e) => console.error("Error loading items:", e));
+        await loadItems().catch((e) =>
+          console.error("Error loading items:", e),
+        );
 
         // Then load other data in parallel (excluding products for now)
         await Promise.all([
@@ -263,7 +265,10 @@ export function usePOS() {
         .select("id, name, price, image");
 
       if (productsError) {
-        console.error("Error loading products:", productsError.message || productsError);
+        console.error(
+          "Error loading products:",
+          productsError.message || productsError,
+        );
         setProducts([]);
         return;
       }
@@ -279,7 +284,10 @@ export function usePOS() {
         .select("product_id, item_id, custom_name, custom_price, quantity");
 
       if (itemsError) {
-        console.error("Error loading product items:", itemsError.message || itemsError);
+        console.error(
+          "Error loading product items:",
+          itemsError.message || itemsError,
+        );
         // Still show products without items if items fail to load
         setProducts(
           productsData.map((product: any) => ({

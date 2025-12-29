@@ -103,8 +103,7 @@ export default function DeliveryBoyDashboard() {
 
   const isCODOrder = (delivery: (typeof sales)[0]) => {
     return (
-      delivery.paymentModes?.includes("cod") ||
-      delivery.paymentMode === "cod"
+      delivery.paymentModes?.includes("cod") || delivery.paymentMode === "cod"
     );
   };
 
@@ -311,13 +310,16 @@ export default function DeliveryBoyDashboard() {
                                 Cash to Collect
                               </p>
                               <p className="text-lg font-bold text-amber-900">
-                                ₹{getCODAmount(delivery).toLocaleString("en-IN")}
+                                ₹
+                                {getCODAmount(delivery).toLocaleString("en-IN")}
                               </p>
                             </div>
                           </div>
                           {delivery.paymentStatus !== "paid" && (
                             <button
-                              onClick={() => handleMarkCashReceived(delivery.id)}
+                              onClick={() =>
+                                handleMarkCashReceived(delivery.id)
+                              }
                               className="px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-lg transition-colors"
                             >
                               Mark Received
