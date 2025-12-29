@@ -1737,7 +1737,7 @@ export default function AddSale() {
                             className="flex justify-between text-sm"
                           >
                             <span className="text-slate-600 capitalize">
-                              {mode}:
+                              {mode === "cod" ? "Cash on Delivery" : mode}:
                             </span>
                             <span className="font-medium text-slate-900">
                               ₹{amount.toFixed(2)}
