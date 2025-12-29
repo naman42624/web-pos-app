@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import AddSale from "./pages/AddSale";
 import AllSales from "./pages/AllSales";
 import QuickSale from "./pages/QuickSale";
+import Settings from "./pages/Settings";
 import Items from "./pages/Items";
 import ReadyProducts from "./pages/ReadyProducts";
 import CreateProduct from "./pages/CreateProduct";
