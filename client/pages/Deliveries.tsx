@@ -846,10 +846,7 @@ export default function Deliveries() {
                     </h2>
                     <div className="space-y-3 sm:space-y-4">
                       {groupedByStatus[status].map((order) => {
-                        const orderNumber = getOrderNumber(
-                          order.id,
-                          deliveryOrders.findIndex((o) => o.id === order.id),
-                        );
+                        const orderNumber = getOrderNumber(order.id);
                         return (
                           <div
                             key={order.id}
