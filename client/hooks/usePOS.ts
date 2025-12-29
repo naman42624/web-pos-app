@@ -312,7 +312,9 @@ export function usePOS() {
         if (!error && batchProducts) {
           setProducts((prev) =>
             prev.map((product) => {
-              const updated = batchProducts.find((p: any) => p.id === product.id);
+              const updated = batchProducts.find(
+                (p: any) => p.id === product.id,
+              );
               return updated ? { ...product, image: updated.image } : product;
             }),
           );
@@ -345,9 +347,7 @@ export function usePOS() {
       return (itemsData || []).map((pi: any) => ({
         itemId: pi.item_id,
         customName: pi.custom_name,
-        customPrice: pi.custom_price
-          ? parseFloat(pi.custom_price)
-          : undefined,
+        customPrice: pi.custom_price ? parseFloat(pi.custom_price) : undefined,
         quantity: pi.quantity,
       }));
     } catch (error) {

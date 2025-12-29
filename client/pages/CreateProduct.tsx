@@ -9,10 +9,7 @@ import { QRCodeModal } from "@/components/QRCodeModal";
 
 export default function CreateProduct() {
   const navigate = useNavigate();
-  const {
-    addProduct,
-    items: inventoryItems,
-  } = usePOSContext();
+  const { addProduct, items: inventoryItems } = usePOSContext();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -218,11 +215,17 @@ export default function CreateProduct() {
               {formData.price && (
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-slate-700">
-                    Composition value: <span className="font-semibold">₹{calculateCompositionPrice().toFixed(2)}</span>
+                    Composition value:{" "}
+                    <span className="font-semibold">
+                      ₹{calculateCompositionPrice().toFixed(2)}
+                    </span>
                   </p>
                   {parseFloat(formData.price) > calculateCompositionPrice() && (
                     <p className="text-sm text-green-700 mt-1 font-semibold">
-                      Profit margin: +₹{(parseFloat(formData.price) - calculateCompositionPrice()).toFixed(2)}
+                      Profit margin: +₹
+                      {(
+                        parseFloat(formData.price) - calculateCompositionPrice()
+                      ).toFixed(2)}
                     </p>
                   )}
                 </div>
@@ -232,7 +235,8 @@ export default function CreateProduct() {
             {/* Product Image */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <label className="block text-sm font-semibold text-slate-700 mb-4">
-                Product Image <span className="text-slate-500 font-normal">(Optional)</span>
+                Product Image{" "}
+                <span className="text-slate-500 font-normal">(Optional)</span>
               </label>
               <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors group">
                 <input
@@ -452,8 +456,7 @@ export default function CreateProduct() {
                           {getItemName(pi.itemId, pi.customName)}
                         </p>
                         <p className="text-sm text-slate-600">
-                          ₹
-                          {getItemPrice(pi.itemId, pi.customPrice).toFixed(2)}{" "}
+                          ₹{getItemPrice(pi.itemId, pi.customPrice).toFixed(2)}{" "}
                           each
                         </p>
                       </div>
@@ -516,7 +519,9 @@ export default function CreateProduct() {
                     Selling Price
                   </p>
                   <p className="text-2xl font-bold text-cyan-600">
-                    {formData.price ? `₹${parseFloat(formData.price).toFixed(2)}` : "—"}
+                    {formData.price
+                      ? `₹${parseFloat(formData.price).toFixed(2)}`
+                      : "—"}
                   </p>
                 </div>
 
