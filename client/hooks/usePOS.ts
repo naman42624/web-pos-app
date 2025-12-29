@@ -667,6 +667,8 @@ export function usePOS() {
       id: saleId,
       items: sale.items,
       paymentMode: sale.paymentMode,
+      paymentModes: sale.paymentModes,
+      paymentAmounts: sale.paymentAmounts,
       customerId: sale.customerId,
       total: sale.total,
       date: new Date().toISOString(),
