@@ -59,6 +59,7 @@ export default function ReadyProducts() {
     setFormData({
       name: product.name,
       price: (product.price || 0).toString(),
+      stock: (product.stock || 0).toString(),
       image: "",
       selectedItems: [],
     });
