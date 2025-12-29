@@ -84,9 +84,6 @@ export default function Deliveries() {
     return `${hours}:${minutes}`;
   };
 
-  const getOrderNumber = (orderId: string, index: number) => {
-    return `DL-${(index + 1).toString().padStart(3, "0")}`;
-  };
 
   const handlePrintDeliverySlip = (
     order: (typeof deliveryOrders)[0],
