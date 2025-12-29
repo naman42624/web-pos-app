@@ -40,6 +40,7 @@ export function App() {
               <Route path="/add-sale" element={<AddSale />} />
               <Route path="/all-sales" element={<AllSales />} />
               <Route path="/quick-sale" element={<QuickSale />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/items" element={<Items />} />
               <Route path="/ready-products" element={<ReadyProducts />} />
               <Route path="/create-product" element={<CreateProduct />} />
