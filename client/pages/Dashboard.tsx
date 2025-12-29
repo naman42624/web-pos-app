@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
+import { SaleDetailModal } from "@/components/SaleDetailModal";
+import { Sale } from "@/hooks/usePOS";
 import {
   ShoppingCart,
   TrendingUp,
