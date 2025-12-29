@@ -452,9 +452,18 @@ export default function AddSale() {
     setIsLoading(true);
     try {
       const primaryMode = Array.from(selectedPaymentModes)[0];
+      const paymentAmountsRecord: Record<string, number> = {};
+
+      Array.from(selectedPaymentModes).forEach((mode) => {
+        const amount = parseFloat(paymentAmounts[mode]) || 0;
+        paymentAmountsRecord[mode] = amount;
+      });
+
       addSale({
         items: saleItems,
         paymentMode: primaryMode,
+        paymentModes: Array.from(selectedPaymentModes),
+        paymentAmounts: paymentAmountsRecord,
         customerId: customerId,
         total,
         orderType,
