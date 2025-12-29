@@ -648,6 +648,7 @@ export function usePOS() {
           delivery_sender_name: sale.deliveryDetails?.senderName,
           delivery_sender_phone: sale.deliveryDetails?.senderPhone,
           date: new Date().toISOString(),
+          is_quick_sale: sale.isQuickSale || false,
         },
       ])
       .select()
