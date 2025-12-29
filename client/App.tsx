@@ -39,6 +39,7 @@ export function App() {
               <Route path="/quick-sale" element={<QuickSale />} />
               <Route path="/items" element={<Items />} />
               <Route path="/ready-products" element={<ReadyProducts />} />
+              <Route path="/create-product" element={<CreateProduct />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/customer/:id" element={<CustomerDetail />} />
               <Route path="/deliveries" element={<Deliveries />} />
