@@ -315,7 +315,9 @@ export default function AddSale() {
       setCustomProductItems([]);
       setItemSearchTerm("");
 
-      toast.success(`Product "${customProductName.trim()}" created successfully`);
+      toast.success(
+        `Product "${customProductName.trim()}" created successfully`,
+      );
     } catch (error) {
       toast.error("Failed to create product");
     } finally {
