@@ -8,15 +8,13 @@ import { cn } from "@/lib/utils";
 import { QRCodeModal } from "@/components/QRCodeModal";
 
 export default function ReadyProducts() {
+  const navigate = useNavigate();
   const {
     products,
-    addProduct,
     updateProduct,
     deleteProduct,
     items: inventoryItems,
   } = usePOSContext();
-
-  const [showAddModal, setShowAddModal] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
