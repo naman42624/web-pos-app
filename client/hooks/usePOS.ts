@@ -447,6 +447,7 @@ export function usePOS() {
       .update({
         ...(product.name && { name: product.name }),
         ...(product.price !== undefined && { price: product.price }),
+        ...(product.stock !== undefined && { stock: product.stock }),
         ...(product.image !== undefined && { image: product.image }),
       })
       .eq("id", id);
