@@ -310,7 +310,7 @@ export default function Pickups() {
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                                 <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
-                                  Order {order.id.slice(-8).toUpperCase()}
+                                  Order {getOrderNumber(order.id)}
                                 </h3>
                                 <select
                                   value={order.status || "pending"}
@@ -501,7 +501,7 @@ export default function Pickups() {
                                 <div className="min-w-0 flex-1">
                                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                                     <h3 className="text-sm sm:text-lg font-semibold text-slate-900 truncate">
-                                      Order {order.id.slice(-8).toUpperCase()}
+                                      Order {getOrderNumber(order.id)}
                                     </h3>
                                     <select
                                       value={order.status || "pending"}
