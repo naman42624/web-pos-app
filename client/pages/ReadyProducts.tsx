@@ -53,15 +53,22 @@ export default function ReadyProducts() {
     setShowItemDropdown(false);
   };
 
-  const openEditModal = (product: Product) => {
+  const openEditModal = async (product: Product) => {
     setFormData({
       name: product.name,
       price: (product.price || 0).toString(),
       image: product.image || "",
-      selectedItems: product.items,
+      selectedItems: [],
     });
     setEditingProductId(product.id);
     setShowEditModal(true);
+
+    // Load product items on-demand
+    const items = await loadProductItems(product.id);
+    setFormData((prev) => ({
+      ...prev,
+      selectedItems: items,
+    }));
   };
 
   const closeEditModal = () => {
