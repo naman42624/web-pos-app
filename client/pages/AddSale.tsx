@@ -1648,8 +1648,8 @@ export default function AddSale() {
             </div>
           </div>
 
-          {/* Summary Section - Hidden on smaller screens */}
-          <div className="hidden lg:block fixed right-8 top-24 w-80 max-h-[calc(100vh-120px)] overflow-y-auto">
+          {/* Summary Section */}
+          <div className="lg:fixed lg:right-8 lg:top-24 lg:w-80 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:col-span-1">
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md border border-blue-200 p-6 space-y-4 sm:space-y-6">
               <h2 className="text-lg font-bold text-slate-900">Summary</h2>
 
