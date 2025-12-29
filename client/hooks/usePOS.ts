@@ -136,11 +136,11 @@ export function usePOS() {
     const loadData = async () => {
       try {
         setLoading(true);
+        // Load items first (foundational data)
+        await loadItems().catch((e) => console.error("Error loading items:", e));
+
+        // Then load other data in parallel (excluding products for now)
         await Promise.all([
-          loadItems().catch((e) => console.error("Error loading items:", e)),
-          loadProducts().catch((e) =>
-            console.error("Error loading products:", e),
-          ),
           loadCustomers().catch((e) =>
             console.error("Error loading customers:", e),
           ),
@@ -152,6 +152,11 @@ export function usePOS() {
             console.error("Error loading delivery boys:", e),
           ),
         ]);
+
+        // Load products last to avoid database overload
+        await loadProducts().catch((e) =>
+          console.error("Error loading products:", e),
+        );
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
