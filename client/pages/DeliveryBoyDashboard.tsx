@@ -91,6 +91,23 @@ export default function DeliveryBoyDashboard() {
     }
   };
 
+  const handleMarkCashReceived = async (saleId: string) => {
+    try {
+      await markCashOnDeliveryReceived(saleId);
+      alert("Cash payment marked as received!");
+    } catch (error) {
+      console.error("Error marking cash as received:", error);
+      alert("Failed to mark cash as received");
+    }
+  };
+
+  const getCODAmount = (delivery: (typeof sales)[0]) => {
+    if (delivery.paymentAmounts && delivery.paymentAmounts.cod) {
+      return delivery.paymentAmounts.cod;
+    }
+    return 0;
+  };
+
   if (!session) {
     return null;
   }
