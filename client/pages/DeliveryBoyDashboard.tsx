@@ -24,7 +24,12 @@ interface DeliveryBoySession {
 
 export default function DeliveryBoyDashboard() {
   const navigate = useNavigate();
-  const { sales, updateSaleStatus, updateDeliveryBoy } = usePOSContext();
+  const {
+    sales,
+    updateSaleStatus,
+    updateDeliveryBoy,
+    markCashOnDeliveryReceived,
+  } = usePOSContext();
 
   const [session, setSession] = useState<DeliveryBoySession | null>(null);
   const [myDeliveries, setMyDeliveries] = useState<(typeof sales)[]>([]);
