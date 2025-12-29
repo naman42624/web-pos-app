@@ -460,7 +460,7 @@ export default function QuickSale() {
                     "flex-1 py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm transition-all",
                     addMode === "custom"
                       ? "bg-cyan-600 text-white shadow-md"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300",
                   )}
                 >
                   Add Items
