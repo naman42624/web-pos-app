@@ -294,7 +294,7 @@ export function usePOS() {
       // Fetch products without images first (fast)
       const { data: productsData, error: productsError } = await supabase
         .from("products")
-        .select("id, name, price");
+        .select("id, name, price, stock");
 
       if (productsError) {
         console.error(
@@ -314,6 +314,7 @@ export function usePOS() {
         id: product.id,
         name: product.name,
         price: parseFloat(product.price) || 0,
+        stock: product.stock || 0,
         image: undefined,
         items: [],
       }));
