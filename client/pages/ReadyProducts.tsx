@@ -135,6 +135,11 @@ export default function ReadyProducts() {
       return;
     }
 
+    if (!formData.stock || parseInt(formData.stock) < 0) {
+      alert("Please enter a valid stock quantity");
+      return;
+    }
+
     if (formData.selectedItems.length === 0) {
       alert("Please add at least one item to the product");
       return;
@@ -143,6 +148,7 @@ export default function ReadyProducts() {
     const productData = {
       name: formData.name.trim(),
       price: parseFloat(formData.price),
+      stock: parseInt(formData.stock),
       image: formData.image || undefined,
       items: formData.selectedItems,
     };
