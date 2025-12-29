@@ -11,6 +11,7 @@ import {
   Clock,
   Calendar,
   ChevronRight,
+  DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
