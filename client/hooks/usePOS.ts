@@ -1291,6 +1291,7 @@ export function usePOS(isAuthReady: boolean = false) {
     settings,
     loading,
     addSale,
+    loadSaleDetails,
     updateSaleStatus,
     recordPayment,
     markCashOnDeliveryReceived,
