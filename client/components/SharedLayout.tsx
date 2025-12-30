@@ -33,6 +33,8 @@ interface SharedLayoutProps {
 
 export function SharedLayout({ children }: SharedLayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -43,6 +45,16 @@ export function SharedLayout({ children }: SharedLayoutProps) {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error: any) {
+      toast.error(error.message || "Logout failed");
+    }
+  };
 
   const navItems = [
     { path: "/", label: "Dashboard", icon: BarChart3 },
