@@ -1,9 +1,17 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { usePOS } from "@/hooks/usePOS";
+import { useAuth } from "@/contexts/AuthContext";
 import { POSContext } from "./usePOSContext";
 
 export function POSProvider({ children }: { children: ReactNode }) {
-  const pos = usePOS();
+  const { session, loading: authLoading } = useAuth();
+  const pos = usePOS(!!session && !authLoading);
 
-  return <POSContext.Provider value={pos}>{children}</POSContext.Provider>;
+  const contextValue = useMemo(() => pos, [pos]);
+
+  return (
+    <POSContext.Provider value={contextValue}>
+      {children}
+    </POSContext.Provider>
+  );
 }
