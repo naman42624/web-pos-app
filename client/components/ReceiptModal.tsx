@@ -15,7 +15,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
   const handlePrint = () => {
     if (!receiptRef.current) return;
 
-    const printWindow = window.open("", "", "height=800,width=600");
+    const printWindow = window.open("", "", "height=800,width=400");
     if (!printWindow) {
       alert("Please allow popups to print the receipt");
       return;
@@ -32,10 +32,24 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
         body {
           font-family: 'Courier New', monospace;
           background: white;
-          padding: 20px;
+          padding: 0;
+          margin: 0;
+        }
+        @page {
+          size: 4in 6in;
+          margin: 0;
+          padding: 0;
         }
         @media print {
           body {
+            width: 4in;
+            height: 6in;
+            padding: 0;
+            margin: 0;
+            background: white;
+          }
+          * {
+            margin: 0;
             padding: 0;
           }
         }
@@ -45,6 +59,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
     printWindow.document.write("<!DOCTYPE html>");
     printWindow.document.write("<html>");
     printWindow.document.write("<head>");
+    printWindow.document.write("<meta charset='UTF-8'>");
     printWindow.document.write("<title>Receipt</title>");
     printWindow.document.write(styles);
     printWindow.document.write("</head>");
