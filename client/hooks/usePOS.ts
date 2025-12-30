@@ -151,7 +151,7 @@ export interface Settings {
   updatedAt: string;
 }
 
-export function usePOS(isAuthReady: boolean = false) {
+export function usePOS() {
   const [sales, setSales] = useState<Sale[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -161,12 +161,8 @@ export function usePOS(isAuthReady: boolean = false) {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initial load of all data - only when authenticated
+  // Initial load of all data
   useEffect(() => {
-    if (!isAuthReady) {
-      return;
-    }
-
     const loadData = async () => {
       try {
         setLoading(true);
@@ -204,7 +200,7 @@ export function usePOS(isAuthReady: boolean = false) {
     };
 
     loadData();
-  }, [isAuthReady]);
+  }, []);
 
   // Load Items
   const loadItems = async () => {
