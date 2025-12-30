@@ -29,32 +29,32 @@ export function Receipt({ sale }: ReceiptProps) {
   };
 
   return (
-    <div className="w-full max-w-md bg-white p-8 print:p-4 text-slate-900 text-sm print:text-xs font-mono">
+    <div className="w-full bg-white p-8 print:p-3 text-slate-900 text-sm print:text-xs font-mono" style={{ maxWidth: "100%" }}>
       {/* Header */}
-      <div className="text-center mb-6 print:mb-4 border-b border-slate-300 pb-4 print:pb-2">
-        <h1 className="text-2xl print:text-lg font-bold tracking-wide">
+      <div className="text-center mb-4 print:mb-2 border-b border-slate-300 pb-2 print:pb-1">
+        <h1 className="text-2xl print:text-base font-bold tracking-wide">
           RECEIPT
         </h1>
-        <p className="text-xs print:text-xs text-slate-600 mt-1">
-          Thank you for your purchase
+        <p className="text-xs print:text-xs text-slate-600 mt-0.5 print:mt-0">
+          Thank you!
         </p>
       </div>
 
       {/* Order Info */}
-      <div className="mb-6 print:mb-4 text-xs">
-        <div className="flex justify-between mb-2">
+      <div className="mb-3 print:mb-2 text-xs">
+        <div className="flex justify-between mb-1">
           <span className="font-semibold">Order #:</span>
-          <span className="font-bold text-lg print:text-base">
+          <span className="font-bold text-base print:text-sm">
             {orderNumber}
           </span>
         </div>
-        <div className="flex justify-between mb-2">
+        <div className="flex justify-between mb-1">
           <span className="font-semibold">Date:</span>
-          <span>{format(saleDate, "MMM dd, yyyy")}</span>
+          <span>{format(saleDate, "MMM dd")}</span>
         </div>
         <div className="flex justify-between">
           <span className="font-semibold">Time:</span>
-          <span>{format(saleDate, "HH:mm:ss")}</span>
+          <span>{format(saleDate, "HH:mm")}</span>
         </div>
       </div>
 
