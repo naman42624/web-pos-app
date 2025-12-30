@@ -336,7 +336,7 @@ export function usePOS(isAuthReady: boolean = false) {
 
   // Load product images in batches to avoid timeout
   const loadProductImagesInBatches = async (productIds: string[]) => {
-    const batchSize = 10;
+    const batchSize = 5;
 
     for (let i = 0; i < productIds.length; i += batchSize) {
       const batch = productIds.slice(i, i + batchSize);
@@ -361,8 +361,7 @@ export function usePOS(isAuthReady: boolean = false) {
         console.error(`Error loading images batch ${i / batchSize + 1}:`, err);
       }
 
-      // Small delay between batches to avoid overwhelming the database
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
   };
 
