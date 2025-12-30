@@ -36,9 +36,9 @@ export function App() {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <AuthProvider>
-          <POSProvider>
-            <BrowserRouter>
+        <BrowserRouter>
+          <AuthProvider>
+            <POSProvider>
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route
@@ -168,9 +168,9 @@ export function App() {
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </POSProvider>
-        </AuthProvider>
+            </POSProvider>
+          </AuthProvider>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
