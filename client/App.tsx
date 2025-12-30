@@ -31,163 +31,145 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-function AppRoutes() {
+function AppContent() {
   const { session } = useAuth();
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
-      <Route path="/delivery-boy/dashboard" element={<DeliveryBoyDashboard />} />
-      <Route path="/delivery-boy/all-orders" element={<DeliveryBoyAllOrders />} />
-
+    <>
       {session ? (
-        <>
-          <Route
-            path="/"
-            element={
-              <POSProvider>
+        <POSProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/add-sale"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/add-sale"
+              element={
                 <ProtectedRoute>
                   <AddSale />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/all-sales"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/all-sales"
+              element={
                 <ProtectedRoute>
                   <AllSales />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/quick-sale"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/quick-sale"
+              element={
                 <ProtectedRoute>
                   <QuickSale />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
                 <ProtectedRoute>
                   <Settings />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/items"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/items"
+              element={
                 <ProtectedRoute>
                   <Items />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/ready-products"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/ready-products"
+              element={
                 <ProtectedRoute>
                   <ReadyProducts />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/create-product"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/create-product"
+              element={
                 <ProtectedRoute>
                   <CreateProduct />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/customers"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/customers"
+              element={
                 <ProtectedRoute>
                   <Customers />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/customer/:id"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/customer/:id"
+              element={
                 <ProtectedRoute>
                   <CustomerDetail />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/deliveries"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/deliveries"
+              element={
                 <ProtectedRoute>
                   <Deliveries />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/pickups"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/pickups"
+              element={
                 <ProtectedRoute>
                   <Pickups />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/credit-records"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/credit-records"
+              element={
                 <ProtectedRoute>
                   <CreditRecords />
                 </ProtectedRoute>
-              </POSProvider>
-            }
-          />
-          <Route
-            path="/admin/delivery-boys"
-            element={
-              <POSProvider>
+              }
+            />
+            <Route
+              path="/admin/delivery-boys"
+              element={
                 <ProtectedRoute>
                   <DeliveryBoys />
                 </ProtectedRoute>
-              </POSProvider>
-            }
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </POSProvider>
+      ) : (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
+          <Route
+            path="/delivery-boy/dashboard"
+            element={<DeliveryBoyDashboard />}
           />
-        </>
-      ) : null}
-
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+          <Route
+            path="/delivery-boy/all-orders"
+            element={<DeliveryBoyAllOrders />}
+          />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      )}
+    </>
   );
 }
 
@@ -201,7 +183,7 @@ export function App() {
           future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
         >
           <AuthProvider>
-            <AppRoutes />
+            <AppContent />
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
