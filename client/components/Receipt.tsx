@@ -29,7 +29,10 @@ export function Receipt({ sale }: ReceiptProps) {
   };
 
   return (
-    <div className="w-full bg-white p-8 print:p-3 text-slate-900 text-sm print:text-xs font-mono" style={{ maxWidth: "100%" }}>
+    <div
+      className="w-full bg-white p-8 print:p-3 text-slate-900 text-sm print:text-xs font-mono"
+      style={{ maxWidth: "100%" }}
+    >
       {/* Header */}
       <div className="text-center mb-4 print:mb-2 border-b border-slate-300 pb-2 print:pb-1">
         <h1 className="text-2xl print:text-base font-bold tracking-wide">
@@ -98,12 +101,20 @@ export function Receipt({ sale }: ReceiptProps) {
               {item.composition && item.composition.length > 0 && (
                 <div className="ml-2 mt-0.5 text-xs text-slate-600 border-l border-slate-300 pl-1">
                   {item.composition.map((comp, compIdx) => (
-                    <div key={compIdx} className="flex justify-between text-xs leading-tight">
+                    <div
+                      key={compIdx}
+                      className="flex justify-between text-xs leading-tight"
+                    >
                       <span className="truncate">
-                        {getItemName(comp.itemId, comp.customName)} ×{comp.quantity}
+                        {getItemName(comp.itemId, comp.customName)} ×
+                        {comp.quantity}
                       </span>
                       <span className="ml-1 text-right whitespace-nowrap">
-                        ₹{((getItemPrice(comp.itemId, comp.customPrice) * comp.quantity).toFixed(2))}
+                        ₹
+                        {(
+                          getItemPrice(comp.itemId, comp.customPrice) *
+                          comp.quantity
+                        ).toFixed(2)}
                       </span>
                     </div>
                   ))}
@@ -129,9 +140,11 @@ export function Receipt({ sale }: ReceiptProps) {
         {sale.discountAmount && sale.discountAmount > 0 && (
           <div className="flex justify-between text-xs text-green-600 leading-tight">
             <span>
-              Discount{sale.discountType === "percentage"
+              Discount
+              {sale.discountType === "percentage"
                 ? ` (${sale.discountValue}%)`
-                : ""}:
+                : ""}
+              :
             </span>
             <span className="font-semibold">
               -₹{sale.discountAmount.toFixed(2)}
@@ -162,7 +175,10 @@ export function Receipt({ sale }: ReceiptProps) {
         {sale.paymentModes && sale.paymentModes.length > 1 ? (
           <div className="space-y-0.5 print:space-y-0">
             {sale.paymentModes.map((mode) => (
-              <div key={mode} className="flex justify-between text-xs leading-tight">
+              <div
+                key={mode}
+                className="flex justify-between text-xs leading-tight"
+              >
                 <span className="capitalize">{mode}:</span>
                 <span className="font-semibold">
                   ₹{(sale.paymentAmounts?.[mode] || 0).toFixed(2)}
@@ -201,10 +217,12 @@ export function Receipt({ sale }: ReceiptProps) {
           {sale.deliveryDetails && sale.orderType === "delivery" && (
             <div className="text-xs space-y-0.5 print:space-y-0 mt-0.5 print:mt-0">
               <div className="leading-tight">
-                <span className="font-semibold">To:</span> {sale.deliveryDetails.receiverName}
+                <span className="font-semibold">To:</span>{" "}
+                {sale.deliveryDetails.receiverName}
               </div>
               <div className="leading-tight truncate">
-                <span className="font-semibold">Ph:</span> {sale.deliveryDetails.receiverPhone}
+                <span className="font-semibold">Ph:</span>{" "}
+                {sale.deliveryDetails.receiverPhone}
               </div>
             </div>
           )}
