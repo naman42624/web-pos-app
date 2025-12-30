@@ -75,43 +75,35 @@ export function Receipt({ sale }: ReceiptProps) {
 
       {/* Items */}
       <div className="mb-2 print:mb-1 border-t border-b border-slate-300 py-2 print:py-1">
-        <div className="font-semibold text-xs mb-2 print:mb-1">Items</div>
-        <div className="space-y-2 print:space-y-1">
+        <div className="font-semibold text-xs mb-1 print:mb-0.5">Items</div>
+        <div className="space-y-0.5 print:space-y-0">
           {sale.items.map((item, idx) => (
             <div key={idx}>
               {/* Item main line */}
-              <div className="flex justify-between text-xs">
-                <span className="flex-1">
-                  {item.name} × {item.quantity}
+              <div className="flex justify-between text-xs leading-tight">
+                <span className="flex-1 truncate">
+                  {item.name} ×{item.quantity}
                 </span>
-                <span className="ml-2 font-semibold text-right w-20">
+                <span className="ml-1 font-semibold text-right whitespace-nowrap">
                   ₹{(item.quantity * item.price).toFixed(2)}
                 </span>
               </div>
 
               {/* Unit price */}
-              <div className="text-xs text-slate-600 flex justify-end pr-1">
-                @ ₹{item.price.toFixed(2)}/pc
+              <div className="text-xs text-slate-600 flex justify-end pr-1 leading-tight">
+                @ ₹{item.price.toFixed(2)}
               </div>
 
               {/* Composition if present */}
               {item.composition && item.composition.length > 0 && (
-                <div className="ml-4 mt-1 text-xs text-slate-600 border-l border-slate-300 pl-2">
-                  <div className="font-semibold text-slate-700 mb-0.5">
-                    Contains:
-                  </div>
+                <div className="ml-2 mt-0.5 text-xs text-slate-600 border-l border-slate-300 pl-1">
                   {item.composition.map((comp, compIdx) => (
-                    <div key={compIdx} className="flex justify-between mb-0.5">
-                      <span>
-                        {getItemName(comp.itemId, comp.customName)} ×{" "}
-                        {comp.quantity}
+                    <div key={compIdx} className="flex justify-between text-xs leading-tight">
+                      <span className="truncate">
+                        {getItemName(comp.itemId, comp.customName)} ×{comp.quantity}
                       </span>
-                      <span className="ml-2">
-                        ₹
-                        {(
-                          getItemPrice(comp.itemId, comp.customPrice) *
-                          comp.quantity
-                        ).toFixed(2)}
+                      <span className="ml-1 text-right whitespace-nowrap">
+                        ₹{((getItemPrice(comp.itemId, comp.customPrice) * comp.quantity).toFixed(2))}
                       </span>
                     </div>
                   ))}
