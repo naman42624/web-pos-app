@@ -9,7 +9,7 @@ import { getOrderNumber } from "@/lib/utils";
 import { format } from "date-fns";
 
 export default function AllSales() {
-  const { sales, customers } = usePOSContext();
+  const { sales, customers, loadSaleDetails } = usePOSContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
     "all" | "quick-sale" | "regular-sale"
@@ -22,6 +22,7 @@ export default function AllSales() {
   >("all");
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [showSaleDetail, setShowSaleDetail] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const filteredSales = useMemo(() => {
     return sales.filter((sale) => {
@@ -59,9 +60,17 @@ export default function AllSales() {
     customers,
   ]);
 
-  const handleSaleClick = (sale: Sale) => {
+  const handleSaleClick = async (sale: Sale) => {
     setSelectedSale(sale);
     setShowSaleDetail(true);
+    if (sale.items.length === 0) {
+      setLoadingDetails(true);
+      try {
+        await loadSaleDetails(sale.id);
+      } finally {
+        setLoadingDetails(false);
+      }
+    }
   };
 
   const sortedSales = [...filteredSales].sort(
