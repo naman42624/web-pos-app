@@ -586,7 +586,7 @@ export function usePOS(isAuthReady: boolean = false) {
     return creditRecords.filter((c) => c.customerId === customerId);
   };
 
-  // Load Sales
+  // Load Sales - simplified to avoid N+1 queries
   const loadSales = async () => {
     const { data, error } = await supabase.from("sales").select("*");
     if (error) {
@@ -594,83 +594,96 @@ export function usePOS(isAuthReady: boolean = false) {
       return;
     }
 
-    const salesWithItems = await Promise.all(
-      data.map(async (sale: any) => {
-        const { data: itemsData } = await supabase
-          .from("sale_items")
+    const simpleSales = data.map((sale: any) => ({
+      id: sale.id,
+      items: [],
+      paymentMode: sale.payment_mode,
+      paymentModes: sale.payment_modes,
+      paymentAmounts: sale.payment_amounts,
+      customerId: sale.customer_id,
+      total: parseFloat(sale.total),
+      date: sale.date,
+      orderType: sale.order_type,
+      pickupDate: sale.pickup_date,
+      pickupTime: sale.pickup_time,
+      discountType: sale.discount_type,
+      discountValue: sale.discount_value
+        ? parseFloat(sale.discount_value)
+        : undefined,
+      discountAmount: sale.discount_amount
+        ? parseFloat(sale.discount_amount)
+        : undefined,
+      deliveryCharges: sale.delivery_charges
+        ? parseFloat(sale.delivery_charges)
+        : undefined,
+      deliveryDetails: sale.delivery_receiver_name
+        ? {
+            receiverName: sale.delivery_receiver_name,
+            receiverAddress: sale.delivery_receiver_address,
+            receiverPhone: sale.delivery_receiver_phone,
+            message: sale.delivery_message,
+            senderName: sale.delivery_sender_name,
+            senderPhone: sale.delivery_sender_phone,
+          }
+        : undefined,
+      status: sale.status || "pending",
+      paymentStatus: sale.payment_status || "pending",
+      assignedDeliveryBoyId: sale.delivery_boy_id,
+      isQuickSale: sale.is_quick_sale || false,
+    }));
+
+    setSales(simpleSales);
+  };
+
+  // Load sale details with items when needed
+  const loadSaleDetails = async (saleId: string) => {
+    const { data: itemsData, error } = await supabase
+      .from("sale_items")
+      .select("*")
+      .eq("sale_id", saleId);
+
+    if (error) {
+      console.error("Error loading sale items:", error);
+      return [];
+    }
+
+    if (!itemsData) return [];
+
+    const saleItems = await Promise.all(
+      itemsData.map(async (si: any) => {
+        const { data: compData } = await supabase
+          .from("sale_item_composition")
           .select("*")
-          .eq("sale_id", sale.id);
-
-        const saleItems = await Promise.all(
-          itemsData
-            ? itemsData.map(async (si: any) => {
-                const { data: compData } = await supabase
-                  .from("sale_item_composition")
-                  .select("*")
-                  .eq("sale_item_id", si.id);
-
-                return {
-                  id: si.id,
-                  name: si.name,
-                  quantity: si.quantity,
-                  price: parseFloat(si.price),
-                  image: si.image,
-                  composition: compData
-                    ? compData.map((c: any) => ({
-                        itemId: c.item_id,
-                        customName: c.custom_name,
-                        customPrice: c.custom_price
-                          ? parseFloat(c.custom_price)
-                          : undefined,
-                        quantity: c.quantity,
-                      }))
-                    : undefined,
-                };
-              })
-            : [],
-        );
+          .eq("sale_item_id", si.id);
 
         return {
-          id: sale.id,
-          items: saleItems,
-          paymentMode: sale.payment_mode,
-          paymentModes: sale.payment_modes,
-          paymentAmounts: sale.payment_amounts,
-          customerId: sale.customer_id,
-          total: parseFloat(sale.total),
-          date: sale.date,
-          orderType: sale.order_type,
-          pickupDate: sale.pickup_date,
-          pickupTime: sale.pickup_time,
-          discountType: sale.discount_type,
-          discountValue: sale.discount_value
-            ? parseFloat(sale.discount_value)
+          id: si.id,
+          name: si.name,
+          quantity: si.quantity,
+          price: parseFloat(si.price),
+          image: si.image,
+          productId: si.product_id,
+          composition: compData
+            ? compData.map((c: any) => ({
+                itemId: c.item_id,
+                customName: c.custom_name,
+                customPrice: c.custom_price
+                  ? parseFloat(c.custom_price)
+                  : undefined,
+                quantity: c.quantity,
+              }))
             : undefined,
-          discountAmount: sale.discount_amount
-            ? parseFloat(sale.discount_amount)
-            : undefined,
-          deliveryCharges: sale.delivery_charges
-            ? parseFloat(sale.delivery_charges)
-            : undefined,
-          deliveryDetails: sale.delivery_receiver_name
-            ? {
-                receiverName: sale.delivery_receiver_name,
-                receiverAddress: sale.delivery_receiver_address,
-                receiverPhone: sale.delivery_receiver_phone,
-                message: sale.delivery_message,
-                senderName: sale.delivery_sender_name,
-                senderPhone: sale.delivery_sender_phone,
-              }
-            : undefined,
-          status: sale.status || "pending",
-          paymentStatus: sale.payment_status || "pending",
-          assignedDeliveryBoyId: sale.delivery_boy_id,
-          isQuickSale: sale.is_quick_sale || false,
         };
       }),
     );
 
-    setSales(salesWithItems);
+    setSales((prevSales) =>
+      prevSales.map((s) =>
+        s.id === saleId ? { ...s, items: saleItems } : s,
+      ),
+    );
+
+    return saleItems;
   };
 
   const addSale = async (sale: Omit<Sale, "id" | "date">) => {
