@@ -157,12 +157,12 @@ export function Receipt({ sale }: ReceiptProps) {
       </div>
 
       {/* Payment Info */}
-      <div className="mb-6 print:mb-4 text-xs border-t border-slate-300 pt-3 print:pt-2">
-        <div className="font-semibold mb-2">Payment Method</div>
+      <div className="mb-2 print:mb-1 text-xs border-t border-slate-300 pt-1 print:pt-0.5">
+        <div className="font-semibold mb-0.5">Pay Mode</div>
         {sale.paymentModes && sale.paymentModes.length > 1 ? (
-          <div className="space-y-1">
+          <div className="space-y-0.5 print:space-y-0">
             {sale.paymentModes.map((mode) => (
-              <div key={mode} className="flex justify-between">
+              <div key={mode} className="flex justify-between text-xs leading-tight">
                 <span className="capitalize">{mode}:</span>
                 <span className="font-semibold">
                   ₹{(sale.paymentAmounts?.[mode] || 0).toFixed(2)}
@@ -171,7 +171,7 @@ export function Receipt({ sale }: ReceiptProps) {
             ))}
           </div>
         ) : (
-          <div className="flex justify-between">
+          <div className="flex justify-between text-xs leading-tight">
             <span className="capitalize">{sale.paymentMode || "Cash"}:</span>
             <span className="font-semibold">₹{sale.total.toFixed(2)}</span>
           </div>
@@ -180,45 +180,31 @@ export function Receipt({ sale }: ReceiptProps) {
 
       {/* Order Type Info */}
       {sale.orderType !== "pickup" && (
-        <div className="mb-6 print:mb-4 text-xs border-t border-slate-300 pt-3 print:pt-2">
-          <div className="font-semibold mb-2">
-            {sale.orderType === "pickup_later"
-              ? "Pickup Details"
-              : "Delivery Details"}
+        <div className="mb-2 print:mb-1 text-xs border-t border-slate-300 pt-1 print:pt-0.5">
+          <div className="font-semibold mb-0.5">
+            {sale.orderType === "pickup_later" ? "Pickup" : "Delivery"}
           </div>
           {sale.pickupDate && (
-            <div className="flex justify-between mb-1">
-              <span>
-                {sale.orderType === "pickup_later"
-                  ? "Pickup Date:"
-                  : "Delivery Date:"}
+            <div className="text-xs leading-tight">
+              <span className="text-slate-600">
+                {sale.orderType === "pickup_later" ? "Date:" : ""}
               </span>
-              <span>{sale.pickupDate}</span>
+              {sale.pickupDate}
             </div>
           )}
           {sale.pickupTime && (
-            <div className="flex justify-between mb-2">
-              <span>
-                {sale.orderType === "pickup_later"
-                  ? "Pickup Time:"
-                  : "Delivery Time:"}
-              </span>
-              <span>{sale.pickupTime}</span>
+            <div className="text-xs leading-tight">
+              <span className="text-slate-600">Time: </span>
+              {sale.pickupTime}
             </div>
           )}
           {sale.deliveryDetails && sale.orderType === "delivery" && (
-            <div className="text-xs space-y-1 bg-slate-50 p-2 rounded border border-slate-200">
-              <div>
-                <span className="font-semibold">Receiver:</span>{" "}
-                {sale.deliveryDetails.receiverName}
+            <div className="text-xs space-y-0.5 print:space-y-0 mt-0.5 print:mt-0">
+              <div className="leading-tight">
+                <span className="font-semibold">To:</span> {sale.deliveryDetails.receiverName}
               </div>
-              <div>
-                <span className="font-semibold">Phone:</span>{" "}
-                {sale.deliveryDetails.receiverPhone}
-              </div>
-              <div>
-                <span className="font-semibold">Address:</span>{" "}
-                {sale.deliveryDetails.receiverAddress}
+              <div className="leading-tight truncate">
+                <span className="font-semibold">Ph:</span> {sale.deliveryDetails.receiverPhone}
               </div>
             </div>
           )}
@@ -226,9 +212,8 @@ export function Receipt({ sale }: ReceiptProps) {
       )}
 
       {/* Footer */}
-      <div className="text-center text-xs text-slate-600 border-t border-slate-300 pt-4 print:pt-2">
-        <p className="mb-1">Thank you for your business!</p>
-        <p className="text-xs">Please keep this receipt for your records</p>
+      <div className="text-center text-xs text-slate-600 border-t border-slate-300 pt-1 print:pt-0.5 mt-1 print:mt-0.5 leading-tight">
+        <p>Thank you!</p>
       </div>
     </div>
   );
