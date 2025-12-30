@@ -10,8 +10,6 @@ export function POSProvider({ children }: { children: ReactNode }) {
   const contextValue = useMemo(() => pos, [pos]);
 
   return (
-    <POSContext.Provider value={contextValue}>
-      {children}
-    </POSContext.Provider>
+    <POSContext.Provider value={contextValue}>{children}</POSContext.Provider>
   );
 }

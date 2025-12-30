@@ -677,9 +677,7 @@ export function usePOS(isAuthReady: boolean = false) {
     );
 
     setSales((prevSales) =>
-      prevSales.map((s) =>
-        s.id === saleId ? { ...s, items: saleItems } : s,
-      ),
+      prevSales.map((s) => (s.id === saleId ? { ...s, items: saleItems } : s)),
     );
 
     return saleItems;

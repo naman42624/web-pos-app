@@ -140,7 +140,10 @@ export function SharedLayout({ children }: SharedLayoutProps) {
                   <p className="text-xs text-slate-500">Account</p>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-600"
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </DropdownMenuItem>
