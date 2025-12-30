@@ -60,13 +60,13 @@ export function Receipt({ sale }: ReceiptProps) {
 
       {/* Customer Info */}
       {customer && (
-        <div className="mb-6 print:mb-4 text-xs border-t border-slate-300 pt-3 print:pt-2">
-          <div className="font-semibold mb-1">Customer</div>
-          <div className="flex justify-between">
+        <div className="mb-2 print:mb-1 text-xs border-t border-slate-300 pt-1 print:pt-0.5">
+          <div className="font-semibold mb-0.5">Customer</div>
+          <div className="flex justify-between text-xs">
             <span>Name:</span>
-            <span className="text-right">{customer.name}</span>
+            <span className="text-right truncate ml-1">{customer.name}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between text-xs">
             <span>Phone:</span>
             <span className="text-right">{customer.phone}</span>
           </div>
@@ -74,7 +74,7 @@ export function Receipt({ sale }: ReceiptProps) {
       )}
 
       {/* Items */}
-      <div className="mb-6 print:mb-4 border-t border-b border-slate-300 py-3 print:py-2">
+      <div className="mb-2 print:mb-1 border-t border-b border-slate-300 py-2 print:py-1">
         <div className="font-semibold text-xs mb-2 print:mb-1">Items</div>
         <div className="space-y-2 print:space-y-1">
           {sale.items.map((item, idx) => (
