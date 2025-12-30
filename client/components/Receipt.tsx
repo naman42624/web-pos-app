@@ -115,8 +115,8 @@ export function Receipt({ sale }: ReceiptProps) {
       </div>
 
       {/* Totals */}
-      <div className="mb-6 print:mb-4 space-y-1 print:space-y-0.5">
-        <div className="flex justify-between text-xs">
+      <div className="mb-2 print:mb-1 space-y-0.5 print:space-y-0">
+        <div className="flex justify-between text-xs leading-tight">
           <span>Subtotal:</span>
           <span className="font-semibold">
             ₹
@@ -127,13 +127,11 @@ export function Receipt({ sale }: ReceiptProps) {
         </div>
 
         {sale.discountAmount && sale.discountAmount > 0 && (
-          <div className="flex justify-between text-xs text-green-600">
+          <div className="flex justify-between text-xs text-green-600 leading-tight">
             <span>
-              Discount (
-              {sale.discountType === "percentage"
-                ? `${sale.discountValue}%`
-                : "Fixed"}
-              ):
+              Discount{sale.discountType === "percentage"
+                ? ` (${sale.discountValue}%)`
+                : ""}:
             </span>
             <span className="font-semibold">
               -₹{sale.discountAmount.toFixed(2)}
@@ -142,17 +140,17 @@ export function Receipt({ sale }: ReceiptProps) {
         )}
 
         {sale.deliveryCharges && sale.deliveryCharges > 0 && (
-          <div className="flex justify-between text-xs">
-            <span>Delivery Charges:</span>
+          <div className="flex justify-between text-xs leading-tight">
+            <span>Delivery:</span>
             <span className="font-semibold">
               +₹{sale.deliveryCharges.toFixed(2)}
             </span>
           </div>
         )}
 
-        <div className="flex justify-between text-sm font-bold border-t border-slate-300 pt-2 print:pt-1 mt-2 print:mt-1">
-          <span>Total:</span>
-          <span className="text-lg print:text-base">
+        <div className="flex justify-between text-xs font-bold border-t border-slate-300 pt-1 print:pt-0.5 mt-1 print:mt-0 leading-tight">
+          <span>TOTAL:</span>
+          <span className="text-sm print:text-xs">
             ₹{sale.total.toFixed(2)}
           </span>
         </div>
