@@ -27,11 +27,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const getSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setSession(session);
-      setLoading(false);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setSession(session);
+      } catch (error) {
+        console.error("Error getting session:", error);
+        setSession(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getSession();
@@ -55,8 +61,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error("Logout error:", error);
+      setSession(null);
+    }
   };
 
   const signup = async (email: string, password: string) => {
