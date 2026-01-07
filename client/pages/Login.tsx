@@ -29,7 +29,18 @@ export default function Login() {
       navigate("/");
     } catch (error: any) {
       console.error("Login error:", error);
-      toast.error(error.message || "Login failed. Please try again.");
+
+      let errorMessage = "Login failed. Please try again.";
+
+      if (error?.message?.includes("Failed to fetch")) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error?.message?.includes("Invalid login credentials")) {
+        errorMessage = "Invalid email or password.";
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
