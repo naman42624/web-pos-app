@@ -12,10 +12,20 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 }
 
 // Proxy all requests to Supabase through the server
-router.all("/auth/:path(*)", async (req: Request, res: Response) => {
+router.all("*", async (req: Request, res: Response) => {
   try {
-    const authPath = req.params.path;
-    const url = `${SUPABASE_URL}/auth/v1/${authPath}`;
+    const path = req.path.replace(/^\//, "");
+    let url = "";
+
+    if (path.startsWith("auth/")) {
+      url = `${SUPABASE_URL}/auth/v1/${path.replace(/^auth\//, "")}`;
+    } else if (path.startsWith("rest/")) {
+      url = `${SUPABASE_URL}/rest/v1/${path.replace(/^rest\//, "")}`;
+    } else {
+      return res
+        .status(400)
+        .json({ error: "Invalid proxy path. Use /auth/... or /rest/..." });
+    }
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
@@ -26,46 +36,15 @@ router.all("/auth/:path(*)", async (req: Request, res: Response) => {
       headers.authorization = req.headers.authorization;
     }
 
-    const response = await fetch(url, {
-      method: req.method,
-      headers,
-      body:
-        req.method !== "GET" && req.method !== "HEAD"
-          ? JSON.stringify(req.body)
-          : undefined,
-    });
-
-    const data = await response.json();
-    res.status(response.status).json(data);
-  } catch (error) {
-    console.error("Supabase proxy error:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to proxy request to Supabase", details: error });
-  }
-});
-
-// Proxy database requests
-router.all("/rest/:path(*)", async (req: Request, res: Response) => {
-  try {
-    const restPath = req.params.path;
-    const url = `${SUPABASE_URL}/rest/v1/${restPath}`;
-
+    // Build query string
     const queryString =
       Object.keys(req.query).length > 0
         ? "?" + new URLSearchParams(req.query as Record<string, string>).toString()
         : "";
 
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      apikey: SUPABASE_KEY,
-    };
+    const fetchUrl = url + queryString;
 
-    if (req.headers.authorization) {
-      headers.authorization = req.headers.authorization;
-    }
-
-    const response = await fetch(url + queryString, {
+    const response = await fetch(fetchUrl, {
       method: req.method,
       headers,
       body:
@@ -91,7 +70,7 @@ router.all("/rest/:path(*)", async (req: Request, res: Response) => {
 
     res.send(data);
   } catch (error) {
-    console.error("Supabase REST proxy error:", error);
+    console.error("Supabase proxy error:", error);
     res
       .status(500)
       .json({ error: "Failed to proxy request to Supabase", details: error });
