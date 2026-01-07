@@ -9,30 +9,32 @@ if (!supabaseUrl || !supabaseKey) {
   );
 }
 
-// Custom fetch wrapper with retry logic
-const customFetch = async (
+// Custom fetch that routes requests through our Express proxy
+const proxyFetch = async (
   url: string | Request,
   options?: RequestInit,
 ): Promise<Response> => {
-  const maxRetries = 3;
-  let lastError: Error | null = null;
+  const urlStr = typeof url === "string" ? url : url.url;
 
-  for (let i = 0; i < maxRetries; i++) {
+  // Only proxy Supabase requests
+  if (urlStr.includes(supabaseUrl)) {
     try {
-      const response = await fetch(url, options);
+      // Convert Supabase URL to proxy URL
+      // https://project.supabase.co/auth/v1/... -> /api/supabase/auth/...
+      // https://project.supabase.co/rest/v1/... -> /api/supabase/rest/...
+      const path = new URL(urlStr).pathname.replace("/", "");
+      const proxyUrl = `/api/supabase/${path}`;
+
+      const response = await fetch(proxyUrl, options);
       return response;
     } catch (error) {
-      lastError = error as Error;
-      // Wait before retrying (exponential backoff)
-      if (i < maxRetries - 1) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.pow(2, i) * 1000),
-        );
-      }
+      console.error("Proxy fetch error:", error);
+      throw error;
     }
   }
 
-  throw lastError || new Error("Failed to fetch after retries");
+  // For non-Supabase requests, use default fetch
+  return fetch(url, options);
 };
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -42,7 +44,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true,
   },
   global: {
-    fetch: customFetch,
+    fetch: proxyFetch,
     headers: {
       "Content-Type": "application/json",
     },
