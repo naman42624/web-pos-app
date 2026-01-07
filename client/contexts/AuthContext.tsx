@@ -30,8 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const {
           data: { session },
+          error,
         } = await supabase.auth.getSession();
-        setSession(session);
+
+        if (error) {
+          console.error("Error getting session:", error);
+          setSession(null);
+        } else {
+          setSession(session);
+        }
       } catch (error) {
         console.error("Error getting session:", error);
         setSession(null);
@@ -52,18 +59,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) throw error;
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
   };
 
   const logout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.warn("Logout error:", error);
+      }
+      setSession(null);
     } catch (error) {
       console.error("Logout error:", error);
       setSession(null);
@@ -71,12 +87,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signup = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
 
-    if (error) throw error;
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
   };
 
   return (
