@@ -9,6 +9,32 @@ if (!supabaseUrl || !supabaseKey) {
   );
 }
 
+// Custom fetch wrapper with retry logic
+const customFetch = async (
+  url: string | Request,
+  options?: RequestInit,
+): Promise<Response> => {
+  const maxRetries = 3;
+  let lastError: Error | null = null;
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(url, options);
+      return response;
+    } catch (error) {
+      lastError = error as Error;
+      // Wait before retrying (exponential backoff)
+      if (i < maxRetries - 1) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, i) * 1000),
+        );
+      }
+    }
+  }
+
+  throw lastError || new Error("Failed to fetch after retries");
+};
+
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,
@@ -16,6 +42,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true,
   },
   global: {
+    fetch: customFetch,
     headers: {
       "Content-Type": "application/json",
     },
