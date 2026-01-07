@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import supabaseProxy from "./routes/supabase-proxy";
 
 export function createServer() {
   const app = express();
@@ -18,6 +19,9 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Supabase proxy routes
+  app.use("/api/supabase", supabaseProxy);
 
   return app;
 }
