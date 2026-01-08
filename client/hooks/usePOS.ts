@@ -282,38 +282,23 @@ export function usePOS() {
   // Load Products
   const loadProducts = async () => {
     try {
-      // Fetch products without images first (fast)
-      const { data: productsData, error: productsError } = await supabase
-        .from("products")
-        .select("id, name, price, stock");
-
-      if (productsError) {
-        console.error(
-          "Error loading products:",
-          productsError.message || productsError,
-        );
-        setProducts([]);
-        return;
-      }
+      const productsData = await api.fetchProducts();
 
       if (!productsData || productsData.length === 0) {
         setProducts([]);
         return;
       }
 
-      const initialProducts = productsData.map((product: any) => ({
-        id: product.id,
+      const products = productsData.map((product: any) => ({
+        id: product._id,
         name: product.name,
         price: parseFloat(product.price) || 0,
         stock: product.stock || 0,
-        image: undefined,
-        items: [],
+        image: product.image,
+        items: product.items || [],
       }));
 
-      setProducts(initialProducts);
-
-      // Load images in batches in the background
-      loadProductImagesInBatches(productsData.map((p: any) => p.id));
+      setProducts(products);
     } catch (error) {
       console.error("Error in loadProducts:", error);
       setProducts([]);
