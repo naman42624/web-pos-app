@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { User } from "../db/models/index.js";
+import { User, Role } from "../db/models/index.js";
 import { generateToken } from "../utils/auth.js";
 import { connectDB } from "../db/connection.js";
 
