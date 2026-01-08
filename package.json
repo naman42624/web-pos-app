@@ -22,9 +22,12 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "html5-qrcode": "^2.3.8",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.2",
     "qrcode": "^1.5.4",
     "zod": "^3.25.76"
   },
