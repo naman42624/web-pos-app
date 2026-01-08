@@ -3,6 +3,22 @@ import { AuthRequest } from "./authMiddleware.js";
 import { User } from "../db/models/index.js";
 import { PermissionEntity, PermissionAction } from "../db/models/User.js";
 
+const defaultPermissions = {
+  sales: { view: false, add: false, edit: false, changeStatus: false },
+  items: { view: false, add: false, edit: false, changeStatus: false },
+  products: { view: false, add: false, edit: false, changeStatus: false },
+  customers: { view: false, add: false, edit: false, changeStatus: false },
+  deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+};
+
+const adminPermissions = {
+  sales: { view: true, add: true, edit: true, changeStatus: true },
+  items: { view: true, add: true, edit: true, changeStatus: true },
+  products: { view: true, add: true, edit: true, changeStatus: true },
+  customers: { view: true, add: true, edit: true, changeStatus: true },
+  deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+};
+
 export function createPermissionMiddleware(
   entity: PermissionEntity,
   action: PermissionAction,
@@ -23,8 +39,10 @@ export function createPermissionMiddleware(
         return next();
       }
 
-      // Check if user has the required permission
-      const entityPermissions = (user.permissions as any)[entity];
+      // Use stored permissions or default to no permissions
+      const userPermissions = user.permissions || defaultPermissions;
+      const entityPermissions = (userPermissions as any)[entity];
+
       if (!entityPermissions) {
         return res.status(403).json({
           error: `Access denied: No permissions configured for ${entity}`,
