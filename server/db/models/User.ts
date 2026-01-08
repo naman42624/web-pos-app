@@ -47,6 +47,7 @@ export interface IUser extends Document {
   password: string;
   name?: string;
   role: "admin" | "manager" | "staff";
+  roleIds: mongoose.Types.ObjectId[];
   isActive: boolean;
   permissions: IPermissions;
   createdAt: Date;
