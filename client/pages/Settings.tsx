@@ -597,6 +597,7 @@ function UsersManagement() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [selectedUserForPermissions, setSelectedUserForPermissions] = useState<any>(null);
   const [newUser, setNewUser] = useState({
     email: "",
     password: "",
