@@ -55,17 +55,43 @@ export function createPermissionMiddleware(
         return next();
       }
 
-      // Use stored permissions or default to no permissions
-      const userPermissions = user.permissions || defaultPermissions;
-      const entityPermissions = (userPermissions as any)[entity];
+      // Check if user has assigned roles
+      const userWithRoles = await User.findById(req.userId).populate("roleIds");
+      if (!userWithRoles || !Array.isArray(userWithRoles.roleIds)) {
+        // Use stored permissions or default to no permissions
+        const userPermissions = user.permissions || defaultPermissions;
+        const entityPermissions = (userPermissions as any)[entity];
 
-      if (!entityPermissions) {
-        return res.status(403).json({
-          error: `Access denied: No permissions configured for ${entity}`,
-        });
+        if (!entityPermissions) {
+          return res.status(403).json({
+            error: `Access denied: No permissions configured for ${entity}`,
+          });
+        }
+
+        const hasPermission = entityPermissions[action];
+        if (!hasPermission) {
+          return res.status(403).json({
+            error: `Access denied: You don't have permission to ${action} ${entity}`,
+          });
+        }
+
+        return next();
       }
 
-      const hasPermission = entityPermissions[action];
+      // Aggregate permissions from all assigned roles
+      let hasPermission = false;
+      for (const roleDoc of userWithRoles.roleIds as any[]) {
+        if (
+          roleDoc &&
+          roleDoc.permissions &&
+          roleDoc.permissions[entity] &&
+          roleDoc.permissions[entity][action]
+        ) {
+          hasPermission = true;
+          break;
+        }
+      }
+
       if (!hasPermission) {
         return res.status(403).json({
           error: `Access denied: You don't have permission to ${action} ${entity}`,
