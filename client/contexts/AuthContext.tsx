@@ -114,12 +114,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password, name }),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Signup failed");
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
+        throw new Error("Server returned invalid response");
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Signup failed");
+      }
+
       const { token, user } = data;
 
       // Store token and user data
