@@ -21,7 +21,16 @@ router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ error: "Only admins can view users" });
     }
 
-    const users = await User.find().select("-password").populate("role").lean();
+    // Fix corrupted user records (old schema had role as string "admin")
+    await User.updateMany(
+      { role: { $type: "string" } },
+      { $set: { role: null } }
+    );
+
+    const users = await User.find()
+      .select("-password")
+      .populate("role")
+      .lean();
 
     res.json(users);
   } catch (error: any) {
