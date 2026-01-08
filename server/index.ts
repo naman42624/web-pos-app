@@ -4,6 +4,8 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo.js";
 import authRoutes from "./routes/auth.js";
 import dataRoutes from "./routes/data.js";
+import usersRoutes from "./routes/users.js";
+import rolesRoutes from "./routes/roles.js";
 import { connectDB } from "./db/connection.js";
 
 export function createServer() {
@@ -36,7 +38,13 @@ export function createServer() {
   // Authentication routes
   app.use("/auth", authRoutes);
 
-  // Data routes (with authentication)
+  // User management routes
+  app.use("/users", usersRoutes);
+
+  // Role management routes
+  app.use("/roles", rolesRoutes);
+
+  // POS data routes
   app.use("/data", dataRoutes);
 
   // Global error handler
