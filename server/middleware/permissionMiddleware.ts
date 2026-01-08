@@ -34,6 +34,18 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
+      // Auto-promote first user to admin if not already
+      if (user.role !== "admin") {
+        const userCount = await User.countDocuments();
+        if (userCount === 1) {
+          user.role = "admin";
+          await user.save();
+          console.log(
+            `Permission middleware: Auto-promoted first user ${user.email} to admin`,
+          );
+        }
+      }
+
       // Admin users bypass permission checks
       if (user.role === "admin") {
         // Ensure admin users have all permissions
