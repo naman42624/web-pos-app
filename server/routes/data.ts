@@ -26,6 +26,31 @@ router.use(async (req, res, next) => {
   }
 });
 
+// Get current user with roles
+router.get(
+  "/me",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      if (!req.userId) {
+        return res.status(401).json({ error: "User ID not found" });
+      }
+
+      const user = await User.findById(req.userId)
+        .select("-password")
+        .populate("roleIds");
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
 // ===== ITEMS =====
 router.get(
   "/items",
