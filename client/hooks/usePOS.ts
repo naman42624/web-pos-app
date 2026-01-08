@@ -744,6 +744,7 @@ export function usePOS() {
   async function loadSettings() {
     try {
       const data = await api.fetchSettings();
+      // If no settings exist, initialize with defaults
       if (data) {
         setSettings({
           id: data._id,
