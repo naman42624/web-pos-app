@@ -71,7 +71,9 @@ function AppContent() {
             <Route
               path="/all-sales"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "sales", action: "view" }}
+                >
                   <AllSales />
                 </ProtectedRoute>
               }
