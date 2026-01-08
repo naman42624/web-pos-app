@@ -33,5 +33,23 @@ export function createServer() {
   // Data routes (with authentication)
   app.use("/api/data", dataRoutes);
 
+  // Global error handler
+  app.use(
+    (
+      err: any,
+      _req: express.Request,
+      res: express.Response,
+      _next: express.NextFunction,
+    ) => {
+      console.error("Unhandled error:", err);
+      res.status(500).json({ error: "Internal server error" });
+    },
+  );
+
+  // 404 handler
+  app.use((_req: express.Request, res: express.Response) => {
+    res.status(404).json({ error: "Not found" });
+  });
+
   return app;
 }
