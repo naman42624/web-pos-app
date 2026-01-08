@@ -152,6 +152,7 @@ router.delete(
 router.get(
   "/customers",
   authMiddleware,
+  createPermissionMiddleware("customers", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customers = await Customer.find().lean();
@@ -165,6 +166,7 @@ router.get(
 router.post(
   "/customers",
   authMiddleware,
+  createPermissionMiddleware("customers", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customer = new Customer(req.body);
@@ -179,6 +181,7 @@ router.post(
 router.get(
   "/customers/:id",
   authMiddleware,
+  createPermissionMiddleware("customers", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customer = await Customer.findById(req.params.id).lean();
@@ -192,6 +195,7 @@ router.get(
 router.put(
   "/customers/:id",
   authMiddleware,
+  createPermissionMiddleware("customers", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customer = await Customer.findByIdAndUpdate(
@@ -209,6 +213,7 @@ router.put(
 router.delete(
   "/customers/:id",
   authMiddleware,
+  createPermissionMiddleware("customers", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       await Customer.findByIdAndDelete(req.params.id);
