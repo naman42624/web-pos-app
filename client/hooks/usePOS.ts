@@ -715,26 +715,17 @@ export function usePOS() {
   // Load Delivery Boys
   const loadDeliveryBoys = async () => {
     try {
-      const { data, error } = await supabase
-        .from("delivery_boys")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error loading delivery boys:", error);
-        return;
-      }
-
+      const data = await api.fetchDeliveryBoys();
       if (data && data.length > 0) {
         setDeliveryBoys(
           data.map((boy: any) => ({
-            id: boy.id,
+            id: boy._id,
             name: boy.name,
             phone: boy.phone,
             pin: boy.pin,
-            idProofUrl: boy.id_proof_url,
+            idProofUrl: boy.idProofUrl,
             status: boy.status,
-            createdAt: boy.created_at,
+            createdAt: boy.createdAt,
           })),
         );
       }
