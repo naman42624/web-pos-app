@@ -751,6 +751,8 @@ router.delete(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
+      await connectDB();
+
       const currentUser = await User.findById(req.userId);
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ error: "Only admins can delete roles" });
@@ -764,6 +766,7 @@ router.delete(
 
       res.json({ message: "Role deleted" });
     } catch (error: any) {
+      console.error("Error deleting role:", error);
       res.status(400).json({ error: error.message });
     }
   },
