@@ -1,11 +1,10 @@
 {
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm build:client",
   "outputDirectory": "dist/spa",
-  "serverlessFunctions": "dist/server",
-  "functions": {
-    "dist/server/node-build.mjs": {
-      "memory": 1024,
-      "maxDuration": 30
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  }
+  ]
 }
