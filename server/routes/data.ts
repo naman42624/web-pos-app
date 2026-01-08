@@ -541,6 +541,7 @@ router.post(
         name,
         role: role || "staff",
         isActive: true,
+        roleIds: [],
       });
 
       await user.save();
