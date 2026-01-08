@@ -12,6 +12,14 @@ export interface User {
   name?: string;
   role?: "admin" | "manager" | "staff";
   roleIds?: string[];
+  permissions?: {
+    [entity: string]: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+  };
 }
 
 interface AuthContextType {
