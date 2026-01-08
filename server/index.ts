@@ -24,9 +24,13 @@ export function createServer() {
   });
 
   // Initialize database connection
-  connectDB().catch((error) => {
-    console.error("Failed to connect to MongoDB:", error);
-  });
+  connectDB()
+    .then(() => {
+      ensureSuperAdminExists();
+    })
+    .catch((error) => {
+      console.error("Failed to connect to MongoDB:", error);
+    });
 
   // Example API routes
   app.get("/ping", (_req, res) => {
