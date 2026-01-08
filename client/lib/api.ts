@@ -456,6 +456,18 @@ export async function createRole(role: {
       edit: boolean;
       changeStatus: boolean;
     };
+    creditRecords: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+    settings: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
   };
 }) {
   const response = await fetch(`${API_BASE}/roles`, {
@@ -497,6 +509,18 @@ export async function updateRole(
         changeStatus: boolean;
       };
       deliveryBoys: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      creditRecords: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      settings: {
         view: boolean;
         add: boolean;
         edit: boolean;
