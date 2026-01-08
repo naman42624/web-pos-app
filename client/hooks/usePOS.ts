@@ -305,59 +305,11 @@ export function usePOS() {
     }
   };
 
-  // Load product images in batches to avoid timeout
-  const loadProductImagesInBatches = async (productIds: string[]) => {
-    const batchSize = 5;
-
-    for (let i = 0; i < productIds.length; i += batchSize) {
-      const batch = productIds.slice(i, i + batchSize);
-
-      try {
-        const { data: batchProducts, error } = await supabase
-          .from("products")
-          .select("id, image")
-          .in("id", batch);
-
-        if (!error && batchProducts) {
-          setProducts((prev) =>
-            prev.map((product) => {
-              const updated = batchProducts.find(
-                (p: any) => p.id === product.id,
-              );
-              return updated ? { ...product, image: updated.image } : product;
-            }),
-          );
-        }
-      } catch (err) {
-        console.error(`Error loading images batch ${i / batchSize + 1}:`, err);
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
-  };
-
-  // Load product items - called when viewing/editing a product
+  // Product items are already loaded with the product data
   const loadProductItems = async (productId: string) => {
     try {
-      const { data: itemsData, error: itemsError } = await supabase
-        .from("product_items")
-        .select("product_id, item_id, custom_name, custom_price, quantity")
-        .eq("product_id", productId);
-
-      if (itemsError) {
-        console.error(
-          `Error loading items for product ${productId}:`,
-          itemsError.message || itemsError,
-        );
-        return [];
-      }
-
-      return (itemsData || []).map((pi: any) => ({
-        itemId: pi.item_id,
-        customName: pi.custom_name,
-        customPrice: pi.custom_price ? parseFloat(pi.custom_price) : undefined,
-        quantity: pi.quantity,
-      }));
+      const product = products.find((p) => p.id === productId);
+      return product?.items || [];
     } catch (error) {
       console.error(`Error in loadProductItems for ${productId}:`, error);
       return [];
