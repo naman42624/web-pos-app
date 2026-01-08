@@ -8,7 +8,7 @@ export default function SettingsPage() {
   const { settings, updateSettings } = usePOSContext();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "business" | "billing" | "preferences"
+    "business" | "billing" | "preferences" | "users"
   >("business");
   const [logoPreview, setLogoPreview] = useState<string>("");
 
