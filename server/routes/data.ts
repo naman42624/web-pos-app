@@ -406,13 +406,25 @@ router.put(
 );
 
 // ===== USERS =====
+const defaultPermissions = {
+  sales: { view: false, add: false, edit: false, changeStatus: false },
+  items: { view: false, add: false, edit: false, changeStatus: false },
+  products: { view: false, add: false, edit: false, changeStatus: false },
+  customers: { view: false, add: false, edit: false, changeStatus: false },
+  deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+};
+
 router.get(
   "/users",
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
       const users = await User.find().select("-password").lean();
-      res.json(users);
+      const usersWithPermissions = users.map((user: any) => ({
+        ...user,
+        permissions: user.permissions || defaultPermissions,
+      }));
+      res.json(usersWithPermissions);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
