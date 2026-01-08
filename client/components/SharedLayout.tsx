@@ -72,15 +72,45 @@ export function SharedLayout({ children }: SharedLayoutProps) {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const getRequiredPermission = (
+    path: string,
+  ): { entity: string; action: string } | null => {
+    switch (path) {
+      case "/add-sale":
+      case "/quick-sale":
+        return { entity: "sales", action: "view" };
+      case "/items":
+        return { entity: "items", action: "view" };
+      case "/ready-products":
+        return { entity: "products", action: "view" };
+      case "/customers":
+        return { entity: "customers", action: "view" };
+      case "/deliveries":
+      case "/pickups":
+        return { entity: "deliveryBoys", action: "view" };
+      case "/credit-records":
+        return { entity: "creditRecords", action: "view" };
+      case "/admin/delivery-boys":
+        return { entity: "deliveryBoys", action: "view" };
+      case "/settings":
+        return { entity: "settings", action: "view" };
+      case "/":
+        // Dashboard is always visible
+        return null;
+      default:
+        return null;
+    }
+  };
+
   const NavContent = () => (
     <div className="p-4 sm:p-6 space-y-2">
       {navItems
         .filter((item) => {
-          // Hide Settings if user doesn't have settings view permission
-          if (item.path === "/settings" && !hasPermission("settings", "view")) {
-            return false;
+          const requiredPerm = getRequiredPermission(item.path);
+          if (!requiredPerm) {
+            return true; // No permission required, show it
           }
-          return true;
+          return hasPermission(requiredPerm.entity, requiredPerm.action);
         })
         .map((item) => {
           const Icon = item.icon;
