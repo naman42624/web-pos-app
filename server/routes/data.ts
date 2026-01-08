@@ -657,6 +657,8 @@ router.get(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
+      await connectDB();
+
       // Create default Admin role if it doesn't exist
       const adminRoleExists = await Role.findOne({ name: "Admin" });
       if (!adminRoleExists) {
