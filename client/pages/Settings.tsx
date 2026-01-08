@@ -528,7 +528,8 @@ export default function SettingsPage() {
             )}
           </div>
 
-          {/* Summary Sidebar */}
+          {/* Summary Sidebar - Hidden on Users tab */}
+          {activeTab !== "users" && (
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-6 sticky top-24">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">
@@ -583,8 +584,233 @@ export default function SettingsPage() {
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
     </SharedLayout>
+  );
+}
+
+function UsersManagement() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [newUser, setNewUser] = useState({
+    email: "",
+    password: "",
+    name: "",
+    role: "staff" as "admin" | "manager" | "staff",
+  });
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const data = await api.fetchUsers();
+      setUsers(data || []);
+    } catch (error) {
+      toast.error("Failed to load users");
+      console.error("Error loading users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddUser = async () => {
+    if (!newUser.email || !newUser.password) {
+      toast.error("Email and password are required");
+      return;
+    }
+
+    try {
+      await api.createUser(newUser);
+      toast.success("User created successfully!");
+      setNewUser({ email: "", password: "", name: "", role: "staff" });
+      setShowForm(false);
+      await loadUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create user");
+    }
+  };
+
+  const handleUpdateRole = async (userId: string, newRole: "admin" | "manager" | "staff") => {
+    try {
+      await api.updateUser(userId, { role: newRole });
+      toast.success("User role updated!");
+      await loadUsers();
+    } catch (error: any) {
+      toast.error("Failed to update user role");
+    }
+  };
+
+  const handleToggleActive = async (userId: string, isActive: boolean) => {
+    try {
+      await api.updateUser(userId, { isActive: !isActive });
+      toast.success("User status updated!");
+      await loadUsers();
+    } catch (error: any) {
+      toast.error("Failed to update user status");
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) {
+      return;
+    }
+
+    try {
+      await api.deleteUser(userId);
+      toast.success("User deleted successfully!");
+      await loadUsers();
+    } catch (error: any) {
+      toast.error("Failed to delete user");
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Add User Form */}
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-slate-900">Manage Users</h2>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+          >
+            {showForm ? "Cancel" : "Add User"}
+          </button>
+        </div>
+
+        {showForm && (
+          <div className="space-y-4 mb-6 p-4 bg-slate-50 rounded-lg">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                value={newUser.name}
+                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                placeholder="Full name"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                value={newUser.email}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                placeholder="user@example.com"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                value={newUser.password}
+                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                placeholder="Minimum 6 characters"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Role
+              </label>
+              <select
+                value={newUser.role}
+                onChange={(e) => setNewUser({ ...newUser, role: e.target.value as "admin" | "manager" | "staff" })}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
+                <option value="staff">Staff</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleAddUser}
+              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            >
+              Create User
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Users List */}
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        {loading ? (
+          <div className="p-6 text-center text-slate-500">Loading users...</div>
+        ) : users.length === 0 ? (
+          <div className="p-6 text-center text-slate-500">No users found. Create one to get started.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Name</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Email</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Role</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user._id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 text-sm text-slate-900">{user.name || "-"}</td>
+                    <td className="px-6 py-4 text-sm text-slate-900">{user.email}</td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleUpdateRole(user._id, e.target.value as "admin" | "manager" | "staff")}
+                        className="px-3 py-1 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      >
+                        <option value="staff">Staff</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleToggleActive(user._id, user.isActive)}
+                        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                          user.isActive
+                            ? "bg-green-100 text-green-700 hover:bg-green-200"
+                            : "bg-red-100 text-red-700 hover:bg-red-200"
+                        }`}
+                      >
+                        {user.isActive ? "Active" : "Inactive"}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleDeleteUser(user._id)}
+                        className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm font-medium transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
