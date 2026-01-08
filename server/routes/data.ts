@@ -519,4 +519,45 @@ router.delete(
   },
 );
 
+router.put(
+  "/users/:id/password",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const currentUser = await User.findById(req.userId);
+      if (!currentUser || currentUser.role !== "admin") {
+        return res
+          .status(403)
+          .json({ error: "Only admins can change user passwords" });
+      }
+
+      const { newPassword } = req.body;
+      if (!newPassword) {
+        return res.status(400).json({ error: "New password is required" });
+      }
+
+      if (newPassword.length < 6) {
+        return res
+          .status(400)
+          .json({ error: "Password must be at least 6 characters" });
+      }
+
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      user.password = newPassword;
+      await user.save();
+
+      const userWithoutPassword = user.toObject();
+      delete (userWithoutPassword as any).password;
+
+      res.json(userWithoutPassword);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
 export default router;
