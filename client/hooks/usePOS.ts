@@ -491,144 +491,95 @@ export function usePOS() {
   };
 
   const addSale = async (sale: Omit<Sale, "id" | "date">) => {
-    const { data, error } = await supabase
-      .from("sales")
-      .insert([
-        {
-          total: sale.total,
-          payment_mode: sale.paymentMode,
-          payment_modes: sale.paymentModes,
-          payment_amounts: sale.paymentAmounts,
-          customer_id: sale.customerId,
-          order_type: sale.orderType,
-          pickup_date: sale.pickupDate,
-          pickup_time: sale.pickupTime,
-          discount_type: sale.discountType,
-          discount_value: sale.discountValue,
-          discount_amount: sale.discountAmount,
-          delivery_charges: sale.deliveryCharges,
-          delivery_receiver_name: sale.deliveryDetails?.receiverName,
-          delivery_receiver_address: sale.deliveryDetails?.receiverAddress,
-          delivery_receiver_phone: sale.deliveryDetails?.receiverPhone,
-          delivery_message: sale.deliveryDetails?.message,
-          delivery_sender_name: sale.deliveryDetails?.senderName,
-          delivery_sender_phone: sale.deliveryDetails?.senderPhone,
-          date: new Date().toISOString(),
-          is_quick_sale: sale.isQuickSale || false,
-        },
-      ])
-      .select()
-      .single();
+    try {
+      const saleData = await api.createSale({
+        items: sale.items,
+        paymentMode: sale.paymentMode,
+        paymentModes: sale.paymentModes,
+        paymentAmounts: sale.paymentAmounts,
+        customerId: sale.customerId,
+        orderType: sale.orderType,
+        pickupDate: sale.pickupDate,
+        pickupTime: sale.pickupTime,
+        discountType: sale.discountType,
+        discountValue: sale.discountValue,
+        discountAmount: sale.discountAmount,
+        deliveryCharges: sale.deliveryCharges,
+        deliveryDetails: sale.deliveryDetails,
+        date: new Date().toISOString(),
+        total: sale.total,
+        status: "pending",
+        paymentStatus: "pending",
+        isQuickSale: sale.isQuickSale || false,
+      });
 
-    if (error) {
+      const saleId = saleData._id;
+
+      // Handle credit records
+      if (sale.paymentMode === "credit" && sale.customerId) {
+        try {
+          await api.createCreditRecord({
+            customerId: sale.customerId,
+            amount: sale.total,
+            saleId,
+            date: new Date().toISOString(),
+          });
+
+          // Update customer total credit
+          const customer = customers.find((c) => c.id === sale.customerId);
+          if (customer) {
+            await api.updateCustomer(sale.customerId, {
+              totalCredit: customer.totalCredit + sale.total,
+            });
+          }
+        } catch (creditError) {
+          console.error("Error adding credit record:", creditError);
+        }
+      }
+
+      // Decrement product stock for ready products sold
+      if (sale.items && sale.items.length > 0) {
+        for (const item of sale.items) {
+          if (item.productId) {
+            await decrementProductStock(item.productId, item.quantity);
+          }
+        }
+      }
+
+      await loadSales();
+      await loadCreditRecords();
+      if (sale.customerId) await loadCustomers();
+
+      const newSale: Sale = {
+        id: saleId,
+        items: sale.items,
+        paymentMode: sale.paymentMode,
+        paymentModes: sale.paymentModes,
+        paymentAmounts: sale.paymentAmounts,
+        customerId: sale.customerId,
+        total: sale.total,
+        date: new Date().toISOString(),
+        orderType: sale.orderType,
+        pickupDate: sale.pickupDate,
+        pickupTime: sale.pickupTime,
+        discountType: sale.discountType,
+        discountValue: sale.discountValue,
+        discountAmount: sale.discountAmount,
+        deliveryCharges: sale.deliveryCharges,
+        deliveryDetails: sale.deliveryDetails,
+        paymentStatus: "pending",
+        status: "pending",
+        isQuickSale: sale.isQuickSale || false,
+      };
+
+      setSales([...sales, newSale]);
+      return newSale;
+    } catch (error) {
       const errorMsg =
         error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Error adding sale:", errorMsg);
       throw error;
     }
-
-    const saleId = data.id;
-
-    // Insert sale items
-    if (sale.items && sale.items.length > 0) {
-      const { data: itemsData } = await supabase
-        .from("sale_items")
-        .insert(
-          sale.items.map((si) => ({
-            sale_id: saleId,
-            name: si.name,
-            quantity: si.quantity,
-            price: si.price,
-            image: si.image,
-          })),
-        )
-        .select();
-
-      // Insert sale item compositions
-      if (itemsData && sale.items.some((si) => si.composition)) {
-        for (let i = 0; i < sale.items.length; i++) {
-          if (
-            sale.items[i].composition &&
-            sale.items[i].composition!.length > 0
-          ) {
-            await supabase.from("sale_item_composition").insert(
-              sale.items[i].composition!.map((comp) => ({
-                sale_item_id: itemsData[i].id,
-                item_id: comp.itemId,
-                custom_name: comp.customName,
-                custom_price: comp.customPrice,
-                quantity: comp.quantity,
-              })),
-            );
-          }
-        }
-      }
-    }
-
-    // Handle credit records
-    if (sale.paymentMode === "credit" && sale.customerId) {
-      const { error: creditError } = await supabase
-        .from("credit_records")
-        .insert([
-          {
-            customer_id: sale.customerId,
-            amount: sale.total,
-            sale_id: saleId,
-            date: new Date().toISOString(),
-          },
-        ]);
-
-      if (creditError) {
-        console.error("Error adding credit record:", creditError);
-      }
-
-      // Update customer total credit
-      const customer = customers.find((c) => c.id === sale.customerId);
-      if (customer) {
-        await supabase
-          .from("customers")
-          .update({ total_credit: customer.totalCredit + sale.total })
-          .eq("id", sale.customerId);
-      }
-    }
-
-    // Decrement product stock for ready products sold
-    if (sale.items && sale.items.length > 0) {
-      for (const item of sale.items) {
-        if (item.productId) {
-          await decrementProductStock(item.productId, item.quantity);
-        }
-      }
-    }
-
-    await loadSales();
-    await loadCreditRecords();
-    if (sale.customerId) await loadCustomers();
-
-    const newSale: Sale = {
-      id: saleId,
-      items: sale.items,
-      paymentMode: sale.paymentMode,
-      paymentModes: sale.paymentModes,
-      paymentAmounts: sale.paymentAmounts,
-      customerId: sale.customerId,
-      total: sale.total,
-      date: new Date().toISOString(),
-      orderType: sale.orderType,
-      pickupDate: sale.pickupDate,
-      pickupTime: sale.pickupTime,
-      discountType: sale.discountType,
-      discountValue: sale.discountValue,
-      discountAmount: sale.discountAmount,
-      deliveryCharges: sale.deliveryCharges,
-      deliveryDetails: sale.deliveryDetails,
-      paymentStatus: "pending",
-      status: "pending",
-      isQuickSale: sale.isQuickSale || false,
-    };
-
-    setSales([...sales, newSale]);
-    return newSale;
   };
 
   const updateSaleStatus = async (
