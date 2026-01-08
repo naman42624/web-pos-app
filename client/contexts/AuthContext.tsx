@@ -66,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           name: userData.name,
           role: userData.role,
           roleIds: userData.roleIds || [],
+          permissions: userData.permissions,
         });
       } else {
         // Token invalid, clear storage
