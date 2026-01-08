@@ -30,13 +30,54 @@ router.post("/signup", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    // Check if this is the first user - if so, make them an admin
-    const userCount = await User.countDocuments();
-    const role = userCount === 0 ? "admin" : "staff";
+    // Determine if this should be a super admin (Gaurav Bhatia)
+    const isSuperAdmin = email === "gauravbhatia3630@gmail.com";
+
+    // Import Role model
+    const { Role } = await import("../db/models/index.js");
+
+    let roleIds: any[] = [];
+    let role = "staff";
+
+    if (isSuperAdmin) {
+      // Super admin gets the "admin" role and is assigned the Admin role
+      role = "admin";
+
+      // Get or create the default Admin role
+      let adminRole = await Role.findOne({ name: "Admin" });
+      if (!adminRole) {
+        const adminPermissions = {
+          sales: { view: true, add: true, edit: true, changeStatus: true },
+          items: { view: true, add: true, edit: true, changeStatus: true },
+          products: { view: true, add: true, edit: true, changeStatus: true },
+          customers: { view: true, add: true, edit: true, changeStatus: true },
+          deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+          creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+          settings: { view: true, add: true, edit: true, changeStatus: true },
+        };
+        adminRole = await Role.create({
+          name: "Admin",
+          description: "Full access to all features and permissions",
+          permissions: adminPermissions,
+        });
+        console.log("Created default Admin role");
+      }
+      roleIds = [adminRole._id];
+    }
 
     // Create new user
-    const user = new User({ email, password, name, role });
+    const user = new User({
+      email,
+      password,
+      name,
+      role,
+      isActive: true,
+      roleIds,
+    });
     await user.save();
+
+    // Populate roleIds for response
+    await user.populate("roleIds");
 
     // Generate token
     const token = generateToken(user._id.toString(), user.email);
