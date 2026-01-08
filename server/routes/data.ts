@@ -379,6 +379,7 @@ router.put(
 router.get(
   "/settings",
   authMiddleware,
+  createPermissionMiddleware("settings", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const settings = await Settings.findOne().lean();
@@ -392,6 +393,7 @@ router.get(
 router.put(
   "/settings",
   authMiddleware,
+  createPermissionMiddleware("settings", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       let settings = await Settings.findOne();
