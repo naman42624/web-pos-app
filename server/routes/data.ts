@@ -430,7 +430,10 @@ router.get(
       const users = await User.find().select("-password").lean();
       const usersWithPermissions = users.map((user: any) => ({
         ...user,
-        permissions: user.permissions || defaultPermissions,
+        permissions:
+          user.role === "admin"
+            ? adminPermissions
+            : user.permissions || defaultPermissions,
       }));
       res.json(usersWithPermissions);
     } catch (error: any) {
