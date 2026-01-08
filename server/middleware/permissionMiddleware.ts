@@ -114,8 +114,8 @@ export function createPermissionMiddleware(
 
       next();
     } catch (error: any) {
-      console.error("Permission middleware error:", error);
-      return res.status(500).json({ error: "Permission check failed" });
+      console.error("Permission middleware error:", error.message, error.stack);
+      return res.status(500).json({ error: "Permission check failed", details: error.message });
     }
   };
 }
