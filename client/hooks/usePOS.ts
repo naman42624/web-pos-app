@@ -317,55 +317,30 @@ export function usePOS() {
   };
 
   const addProduct = async (product: Omit<Product, "id">) => {
-    const { data, error } = await supabase
-      .from("products")
-      .insert([
-        {
-          name: product.name,
-          price: product.price,
-          stock: product.stock || 0,
-          image: product.image,
-        },
-      ])
-      .select()
-      .single();
+    try {
+      const data = await api.createProduct({
+        name: product.name,
+        price: product.price,
+        stock: product.stock || 0,
+        image: product.image,
+        items: product.items,
+      });
 
-    if (error) {
+      const newProduct = {
+        id: data._id,
+        name: data.name,
+        price: parseFloat(data.price) || 0,
+        stock: data.stock || 0,
+        image: data.image,
+        items: data.items || product.items,
+      };
+
+      setProducts([...products, newProduct]);
+      return newProduct;
+    } catch (error) {
       console.error("Error adding product:", error);
       throw error;
     }
-
-    const productId = data.id;
-
-    // Insert product items
-    if (product.items && product.items.length > 0) {
-      const { error: itemsError } = await supabase.from("product_items").insert(
-        product.items.map((pi) => ({
-          product_id: productId,
-          item_id: pi.itemId,
-          custom_name: pi.customName,
-          custom_price: pi.customPrice,
-          quantity: pi.quantity,
-        })),
-      );
-
-      if (itemsError) {
-        console.error("Error adding product items:", itemsError);
-        throw itemsError;
-      }
-    }
-
-    const newProduct = {
-      id: productId,
-      name: data.name,
-      price: parseFloat(data.price) || 0,
-      stock: data.stock || 0,
-      image: data.image,
-      items: product.items,
-    };
-
-    setProducts([...products, newProduct]);
-    return newProduct;
   };
 
   const updateProduct = async (id: string, product: Partial<Product>) => {
