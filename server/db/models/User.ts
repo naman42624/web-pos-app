@@ -1,93 +1,17 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcryptjs from "bcryptjs";
 
-export type PermissionAction = "view" | "add" | "edit" | "changeStatus";
-export type PermissionEntity =
-  | "sales"
-  | "items"
-  | "products"
-  | "customers"
-  | "deliveryBoys"
-  | "creditRecords"
-  | "settings";
-
-export interface IPermissions {
-  sales: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-  items: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-  products: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-  customers: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-  deliveryBoys: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-  creditRecords: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-  settings: {
-    view: boolean;
-    add: boolean;
-    edit: boolean;
-    changeStatus: boolean;
-  };
-}
-
 export interface IUser extends Document {
   email: string;
   password: string;
-  name?: string;
-  role: "admin" | "manager" | "staff";
-  roleIds: mongoose.Types.ObjectId[];
+  name: string;
+  isAdmin: boolean;
   isActive: boolean;
-  permissions: IPermissions;
+  role: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
-
-const defaultPermissions: IPermissions = {
-  sales: { view: false, add: false, edit: false, changeStatus: false },
-  items: { view: false, add: false, edit: false, changeStatus: false },
-  products: { view: false, add: false, edit: false, changeStatus: false },
-  customers: { view: false, add: false, edit: false, changeStatus: false },
-  deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
-  creditRecords: { view: false, add: false, edit: false, changeStatus: false },
-  settings: { view: false, add: false, edit: false, changeStatus: false },
-};
-
-const adminPermissions: IPermissions = {
-  sales: { view: true, add: true, edit: true, changeStatus: true },
-  items: { view: true, add: true, edit: true, changeStatus: true },
-  products: { view: true, add: true, edit: true, changeStatus: true },
-  customers: { view: true, add: true, edit: true, changeStatus: true },
-  deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
-  creditRecords: { view: true, add: true, edit: true, changeStatus: true },
-  settings: { view: true, add: true, edit: true, changeStatus: true },
-};
 
 const UserSchema = new Schema<IUser>(
   {
@@ -101,81 +25,31 @@ const UserSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      minlength: 6,
     },
     name: {
       type: String,
+      required: true,
       trim: true,
     },
-    role: {
-      type: String,
-      enum: ["admin", "manager", "staff"],
-      default: "staff",
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
     isActive: {
       type: Boolean,
       default: true,
     },
-    roleIds: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Role",
-      },
-    ],
-    permissions: {
-      type: {
-        sales: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-        items: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-        products: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-        customers: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-        deliveryBoys: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-        creditRecords: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-        settings: {
-          view: Boolean,
-          add: Boolean,
-          edit: Boolean,
-          changeStatus: Boolean,
-        },
-      },
-      default: defaultPermissions,
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+      required: false,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-// Hash password before saving
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) {
     return;
@@ -189,28 +63,15 @@ UserSchema.pre("save", async function () {
   }
 });
 
-// Set admin permissions for admin role
-UserSchema.pre("save", function () {
-  if (this.role === "admin") {
-    this.permissions = adminPermissions;
-  }
-});
-
-// Method to compare passwords
 UserSchema.methods.comparePassword = async function (
-  candidatePassword: string,
+  candidatePassword: string
 ): Promise<boolean> {
   return bcryptjs.compare(candidatePassword, this.password);
 };
 
-// Don't return password in JSON
 UserSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
-  // Ensure admin users always have admin permissions
-  if (user.role === "admin") {
-    user.permissions = adminPermissions;
-  }
   return user;
 };
 
