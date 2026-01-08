@@ -57,18 +57,27 @@ export function createPermissionMiddleware(
 
       // Check if user has assigned roles
       const userWithRoles = await User.findById(req.userId).populate("roleIds");
-      if (!userWithRoles || !Array.isArray(userWithRoles.roleIds)) {
-        // Use stored permissions or default to no permissions
-        const userPermissions = user.permissions || defaultPermissions;
-        const entityPermissions = (userPermissions as any)[entity];
 
-        if (!entityPermissions) {
-          return res.status(403).json({
-            error: `Access denied: No permissions configured for ${entity}`,
-          });
+      // If user has assigned roles, check them
+      if (
+        userWithRoles &&
+        Array.isArray(userWithRoles.roleIds) &&
+        userWithRoles.roleIds.length > 0
+      ) {
+        // Aggregate permissions from all assigned roles
+        let hasPermission = false;
+        for (const roleDoc of userWithRoles.roleIds as any[]) {
+          if (
+            roleDoc &&
+            roleDoc.permissions &&
+            roleDoc.permissions[entity] &&
+            roleDoc.permissions[entity][action]
+          ) {
+            hasPermission = true;
+            break;
+          }
         }
 
-        const hasPermission = entityPermissions[action];
         if (!hasPermission) {
           return res.status(403).json({
             error: `Access denied: You don't have permission to ${action} ${entity}`,
@@ -78,20 +87,17 @@ export function createPermissionMiddleware(
         return next();
       }
 
-      // Aggregate permissions from all assigned roles
-      let hasPermission = false;
-      for (const roleDoc of userWithRoles.roleIds as any[]) {
-        if (
-          roleDoc &&
-          roleDoc.permissions &&
-          roleDoc.permissions[entity] &&
-          roleDoc.permissions[entity][action]
-        ) {
-          hasPermission = true;
-          break;
-        }
+      // Fallback to legacy per-user permissions if no roles assigned
+      const userPermissions = user.permissions || defaultPermissions;
+      const entityPermissions = (userPermissions as any)[entity];
+
+      if (!entityPermissions) {
+        return res.status(403).json({
+          error: `Access denied: No permissions configured for ${entity}`,
+        });
       }
 
+      const hasPermission = entityPermissions[action];
       if (!hasPermission) {
         return res.status(403).json({
           error: `Access denied: You don't have permission to ${action} ${entity}`,
