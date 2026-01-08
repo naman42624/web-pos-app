@@ -100,4 +100,48 @@ router.post("/logout", (_req: Request, res: Response) => {
   res.status(200).json({ message: "Logout successful" });
 });
 
+// Initialize first user as admin (for existing users)
+router.post("/init-admin", async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    // Check how many users exist
+    const userCount = await User.countDocuments();
+
+    // Only allow this if there's exactly one user (the one being promoted)
+    if (userCount !== 1) {
+      return res.status(400).json({
+        error:
+          "Initialization only allowed with exactly one user in the system",
+      });
+    }
+
+    // Find and promote the user to admin
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.role = "admin";
+    await user.save();
+
+    res.status(200).json({
+      message: "User promoted to admin",
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    });
+  } catch (error: any) {
+    console.error("Init admin error:", error);
+    res.status(500).json({ error: error.message || "Initialization failed" });
+  }
+});
+
 export default router;
