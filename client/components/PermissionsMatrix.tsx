@@ -82,6 +82,24 @@ const actionLabels: Record<(typeof actions)[number], string> = {
   changeStatus: "Change Status",
 };
 
+function mergePermissions(
+  provided: Permissions | undefined,
+): Permissions {
+  if (!provided) {
+    return DEFAULT_PERMISSIONS;
+  }
+
+  const merged: Permissions = { ...DEFAULT_PERMISSIONS };
+
+  for (const entity of entities) {
+    if (provided[entity]) {
+      merged[entity] = { ...DEFAULT_PERMISSIONS[entity], ...provided[entity] };
+    }
+  }
+
+  return merged;
+}
+
 export function PermissionsMatrix({
   permissions,
   onPermissionsChange,
@@ -90,16 +108,9 @@ export function PermissionsMatrix({
   userRole,
 }: PermissionsMatrixProps) {
   const isAdmin = userRole === "admin";
-  const [localPermissions, setLocalPermissions] = useState<Permissions>(() => {
-    if (!permissions) {
-      return DEFAULT_PERMISSIONS;
-    }
-    // Merge with defaults to ensure all entities exist
-    return {
-      ...DEFAULT_PERMISSIONS,
-      ...permissions,
-    };
-  });
+  const [localPermissions, setLocalPermissions] = useState<Permissions>(() =>
+    mergePermissions(permissions),
+  );
 
   const handlePermissionToggle = (
     entity: (typeof entities)[number],
