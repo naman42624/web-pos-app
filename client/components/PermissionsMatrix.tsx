@@ -18,7 +18,7 @@ const DEFAULT_PERMISSIONS: Permissions = {
 };
 
 interface PermissionsMatrixProps {
-  permissions: Permissions;
+  permissions?: Permissions;
   onPermissionsChange: (permissions: Permissions) => void;
   onClose: () => void;
   userName: string;
