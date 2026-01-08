@@ -875,6 +875,15 @@ function UsersManagement() {
           </div>
         )}
       </div>
+
+      {selectedUserForPermissions && (
+        <PermissionsMatrix
+          permissions={selectedUserForPermissions.permissions}
+          onPermissionsChange={handleUpdatePermissions}
+          onClose={() => setSelectedUserForPermissions(null)}
+          userName={selectedUserForPermissions.name || selectedUserForPermissions.email}
+        />
+      )}
     </div>
   );
 }
