@@ -98,6 +98,12 @@ const UserSchema = new Schema<IUser>(
       type: Boolean,
       default: true,
     },
+    roleIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role",
+      },
+    ],
     permissions: {
       type: {
         sales: {
