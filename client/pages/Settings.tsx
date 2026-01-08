@@ -522,6 +522,10 @@ export default function SettingsPage() {
                 </div>
               </div>
             )}
+
+            {activeTab === "users" && (
+              <UsersManagement />
+            )}
           </div>
 
           {/* Summary Sidebar */}
