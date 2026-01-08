@@ -41,7 +41,4 @@ const DeliveryBoySchema = new Schema<IDeliveryBoy>(
 
 export const DeliveryBoy =
   mongoose.models.DeliveryBoy ||
-  mongoose.model<IDeliveryBoy>(
-    "DeliveryBoy",
-    DeliveryBoySchema,
-  );
+  mongoose.model<IDeliveryBoy>("DeliveryBoy", DeliveryBoySchema);

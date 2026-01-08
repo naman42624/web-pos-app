@@ -67,5 +67,4 @@ const ProductSchema = new Schema<IProduct>(
 );
 
 export const Product =
-  mongoose.models.Product ||
-  mongoose.model<IProduct>("Product", ProductSchema);
+  mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);

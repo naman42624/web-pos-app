@@ -137,22 +137,24 @@ export default function SettingsPage() {
 
         {/* Tabs */}
         <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
-          {(["business", "billing", "preferences", "users"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === tab
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              {tab === "business" && "Business Info"}
-              {tab === "billing" && "Billing Details"}
-              {tab === "preferences" && "Preferences"}
-              {tab === "users" && "Users"}
-            </button>
-          ))}
+          {(["business", "billing", "preferences", "users"] as const).map(
+            (tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
+                  activeTab === tab
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {tab === "business" && "Business Info"}
+                {tab === "billing" && "Billing Details"}
+                {tab === "preferences" && "Preferences"}
+                {tab === "users" && "Users"}
+              </button>
+            ),
+          )}
         </div>
 
         {/* Content */}
@@ -524,67 +526,65 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {activeTab === "users" && (
-              <UsersManagement />
-            )}
+            {activeTab === "users" && <UsersManagement />}
           </div>
 
           {/* Summary Sidebar - Hidden on Users tab */}
           {activeTab !== "users" && (
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-6 sticky top-24">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                Summary
-              </h3>
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-6 sticky top-24">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  Summary
+                </h3>
 
-              <div className="space-y-3 text-sm">
-                <div>
-                  <p className="text-slate-600">Business</p>
-                  <p className="font-medium text-slate-900">
-                    {formData.businessName}
-                  </p>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="text-slate-600">Business</p>
+                    <p className="font-medium text-slate-900">
+                      {formData.businessName}
+                    </p>
+                  </div>
+
+                  {logoPreview && (
+                    <div>
+                      <p className="text-slate-600 mb-2">Logo</p>
+                      <img
+                        src={logoPreview}
+                        alt="Logo"
+                        className="w-16 h-16 object-contain"
+                      />
+                    </div>
+                  )}
+
+                  {formData.currency && (
+                    <div>
+                      <p className="text-slate-600">Currency</p>
+                      <p className="font-medium text-slate-900">
+                        {formData.currency}
+                      </p>
+                    </div>
+                  )}
+
+                  {formData.timezone && (
+                    <div>
+                      <p className="text-slate-600">Timezone</p>
+                      <p className="font-medium text-slate-900">
+                        {formData.timezone}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                {logoPreview && (
-                  <div>
-                    <p className="text-slate-600 mb-2">Logo</p>
-                    <img
-                      src={logoPreview}
-                      alt="Logo"
-                      className="w-16 h-16 object-contain"
-                    />
-                  </div>
-                )}
-
-                {formData.currency && (
-                  <div>
-                    <p className="text-slate-600">Currency</p>
-                    <p className="font-medium text-slate-900">
-                      {formData.currency}
-                    </p>
-                  </div>
-                )}
-
-                {formData.timezone && (
-                  <div>
-                    <p className="text-slate-600">Timezone</p>
-                    <p className="font-medium text-slate-900">
-                      {formData.timezone}
-                    </p>
-                  </div>
-                )}
+                <button
+                  onClick={handleSave}
+                  disabled={isLoading}
+                  className="w-full mt-6 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-semibold rounded-lg transition-colors"
+                >
+                  <Save className="w-5 h-5" />
+                  {isLoading ? "Saving..." : "Save Changes"}
+                </button>
               </div>
-
-              <button
-                onClick={handleSave}
-                disabled={isLoading}
-                className="w-full mt-6 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-semibold rounded-lg transition-colors"
-              >
-                <Save className="w-5 h-5" />
-                {isLoading ? "Saving..." : "Save Changes"}
-              </button>
             </div>
-          </div>
           )}
         </div>
       </div>
@@ -637,7 +637,10 @@ function UsersManagement() {
     }
   };
 
-  const handleUpdateRole = async (userId: string, newRole: "admin" | "manager" | "staff") => {
+  const handleUpdateRole = async (
+    userId: string,
+    newRole: "admin" | "manager" | "staff",
+  ) => {
     try {
       await api.updateUser(userId, { role: newRole });
       toast.success("User role updated!");
@@ -694,7 +697,9 @@ function UsersManagement() {
               <input
                 type="text"
                 value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, name: e.target.value })
+                }
                 placeholder="Full name"
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
@@ -707,7 +712,9 @@ function UsersManagement() {
               <input
                 type="email"
                 value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, email: e.target.value })
+                }
                 placeholder="user@example.com"
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
@@ -720,7 +727,9 @@ function UsersManagement() {
               <input
                 type="password"
                 value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, password: e.target.value })
+                }
                 placeholder="Minimum 6 characters"
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
@@ -732,7 +741,12 @@ function UsersManagement() {
               </label>
               <select
                 value={newUser.role}
-                onChange={(e) => setNewUser({ ...newUser, role: e.target.value as "admin" | "manager" | "staff" })}
+                onChange={(e) =>
+                  setNewUser({
+                    ...newUser,
+                    role: e.target.value as "admin" | "manager" | "staff",
+                  })
+                }
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               >
                 <option value="staff">Staff</option>
@@ -756,28 +770,52 @@ function UsersManagement() {
         {loading ? (
           <div className="p-6 text-center text-slate-500">Loading users...</div>
         ) : users.length === 0 ? (
-          <div className="p-6 text-center text-slate-500">No users found. Create one to get started.</div>
+          <div className="p-6 text-center text-slate-500">
+            No users found. Create one to get started.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Name</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Email</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Role</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">Actions</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user._id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-slate-900">{user.name || "-"}</td>
-                    <td className="px-6 py-4 text-sm text-slate-900">{user.email}</td>
+                  <tr
+                    key={user._id}
+                    className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm text-slate-900">
+                      {user.name || "-"}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-900">
+                      {user.email}
+                    </td>
                     <td className="px-6 py-4">
                       <select
                         value={user.role}
-                        onChange={(e) => handleUpdateRole(user._id, e.target.value as "admin" | "manager" | "staff")}
+                        onChange={(e) =>
+                          handleUpdateRole(
+                            user._id,
+                            e.target.value as "admin" | "manager" | "staff",
+                          )
+                        }
                         className="px-3 py-1 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       >
                         <option value="staff">Staff</option>
@@ -787,7 +825,9 @@ function UsersManagement() {
                     </td>
                     <td className="px-6 py-4">
                       <button
-                        onClick={() => handleToggleActive(user._id, user.isActive)}
+                        onClick={() =>
+                          handleToggleActive(user._id, user.isActive)
+                        }
                         className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                           user.isActive
                             ? "bg-green-100 text-green-700 hover:bg-green-200"

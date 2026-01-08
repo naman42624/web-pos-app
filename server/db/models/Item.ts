@@ -37,4 +37,5 @@ const ItemSchema = new Schema<IItem>(
   },
 );
 
-export const Item = mongoose.models.Item || mongoose.model<IItem>("Item", ItemSchema);
+export const Item =
+  mongoose.models.Item || mongoose.model<IItem>("Item", ItemSchema);
