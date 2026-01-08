@@ -184,7 +184,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Check aggregated permissions from roles
     if (user.permissions && user.permissions[entity]) {
-      return user.permissions[entity][action as keyof typeof user.permissions[string]] || false;
+      return (
+        user.permissions[entity][
+          action as keyof (typeof user.permissions)[string]
+        ] || false
+      );
     }
 
     return false;
