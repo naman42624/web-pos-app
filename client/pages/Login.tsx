@@ -8,10 +8,12 @@ import { toast } from "sonner";
 import { Lock } from "lucide-react";
 
 export default function Login() {
+  const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -36,6 +38,43 @@ export default function Login() {
         errorMessage = "Network error. Please check your connection and try again.";
       } else if (error?.message?.includes("Invalid login credentials")) {
         errorMessage = "Invalid email or password.";
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("Please enter email and password");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await signup(email, password, name || undefined);
+      toast.success("Account created successfully!");
+      navigate("/");
+    } catch (error: any) {
+      console.error("Signup error:", error);
+
+      let errorMessage = "Signup failed. Please try again.";
+
+      if (error?.message?.includes("Failed to fetch")) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error?.message?.includes("already exists")) {
+        errorMessage = "An account with this email already exists. Please log in.";
       } else if (error?.message) {
         errorMessage = error.message;
       }
