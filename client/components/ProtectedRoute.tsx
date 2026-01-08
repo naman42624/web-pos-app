@@ -4,10 +4,17 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  requiredPermission?: {
+    entity: string;
+    action: string;
+  };
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, loading } = useAuth();
+export function ProtectedRoute({
+  children,
+  requiredPermission,
+}: ProtectedRouteProps) {
+  const { user, loading, hasPermission } = useAuth();
 
   if (loading) {
     return (
@@ -22,6 +29,13 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (
+    requiredPermission &&
+    !hasPermission(requiredPermission.entity, requiredPermission.action)
+  ) {
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
