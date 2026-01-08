@@ -7,16 +7,13 @@ import {
   CreditRecord,
   DeliveryBoy,
   Settings,
-  User,
-  Role,
 } from "../db/models/index.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
-import { createPermissionMiddleware } from "../middleware/permissionMiddleware.js";
+import { checkPermission } from "../middleware/permissionMiddleware.js";
 import { connectDB } from "../db/connection.js";
 
 const router = Router();
 
-// Ensure DB is connected
 router.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -26,93 +23,24 @@ router.use(async (req, res, next) => {
   }
 });
 
-// Get current user with roles and aggregated permissions
-router.get("/me", authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    if (!req.userId) {
-      return res.status(401).json({ error: "User ID not found" });
-    }
-
-    const user = await User.findById(req.userId)
-      .select("-password")
-      .populate("roleIds");
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Aggregate permissions from all assigned roles
-    const aggregatedPermissions: any = {
-      sales: { view: false, add: false, edit: false, changeStatus: false },
-      items: { view: false, add: false, edit: false, changeStatus: false },
-      products: { view: false, add: false, edit: false, changeStatus: false },
-      customers: { view: false, add: false, edit: false, changeStatus: false },
-      deliveryBoys: {
-        view: false,
-        add: false,
-        edit: false,
-        changeStatus: false,
-      },
-      creditRecords: {
-        view: false,
-        add: false,
-        edit: false,
-        changeStatus: false,
-      },
-      settings: { view: false, add: false, edit: false, changeStatus: false },
-    };
-
-    // If admin, grant all permissions
-    if (user.role === "admin") {
-      for (const entity in aggregatedPermissions) {
-        for (const action in aggregatedPermissions[entity]) {
-          aggregatedPermissions[entity][action] = true;
-        }
-      }
-    } else if (Array.isArray(user.roleIds)) {
-      // Aggregate permissions from all roles (OR logic - if any role has it, user has it)
-      for (const roleDoc of user.roleIds as any[]) {
-        if (roleDoc && roleDoc.permissions) {
-          for (const entity in aggregatedPermissions) {
-            for (const action in aggregatedPermissions[entity]) {
-              if (roleDoc.permissions[entity]?.[action]) {
-                aggregatedPermissions[entity][action] = true;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    const userResponse = user.toJSON();
-    userResponse.permissions = aggregatedPermissions;
-
-    res.json(userResponse);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ===== ITEMS =====
 router.get(
   "/items",
   authMiddleware,
-  createPermissionMiddleware("items", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("items", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const items = await Item.find().lean();
       res.json(items);
     } catch (error: any) {
-      console.error("Error fetching items:", error);
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.post(
   "/items",
   authMiddleware,
-  createPermissionMiddleware("items", "add"),
+  checkPermission("items", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const { name, price, stock, image } = req.body;
@@ -122,13 +50,13 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.put(
   "/items/:id",
   authMiddleware,
-  createPermissionMiddleware("items", "edit"),
+  checkPermission("items", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       const item = await Item.findByIdAndUpdate(req.params.id, req.body, {
@@ -138,13 +66,13 @@ router.put(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.delete(
   "/items/:id",
   authMiddleware,
-  createPermissionMiddleware("items", "edit"),
+  checkPermission("items", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
       await Item.findByIdAndDelete(req.params.id);
@@ -152,28 +80,27 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
-// ===== PRODUCTS =====
 router.get(
   "/products",
   authMiddleware,
-  createPermissionMiddleware("products", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("products", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const products = await Product.find().lean();
       res.json(products);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.post(
   "/products",
   authMiddleware,
-  createPermissionMiddleware("products", "add"),
+  checkPermission("products", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const { name, price, stock, image, items } = req.body;
@@ -183,29 +110,31 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.put(
   "/products/:id",
   authMiddleware,
-  createPermissionMiddleware("products", "edit"),
+  checkPermission("products", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
+      const product = await Product.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
       res.json(product);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.delete(
   "/products/:id",
   authMiddleware,
-  createPermissionMiddleware("products", "edit"),
+  checkPermission("products", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
       await Product.findByIdAndDelete(req.params.id);
@@ -213,28 +142,27 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
-// ===== CUSTOMERS =====
 router.get(
   "/customers",
   authMiddleware,
-  createPermissionMiddleware("customers", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("customers", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const customers = await Customer.find().lean();
       res.json(customers);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.post(
   "/customers",
   authMiddleware,
-  createPermissionMiddleware("customers", "add"),
+  checkPermission("customers", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customer = new Customer(req.body);
@@ -243,13 +171,13 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.get(
   "/customers/:id",
   authMiddleware,
-  createPermissionMiddleware("customers", "view"),
+  checkPermission("customers", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customer = await Customer.findById(req.params.id).lean();
@@ -257,31 +185,31 @@ router.get(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.put(
   "/customers/:id",
   authMiddleware,
-  createPermissionMiddleware("customers", "edit"),
+  checkPermission("customers", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       const customer = await Customer.findByIdAndUpdate(
         req.params.id,
         req.body,
-        { new: true },
+        { new: true }
       );
       res.json(customer);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.delete(
   "/customers/:id",
   authMiddleware,
-  createPermissionMiddleware("customers", "edit"),
+  checkPermission("customers", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
       await Customer.findByIdAndDelete(req.params.id);
@@ -289,28 +217,27 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
-// ===== SALES =====
 router.get(
   "/sales",
   authMiddleware,
-  createPermissionMiddleware("sales", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("sales", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const sales = await Sale.find().lean();
       res.json(sales);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.get(
   "/sales/:id",
   authMiddleware,
-  createPermissionMiddleware("sales", "view"),
+  checkPermission("sales", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const sale = await Sale.findById(req.params.id).lean();
@@ -318,13 +245,13 @@ router.get(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.post(
   "/sales",
   authMiddleware,
-  createPermissionMiddleware("sales", "add"),
+  checkPermission("sales", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const sale = new Sale(req.body);
@@ -333,13 +260,13 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.put(
   "/sales/:id",
   authMiddleware,
-  createPermissionMiddleware("sales", "edit"),
+  checkPermission("sales", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       const sale = await Sale.findByIdAndUpdate(req.params.id, req.body, {
@@ -349,13 +276,13 @@ router.put(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.delete(
   "/sales/:id",
   authMiddleware,
-  createPermissionMiddleware("sales", "edit"),
+  checkPermission("sales", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
       await Sale.findByIdAndDelete(req.params.id);
@@ -363,28 +290,27 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
-// ===== CREDIT RECORDS =====
 router.get(
   "/credit-records",
   authMiddleware,
-  createPermissionMiddleware("creditRecords", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("creditRecords", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const records = await CreditRecord.find().lean();
       res.json(records);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.post(
   "/credit-records",
   authMiddleware,
-  createPermissionMiddleware("creditRecords", "add"),
+  checkPermission("creditRecords", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const record = new CreditRecord(req.body);
@@ -393,28 +319,27 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
-// ===== DELIVERY BOYS =====
 router.get(
   "/delivery-boys",
   authMiddleware,
-  createPermissionMiddleware("deliveryBoys", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("deliveryBoys", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const boys = await DeliveryBoy.find().lean();
       res.json(boys);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.post(
   "/delivery-boys",
   authMiddleware,
-  createPermissionMiddleware("deliveryBoys", "add"),
+  checkPermission("deliveryBoys", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const boy = new DeliveryBoy(req.body);
@@ -423,44 +348,45 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.put(
   "/delivery-boys/:id",
   authMiddleware,
-  createPermissionMiddleware("deliveryBoys", "edit"),
+  checkPermission("deliveryBoys", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const boy = await DeliveryBoy.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
+      const boy = await DeliveryBoy.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
       res.json(boy);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
+  }
 );
 
-// ===== SETTINGS =====
 router.get(
   "/settings",
   authMiddleware,
-  createPermissionMiddleware("settings", "view"),
-  async (req: AuthRequest, res: Response) => {
+  checkPermission("settings", "view"),
+  async (_req: AuthRequest, res: Response) => {
     try {
       const settings = await Settings.findOne().lean();
       res.json(settings);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  },
+  }
 );
 
 router.put(
   "/settings",
   authMiddleware,
-  createPermissionMiddleware("settings", "edit"),
+  checkPermission("settings", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       let settings = await Settings.findOne();
@@ -474,302 +400,7 @@ router.put(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  },
-);
-
-// ===== USERS =====
-const defaultPermissions = {
-  sales: { view: false, add: false, edit: false, changeStatus: false },
-  items: { view: false, add: false, edit: false, changeStatus: false },
-  products: { view: false, add: false, edit: false, changeStatus: false },
-  customers: { view: false, add: false, edit: false, changeStatus: false },
-  deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
-};
-
-const adminPermissions = {
-  sales: { view: true, add: true, edit: true, changeStatus: true },
-  items: { view: true, add: true, edit: true, changeStatus: true },
-  products: { view: true, add: true, edit: true, changeStatus: true },
-  customers: { view: true, add: true, edit: true, changeStatus: true },
-  deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
-};
-
-router.get(
-  "/users",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const users = await User.find()
-        .select("-password")
-        .populate("roleIds")
-        .lean();
-      const usersWithPermissions = users.map((user: any) => ({
-        ...user,
-        permissions:
-          user.role === "admin"
-            ? adminPermissions
-            : user.permissions || defaultPermissions,
-      }));
-      res.json(usersWithPermissions);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  },
-);
-
-router.post(
-  "/users",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const { email, password, name, role } = req.body;
-
-      if (!email || !password) {
-        return res
-          .status(400)
-          .json({ error: "Email and password are required" });
-      }
-
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ error: "User already exists" });
-      }
-
-      const user = new User({
-        email,
-        password,
-        name,
-        role: role || "staff",
-        isActive: true,
-        roleIds: [],
-      });
-
-      await user.save();
-
-      const userWithoutPassword = user.toObject();
-      delete (userWithoutPassword as any).password;
-
-      res.status(201).json(userWithoutPassword);
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-);
-
-router.put(
-  "/users/:id",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const { name, role, isActive, permissions, roleIds } = req.body;
-
-      const updateData: any = {};
-      if (name !== undefined) updateData.name = name;
-      if (role !== undefined) updateData.role = role;
-      if (isActive !== undefined) updateData.isActive = isActive;
-      if (permissions !== undefined) updateData.permissions = permissions;
-      if (roleIds !== undefined) updateData.roleIds = roleIds;
-
-      const user = await User.findByIdAndUpdate(req.params.id, updateData, {
-        new: true,
-      })
-        .select("-password")
-        .populate("roleIds");
-
-      res.json(user);
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-);
-
-router.delete(
-  "/users/:id",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      await User.findByIdAndDelete(req.params.id);
-      res.json({ message: "User deleted" });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-);
-
-router.put(
-  "/users/:id/password",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const currentUser = await User.findById(req.userId);
-      if (!currentUser || currentUser.role !== "admin") {
-        return res
-          .status(403)
-          .json({ error: "Only admins can change user passwords" });
-      }
-
-      const { newPassword } = req.body;
-      if (!newPassword) {
-        return res.status(400).json({ error: "New password is required" });
-      }
-
-      if (newPassword.length < 6) {
-        return res
-          .status(400)
-          .json({ error: "Password must be at least 6 characters" });
-      }
-
-      const user = await User.findById(req.params.id);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      user.password = newPassword;
-      await user.save();
-
-      const userWithoutPassword = user.toObject();
-      delete (userWithoutPassword as any).password;
-
-      res.json(userWithoutPassword);
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-);
-
-// ===== ROLES =====
-const defaultAdminRole = {
-  name: "Admin",
-  description: "Full access to all features and permissions",
-  permissions: {
-    sales: { view: true, add: true, edit: true, changeStatus: true },
-    items: { view: true, add: true, edit: true, changeStatus: true },
-    products: { view: true, add: true, edit: true, changeStatus: true },
-    customers: { view: true, add: true, edit: true, changeStatus: true },
-    deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
-    creditRecords: { view: true, add: true, edit: true, changeStatus: true },
-    settings: { view: true, add: true, edit: true, changeStatus: true },
-  },
-};
-
-router.get(
-  "/roles",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      await connectDB();
-
-      // Create default Admin role if it doesn't exist
-      const adminRoleExists = await Role.findOne({ name: "Admin" });
-      if (!adminRoleExists) {
-        await Role.create(defaultAdminRole);
-        console.log("Created default Admin role");
-      }
-
-      const roles = await Role.find().lean();
-      res.json(roles);
-    } catch (error: any) {
-      console.error("Error fetching roles:", error);
-      res.status(500).json({ error: error.message || "Failed to fetch roles" });
-    }
-  },
-);
-
-router.post(
-  "/roles",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      await connectDB();
-
-      const currentUser = await User.findById(req.userId);
-      if (!currentUser || currentUser.role !== "admin") {
-        return res.status(403).json({ error: "Only admins can create roles" });
-      }
-
-      const { name, description, permissions } = req.body;
-
-      if (!name || !permissions) {
-        return res
-          .status(400)
-          .json({ error: "Name and permissions are required" });
-      }
-
-      const existingRole = await Role.findOne({ name });
-      if (existingRole) {
-        return res.status(400).json({ error: "Role already exists" });
-      }
-
-      const role = new Role({ name, description, permissions });
-      await role.save();
-
-      res.status(201).json(role);
-    } catch (error: any) {
-      console.error("Error creating role:", error);
-      res.status(400).json({ error: error.message });
-    }
-  },
-);
-
-router.put(
-  "/roles/:id",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      await connectDB();
-
-      const currentUser = await User.findById(req.userId);
-      if (!currentUser || currentUser.role !== "admin") {
-        return res.status(403).json({ error: "Only admins can update roles" });
-      }
-
-      const { name, description, permissions } = req.body;
-
-      const updateData: any = {};
-      if (name !== undefined) updateData.name = name;
-      if (description !== undefined) updateData.description = description;
-      if (permissions !== undefined) updateData.permissions = permissions;
-
-      const role = await Role.findByIdAndUpdate(req.params.id, updateData, {
-        new: true,
-      });
-
-      if (!role) {
-        return res.status(404).json({ error: "Role not found" });
-      }
-
-      res.json(role);
-    } catch (error: any) {
-      console.error("Error updating role:", error);
-      res.status(400).json({ error: error.message });
-    }
-  },
-);
-
-router.delete(
-  "/roles/:id",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      await connectDB();
-
-      const currentUser = await User.findById(req.userId);
-      if (!currentUser || currentUser.role !== "admin") {
-        return res.status(403).json({ error: "Only admins can delete roles" });
-      }
-
-      const role = await Role.findByIdAndDelete(req.params.id);
-
-      if (!role) {
-        return res.status(404).json({ error: "Role not found" });
-      }
-
-      res.json({ message: "Role deleted" });
-    } catch (error: any) {
-      console.error("Error deleting role:", error);
-      res.status(400).json({ error: error.message });
-    }
-  },
+  }
 );
 
 export default router;
