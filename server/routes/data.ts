@@ -575,6 +575,8 @@ const defaultAdminRole = {
     products: { view: true, add: true, edit: true, changeStatus: true },
     customers: { view: true, add: true, edit: true, changeStatus: true },
     deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+    creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+    settings: { view: true, add: true, edit: true, changeStatus: true },
   },
 };
 
