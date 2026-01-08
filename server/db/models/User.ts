@@ -7,7 +7,9 @@ export type PermissionEntity =
   | "items"
   | "products"
   | "customers"
-  | "deliveryBoys";
+  | "deliveryBoys"
+  | "creditRecords"
+  | "settings";
 
 export interface IPermissions {
   sales: {
@@ -40,6 +42,18 @@ export interface IPermissions {
     edit: boolean;
     changeStatus: boolean;
   };
+  creditRecords: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  settings: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
 }
 
 export interface IUser extends Document {
@@ -61,6 +75,8 @@ const defaultPermissions: IPermissions = {
   products: { view: false, add: false, edit: false, changeStatus: false },
   customers: { view: false, add: false, edit: false, changeStatus: false },
   deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+  creditRecords: { view: false, add: false, edit: false, changeStatus: false },
+  settings: { view: false, add: false, edit: false, changeStatus: false },
 };
 
 const adminPermissions: IPermissions = {
@@ -69,6 +85,8 @@ const adminPermissions: IPermissions = {
   products: { view: true, add: true, edit: true, changeStatus: true },
   customers: { view: true, add: true, edit: true, changeStatus: true },
   deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+  creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+  settings: { view: true, add: true, edit: true, changeStatus: true },
 };
 
 const UserSchema = new Schema<IUser>(
@@ -131,6 +149,18 @@ const UserSchema = new Schema<IUser>(
           changeStatus: Boolean,
         },
         deliveryBoys: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        creditRecords: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        settings: {
           view: Boolean,
           add: Boolean,
           edit: Boolean,
