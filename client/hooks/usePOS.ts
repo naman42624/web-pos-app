@@ -736,78 +736,56 @@ export function usePOS() {
 
   // Load Settings
   async function loadSettings() {
-    const { data, error } = await supabase
-      .from("settings")
-      .select("*")
-      .single();
-
-    if (error) {
+    try {
+      const data = await api.fetchSettings();
+      if (data) {
+        setSettings({
+          id: data._id,
+          businessName: data.businessName,
+          businessEmail: data.businessEmail,
+          businessPhone: data.businessPhone,
+          logoUrl: data.logoUrl,
+          businessAddress: data.businessAddress,
+          businessCity: data.businessCity,
+          businessState: data.businessState,
+          businessZip: data.businessZip,
+          taxId: data.taxId,
+          billingEmail: data.billingEmail,
+          billingName: data.billingName,
+          billingAddress: data.billingAddress,
+          billingCity: data.billingCity,
+          billingState: data.billingState,
+          billingZip: data.billingZip,
+          paymentTerms: data.paymentTerms,
+          currency: data.currency,
+          timezone: data.timezone,
+          theme: data.theme,
+          language: data.language,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+        });
+      }
+    } catch (error) {
       console.error("Error loading settings:", error);
-      return;
     }
-
-    setSettings({
-      id: data.id,
-      businessName: data.business_name,
-      businessEmail: data.business_email,
-      businessPhone: data.business_phone,
-      logoUrl: data.logo_url,
-      businessAddress: data.business_address,
-      businessCity: data.business_city,
-      businessState: data.business_state,
-      businessZip: data.business_zip,
-      taxId: data.tax_id,
-      billingEmail: data.billing_email,
-      billingName: data.billing_name,
-      billingAddress: data.billing_address,
-      billingCity: data.billing_city,
-      billingState: data.billing_state,
-      billingZip: data.billing_zip,
-      paymentTerms: data.payment_terms,
-      currency: data.currency,
-      timezone: data.timezone,
-      theme: data.theme,
-      language: data.language,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-    });
   }
 
   // Update Settings
   async function updateSettings(updatedSettings: Partial<Settings>) {
-    const updateData: Record<string, any> = {};
+    try {
+      const data = await api.updateSettings(updatedSettings);
 
-    // Map camelCase to snake_case for database
-    Object.entries(updatedSettings).forEach(([key, value]) => {
-      const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
-      if (
-        snakeKey !== "id" &&
-        snakeKey !== "created_at" &&
-        snakeKey !== "updated_at"
-      ) {
-        updateData[snakeKey] = value;
+      // Update local state
+      if (settings) {
+        setSettings({
+          ...settings,
+          ...updatedSettings,
+          updatedAt: new Date().toISOString(),
+        });
       }
-    });
-
-    updateData.updated_at = new Date().toISOString();
-
-    const { error } = await supabase
-      .from("settings")
-      .update(updateData)
-      .eq("id", settings?.id || "");
-
-    if (error) {
+    } catch (error) {
       console.error("Error updating settings:", error);
       throw error;
-    }
-
-    // Update local state
-    if (settings) {
-      setSettings({
-        ...settings,
-        ...updatedSettings,
-        updatedAt: new Date().toISOString(),
-      });
     }
   }
 
