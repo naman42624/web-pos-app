@@ -683,21 +683,20 @@ export function usePOS() {
 
   // Load Credit Records
   const loadCreditRecords = async () => {
-    const { data, error } = await supabase.from("credit_records").select("*");
-    if (error) {
+    try {
+      const data = await api.fetchCreditRecords();
+      setCreditRecords(
+        data.map((record: any) => ({
+          id: record._id,
+          customerId: record.customerId,
+          amount: parseFloat(record.amount),
+          date: record.date,
+          saleId: record.saleId,
+        })),
+      );
+    } catch (error) {
       console.error("Error loading credit records:", error);
-      return;
     }
-
-    setCreditRecords(
-      data.map((record: any) => ({
-        id: record.id,
-        customerId: record.customer_id,
-        amount: parseFloat(record.amount),
-        date: record.date,
-        saleId: record.sale_id,
-      })),
-    );
   };
 
   const getTodaySalesTotal = () => {
