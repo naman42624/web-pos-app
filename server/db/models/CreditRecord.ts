@@ -34,7 +34,9 @@ const CreditRecordSchema = new Schema<ICreditRecord>(
   },
 );
 
-export const CreditRecord = mongoose.model<ICreditRecord>(
-  "CreditRecord",
-  CreditRecordSchema,
-);
+export const CreditRecord =
+  mongoose.models.CreditRecord ||
+  mongoose.model<ICreditRecord>(
+    "CreditRecord",
+    CreditRecordSchema,
+  );
