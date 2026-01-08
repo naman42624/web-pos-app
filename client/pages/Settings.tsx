@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { Settings as SettingsIcon, Upload, Save, X } from "lucide-react";
+import { Settings as SettingsIcon, Upload, Save, X, Shield } from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
+import { PermissionsMatrix, Permissions } from "@/components/PermissionsMatrix";
 
 export default function SettingsPage() {
   const { settings, updateSettings } = usePOSContext();
