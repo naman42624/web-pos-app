@@ -613,6 +613,7 @@ function UsersManagement() {
     useState<any>(null);
   const [selectedUserForPasswordChange, setSelectedUserForPasswordChange] =
     useState<any>(null);
+  const [selectedUserForRoles, setSelectedUserForRoles] = useState<any>(null);
   const [newUser, setNewUser] = useState({
     email: "",
     password: "",
