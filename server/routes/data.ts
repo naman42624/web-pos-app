@@ -29,7 +29,6 @@ router.get(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
-      console.log("Fetching items for user:", req.email);
       const items = await Item.find().lean();
       res.json(items);
     } catch (error: any) {
