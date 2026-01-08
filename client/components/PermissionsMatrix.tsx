@@ -136,7 +136,10 @@ export function PermissionsMatrix({
                             ]
                           }
                           onChange={() => handlePermissionToggle(entity, action)}
-                          className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                          disabled={isAdmin}
+                          className={`w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 ${
+                            isAdmin ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                          }`}
                         />
                       </td>
                     ))}
