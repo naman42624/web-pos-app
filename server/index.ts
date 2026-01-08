@@ -52,7 +52,7 @@ export function createServer() {
     },
   );
 
-  // 404 handler
+  // 404 handler - for non-API routes, let the SPA handle routing
   app.use((_req: express.Request, res: express.Response) => {
     res.status(404).json({ error: "Not found" });
   });
