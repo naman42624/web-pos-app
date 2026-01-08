@@ -147,7 +147,7 @@ export default function SettingsPage() {
 
         {/* Tabs */}
         <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
-          {(["business", "billing", "preferences", "users"] as const).map(
+          {(["business", "billing", "preferences", "roles", "users"] as const).map(
             (tab) => (
               <button
                 key={tab}
