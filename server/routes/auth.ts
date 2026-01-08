@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
-import { User } from "@/db/models";
-import { generateToken } from "@/utils/auth";
-import { connectDB } from "@/db/connection";
+import { User } from "../db/models/index.js";
+import { generateToken } from "../utils/auth.js";
+import { connectDB } from "../db/connection.js";
 
 const router = Router();
 
