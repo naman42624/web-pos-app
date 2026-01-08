@@ -5,15 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Lock } from "lucide-react";
+import { Lock, ShoppingCart } from "lucide-react";
 
 export default function Login() {
-  const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, signup } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -31,214 +29,72 @@ export default function Login() {
       navigate("/");
     } catch (error: any) {
       console.error("Login error:", error);
-
-      let errorMessage = "Login failed. Please try again.";
-
-      if (error?.message?.includes("Failed to fetch")) {
-        errorMessage =
-          "Network error. Please check your connection and try again.";
-      } else if (error?.message?.includes("Invalid login credentials")) {
-        errorMessage = "Invalid email or password.";
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      toast.error("Please enter email and password");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await signup(email, password, name || undefined);
-      toast.success("Account created successfully!");
-      navigate("/");
-    } catch (error: any) {
-      console.error("Signup error:", error);
-
-      let errorMessage = "Signup failed. Please try again.";
-
-      if (error?.message?.includes("Failed to fetch")) {
-        errorMessage =
-          "Network error. Please check your connection and try again.";
-      } else if (error?.message?.includes("already exists")) {
-        errorMessage =
-          "An account with this email already exists. Please log in.";
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage);
+      toast.error(error.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl border-0">
         <div className="p-8">
           <div className="flex justify-center mb-6">
-            <div className="bg-blue-600 rounded-lg p-3">
-              <Lock className="h-8 w-8 text-white" />
+            <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+              <ShoppingCart className="h-7 w-7 text-white" />
             </div>
           </div>
 
           <h1 className="text-3xl font-bold text-center text-slate-900 mb-2">
-            Admin Panel
+            POS System
           </h1>
-          <p className="text-center text-slate-600 mb-8">
-            {isSignup
-              ? "Create your account"
-              : "Sign in to your account to continue"}
+          <p className="text-center text-slate-500 mb-8">
+            Sign in to your account
           </p>
 
-          {/* Signup/Login Toggle Buttons */}
-          <div className="flex gap-2 mb-6">
-            <Button
-              type="button"
-              variant={!isSignup ? "default" : "outline"}
-              className="flex-1"
-              onClick={() => {
-                setIsSignup(false);
-                setEmail("");
-                setPassword("");
-                setName("");
-              }}
-            >
-              Sign In
-            </Button>
-            <Button
-              type="button"
-              variant={isSignup ? "default" : "outline"}
-              className="flex-1"
-              onClick={() => {
-                setIsSignup(true);
-                setEmail("");
-                setPassword("");
-                setName("");
-              }}
-            >
-              Sign Up
-            </Button>
-          </div>
-
-          {isSignup ? (
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Full Name (Optional)
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={loading}
-                  className="w-full"
-                  autoComplete="name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Email Address
-                </label>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  className="w-full"
-                  autoComplete="email"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Password
-                </label>
-                <Input
-                  type="password"
-                  placeholder="At least 6 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  className="w-full"
-                  autoComplete="new-password"
-                />
-              </div>
-
-              <Button
-                type="submit"
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Email
+              </label>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                {loading ? "Creating account..." : "Create Account"}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Email Address
-                </label>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  className="w-full"
-                  autoComplete="email"
-                />
-              </div>
+                className="w-full"
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Password
-                </label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  className="w-full"
-                  autoComplete="current-password"
-                />
-              </div>
-
-              <Button
-                type="submit"
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Password
+              </label>
+              <Input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                {loading ? "Signing in..." : "Sign In"}
-              </Button>
-            </form>
-          )}
+                className="w-full"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-medium py-2 rounded-lg transition-all duration-200"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
 
           <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-center text-sm text-slate-600">
-              {isSignup
-                ? "Your account will be created immediately."
-                : "Contact your administrator if you need access."}
+            <p className="text-xs text-slate-500 text-center">
+              Demo Credentials:<br />
+              Email: gauravbhatia3630@gmail.com<br />
+              Password: Gaurav
             </p>
           </div>
         </div>
