@@ -38,6 +38,8 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
+      console.log(`[Permission] Checking ${action} on ${entity} for user ${user.email}, role: ${user.role}`);
+
       // Force-promote to admin if user is staff with no roles and is the first user created
       if (user.role !== "admin" && !user.roleIds?.length) {
         const firstUser = await User.findOne({}).sort({ createdAt: 1 }).lean();
