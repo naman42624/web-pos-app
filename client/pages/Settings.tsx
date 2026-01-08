@@ -161,6 +161,7 @@ export default function SettingsPage() {
                 {tab === "business" && "Business Info"}
                 {tab === "billing" && "Billing Details"}
                 {tab === "preferences" && "Preferences"}
+                {tab === "roles" && "Roles"}
                 {tab === "users" && "Users"}
               </button>
             ),
