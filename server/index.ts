@@ -26,18 +26,18 @@ export function createServer() {
   });
 
   // Example API routes
-  app.get("/api/ping", (_req, res) => {
+  app.get("/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
   });
 
-  app.get("/api/demo", handleDemo);
+  app.get("/demo", handleDemo);
 
   // Authentication routes
-  app.use("/api/auth", authRoutes);
+  app.use("/auth", authRoutes);
 
   // Data routes (with authentication)
-  app.use("/api/data", dataRoutes);
+  app.use("/data", dataRoutes);
 
   // Global error handler
   app.use(
