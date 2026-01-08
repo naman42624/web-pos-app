@@ -124,7 +124,6 @@ router.post("/login", async (req: Request, res: Response) => {
       }
 
       // Ensure super admin has the Admin role assigned
-      const { Role } = await import("../db/models/index.js");
       let adminRole = await Role.findOne({ name: "Admin" });
       if (!adminRole) {
         const adminPermissions = {
