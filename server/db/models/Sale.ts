@@ -150,4 +150,5 @@ const SaleSchema = new Schema<ISale>(
   },
 );
 
-export const Sale = mongoose.model<ISale>("Sale", SaleSchema);
+export const Sale =
+  mongoose.models.Sale || mongoose.model<ISale>("Sale", SaleSchema);
