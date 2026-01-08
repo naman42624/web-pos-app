@@ -8,6 +8,7 @@ import {
   DeliveryBoy,
   Settings,
   User,
+  Role,
 } from "../db/models/index.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
 import { createPermissionMiddleware } from "../middleware/permissionMiddleware.js";
