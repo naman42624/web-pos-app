@@ -34,6 +34,12 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
+      console.log(
+        `[Permission Middleware] User: ${user.email}, Role: ${user.role}, RoleIds: ${
+          user.roleIds?.length || 0
+        }`,
+      );
+
       // Force-promote to admin if user is staff with no roles (likely the first/only user)
       if (user.role !== "admin" && !user.roleIds?.length) {
         const userCount = await User.countDocuments();
