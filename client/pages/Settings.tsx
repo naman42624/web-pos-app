@@ -852,12 +852,21 @@ function UsersManagement() {
                       </button>
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleDeleteUser(user._id)}
-                        className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm font-medium transition-colors"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedUserForPermissions(user)}
+                          className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm font-medium transition-colors flex items-center gap-1"
+                        >
+                          <Shield className="w-4 h-4" />
+                          Permissions
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(user._id)}
+                          className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm font-medium transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
