@@ -24,13 +24,10 @@ router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
     // Fix corrupted user records (old schema had role as string "admin")
     await User.updateMany(
       { role: { $type: "string" } },
-      { $set: { role: null } }
+      { $set: { role: null } },
     );
 
-    const users = await User.find()
-      .select("-password")
-      .populate("role")
-      .lean();
+    const users = await User.find().select("-password").populate("role").lean();
 
     res.json(users);
   } catch (error: any) {
