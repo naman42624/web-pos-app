@@ -412,3 +412,90 @@ export async function changeUserPassword(id: string, newPassword: string) {
   });
   return handleResponse(response);
 }
+
+// Roles
+export async function fetchRoles() {
+  const response = await fetch(`${API_BASE}/roles`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function createRole(role: {
+  name: string;
+  description?: string;
+  permissions: {
+    sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+    items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+    products: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+    customers: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+    deliveryBoys: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+  };
+}) {
+  const response = await fetch(`${API_BASE}/roles`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(role),
+  });
+  return handleResponse(response);
+}
+
+export async function updateRole(
+  id: string,
+  role: Partial<{
+    name: string;
+    description: string;
+    permissions: {
+      sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      products: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      customers: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      deliveryBoys: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+    };
+  }>,
+) {
+  const response = await fetch(`${API_BASE}/roles/${id}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(role),
+  });
+  return handleResponse(response);
+}
+
+export async function deleteRole(id: string) {
+  const response = await fetch(`${API_BASE}/roles/${id}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
