@@ -34,13 +34,8 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
-      console.log(
-        `Permission check for user ${user.email} (role: ${user.role}) - ${action} ${entity}`,
-      );
-
       // Admin users bypass permission checks
       if (user.role === "admin") {
-        console.log("User is admin, bypassing permission checks");
         // Ensure admin users have all permissions
         if (!user.permissions) {
           (user as any).permissions = adminPermissions;
