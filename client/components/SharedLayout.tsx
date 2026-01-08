@@ -106,14 +106,17 @@ export function SharedLayout({ children }: SharedLayoutProps) {
   const NavContent = () => (
     <div className="p-4 sm:p-6 space-y-2">
       {navItems
-        .filter((item) => {
+        .filter((item: any) => {
+          if (item.adminOnly) {
+            return user?.isAdmin;
+          }
           const requiredPerm = getRequiredPermission(item.path);
           if (!requiredPerm) {
-            return true; // No permission required, show it
+            return true;
           }
           return hasPermission(requiredPerm.entity, requiredPerm.action);
         })
-        .map((item) => {
+        .map((item: any) => {
           const Icon = item.icon;
           const active = isActive(item.path);
           return (
