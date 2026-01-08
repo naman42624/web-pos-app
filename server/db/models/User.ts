@@ -1,12 +1,49 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcryptjs from "bcryptjs";
 
+export type PermissionAction = "view" | "add" | "edit" | "changeStatus";
+export type PermissionEntity = "sales" | "items" | "products" | "customers" | "deliveryBoys";
+
+export interface IPermissions {
+  sales: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  items: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  products: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  customers: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  deliveryBoys: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+}
+
 export interface IUser extends Document {
   email: string;
   password: string;
   name?: string;
   role: "admin" | "manager" | "staff";
   isActive: boolean;
+  permissions: IPermissions;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
