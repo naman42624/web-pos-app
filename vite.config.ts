@@ -32,8 +32,10 @@ function expressPlugin(): Plugin {
     configureServer(server) {
       const app = createServer();
 
-      // Add Express app as middleware to Vite dev server
-      server.middlewares.use(app);
+      // Add Express app AFTER Vite's own middlewares so static files and HTML are served first
+      return () => {
+        server.middlewares.use(app);
+      };
     },
   };
 }
