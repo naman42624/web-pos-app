@@ -29,9 +29,11 @@ router.get(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
+      console.log("Fetching items for user:", req.email);
       const items = await Item.find().lean();
       res.json(items);
     } catch (error: any) {
+      console.error("Error fetching items:", error);
       res.status(500).json({ error: error.message });
     }
   },
