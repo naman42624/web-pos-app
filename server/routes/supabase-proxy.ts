@@ -27,13 +27,13 @@ router.all(/.*/, async (req: Request, res: Response) => {
         .json({ error: "Invalid proxy path. Use /auth/... or /rest/..." });
     }
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
       apikey: SUPABASE_KEY,
     };
 
     if (req.headers.authorization) {
-      headers.authorization = req.headers.authorization;
+      headers.authorization = String(req.headers.authorization);
     }
 
     // Build query string
@@ -43,6 +43,8 @@ router.all(/.*/, async (req: Request, res: Response) => {
         : "";
 
     const fetchUrl = url + queryString;
+
+    console.log(`Proxying ${req.method} ${fetchUrl}`);
 
     const response = await fetch(fetchUrl, {
       method: req.method,
@@ -55,25 +57,49 @@ router.all(/.*/, async (req: Request, res: Response) => {
 
     const contentType = response.headers.get("content-type");
     let data: any;
+    let responseText = "";
 
-    if (contentType?.includes("application/json")) {
-      data = await response.json();
-    } else {
-      data = await response.text();
+    try {
+      responseText = await response.text();
+      
+      if (contentType?.includes("application/json") && responseText.trim()) {
+        data = JSON.parse(responseText);
+      } else if (responseText.trim()) {
+        data = responseText;
+      } else {
+        data = {};
+      }
+    } catch (parseError) {
+      console.error("Failed to parse response body:", parseError, "Body:", responseText);
+      // Return original text if JSON parsing fails
+      data = responseText || {};
     }
 
     res.status(response.status);
 
     if (contentType) {
       res.setHeader("Content-Type", contentType);
+    } else {
+      res.setHeader("Content-Type", "application/json");
     }
 
-    res.send(data);
-  } catch (error) {
+    // Ensure we always send JSON
+    if (typeof data === "string") {
+      res.json({ data });
+    } else {
+      res.json(data);
+    }
+  } catch (error: any) {
     console.error("Supabase proxy error:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to proxy request to Supabase", details: error });
+    
+    const errorMessage = error?.message || "Failed to proxy request to Supabase";
+    const statusCode = error?.code === "ENOTFOUND" ? 503 : 500;
+    
+    res.status(statusCode).json({
+      error: "Failed to proxy request to Supabase",
+      message: errorMessage,
+      code: error?.code,
+    });
   }
 });
 
