@@ -667,7 +667,8 @@ router.get(
       const roles = await Role.find().lean();
       res.json(roles);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("Error fetching roles:", error);
+      res.status(500).json({ error: error.message || "Failed to fetch roles" });
     }
   },
 );
