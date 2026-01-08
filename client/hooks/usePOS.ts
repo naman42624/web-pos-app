@@ -344,51 +344,30 @@ export function usePOS() {
   };
 
   const updateProduct = async (id: string, product: Partial<Product>) => {
-    const { error } = await supabase
-      .from("products")
-      .update({
+    try {
+      await api.updateProduct(id, {
         ...(product.name && { name: product.name }),
         ...(product.price !== undefined && { price: product.price }),
         ...(product.stock !== undefined && { stock: product.stock }),
         ...(product.image !== undefined && { image: product.image }),
-      })
-      .eq("id", id);
+        ...(product.items && { items: product.items }),
+      });
 
-    if (error) {
+      setProducts(products.map((p) => (p.id === id ? { ...p, ...product } : p)));
+    } catch (error) {
       console.error("Error updating product:", error);
       throw error;
     }
-
-    if (product.items) {
-      // Delete existing items
-      await supabase.from("product_items").delete().eq("product_id", id);
-
-      // Insert new items
-      if (product.items.length > 0) {
-        await supabase.from("product_items").insert(
-          product.items.map((pi) => ({
-            product_id: id,
-            item_id: pi.itemId,
-            custom_name: pi.customName,
-            custom_price: pi.customPrice,
-            quantity: pi.quantity,
-          })),
-        );
-      }
-    }
-
-    setProducts(products.map((p) => (p.id === id ? { ...p, ...product } : p)));
   };
 
   const deleteProduct = async (id: string) => {
-    const { error } = await supabase.from("products").delete().eq("id", id);
-
-    if (error) {
+    try {
+      await api.deleteProduct(id);
+      setProducts(products.filter((p) => p.id !== id));
+    } catch (error) {
       console.error("Error deleting product:", error);
       throw error;
     }
-
-    setProducts(products.filter((p) => p.id !== id));
   };
 
   const decrementProductStock = async (productId: string, quantity: number) => {
