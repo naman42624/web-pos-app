@@ -204,20 +204,20 @@ export function usePOS() {
 
   // Load Items
   const loadItems = async () => {
-    const { data, error } = await supabase.from("items").select("*");
-    if (error) {
+    try {
+      const data = await api.fetchItems();
+      setItems(
+        data.map((item: any) => ({
+          id: item._id,
+          name: item.name,
+          price: parseFloat(item.price),
+          stock: item.stock,
+          image: item.image,
+        })),
+      );
+    } catch (error) {
       console.error("Error loading items:", error);
-      return;
     }
-    setItems(
-      data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        price: parseFloat(item.price),
-        stock: item.stock,
-        image: item.image,
-      })),
-    );
   };
 
   const addItem = async (item: Omit<Item, "id">) => {
