@@ -35,20 +35,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // Token exists, consider user logged in
-      const userData = localStorage.getItem("user");
-      if (userData) {
-        try {
-          setUser(JSON.parse(userData));
-        } catch (error) {
-          console.error("Failed to parse user data:", error);
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-        }
-      }
+      // Fetch full user details with roles from backend
+      fetchCurrentUser(token);
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
+
+  const fetchCurrentUser = async (token: string) => {
+    try {
+      const response = await fetch("/api/data/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser({
+          id: userData._id,
+          email: userData.email,
+          name: userData.name,
+          role: userData.role,
+          roleIds: userData.roleIds || [],
+        });
+      } else {
+        // Token invalid, clear storage
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string) => {
     try {
