@@ -67,6 +67,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
     { path: "/pickups", label: "Pickups", icon: Box },
     { path: "/credit-records", label: "Credit Records", icon: CreditCard },
     { path: "/admin/delivery-boys", label: "Delivery Boys", icon: Users },
+    { path: "/admin/users", label: "Users", icon: Users, adminOnly: true },
     { path: "/settings", label: "Settings", icon: Settings },
   ];
 
