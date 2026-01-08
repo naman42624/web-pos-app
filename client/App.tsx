@@ -61,7 +61,9 @@ function AppContent() {
             <Route
               path="/add-sale"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "sales", action: "view" }}
+                >
                   <AddSale />
                 </ProtectedRoute>
               }
@@ -77,7 +79,9 @@ function AppContent() {
             <Route
               path="/quick-sale"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "sales", action: "view" }}
+                >
                   <QuickSale />
                 </ProtectedRoute>
               }
@@ -95,7 +99,9 @@ function AppContent() {
             <Route
               path="/items"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "items", action: "view" }}
+                >
                   <Items />
                 </ProtectedRoute>
               }
@@ -103,7 +109,9 @@ function AppContent() {
             <Route
               path="/ready-products"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "products", action: "view" }}
+                >
                   <ReadyProducts />
                 </ProtectedRoute>
               }
