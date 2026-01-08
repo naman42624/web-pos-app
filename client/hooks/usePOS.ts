@@ -246,33 +246,29 @@ export function usePOS() {
   };
 
   const updateItem = async (id: string, item: Partial<Item>) => {
-    const { error } = await supabase
-      .from("items")
-      .update({
+    try {
+      await api.updateItem(id, {
         ...(item.name && { name: item.name }),
         ...(item.price !== undefined && { price: item.price }),
         ...(item.stock !== undefined && { stock: item.stock }),
         ...(item.image !== undefined && { image: item.image }),
-      })
-      .eq("id", id);
+      });
 
-    if (error) {
+      setItems(items.map((i) => (i.id === id ? { ...i, ...item } : i)));
+    } catch (error) {
       console.error("Error updating item:", error);
       throw error;
     }
-
-    setItems(items.map((i) => (i.id === id ? { ...i, ...item } : i)));
   };
 
   const deleteItem = async (id: string) => {
-    const { error } = await supabase.from("items").delete().eq("id", id);
-
-    if (error) {
+    try {
+      await api.deleteItem(id);
+      setItems(items.filter((i) => i.id !== id));
+    } catch (error) {
       console.error("Error deleting item:", error);
       throw error;
     }
-
-    setItems(items.filter((i) => i.id !== id));
   };
 
   const updateItemStock = async (itemId: string, quantity: number) => {
