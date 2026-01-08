@@ -925,6 +925,12 @@ function UsersManagement() {
                     <td className="px-6 py-4">
                       <div className="flex gap-2 flex-wrap">
                         <button
+                          onClick={() => setSelectedUserForRoles(user)}
+                          className="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded text-sm font-medium transition-colors"
+                        >
+                          Assign Roles
+                        </button>
+                        <button
                           onClick={() => setSelectedUserForPermissions(user)}
                           className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm font-medium transition-colors flex items-center gap-1"
                         >
