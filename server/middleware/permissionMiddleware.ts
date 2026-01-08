@@ -35,15 +35,13 @@ export function createPermissionMiddleware(
       }
 
       // Auto-promote first user to admin if not already
-      if (user.role !== "admin") {
-        const userCount = await User.countDocuments();
-        if (userCount === 1) {
-          user.role = "admin";
-          await user.save();
-          console.log(
-            `Permission middleware: Auto-promoted first user ${user.email} to admin`,
-          );
-        }
+      const userCount = await User.countDocuments();
+      if (userCount === 1 && user.role !== "admin") {
+        user.role = "admin";
+        await user.save();
+        console.log(
+          `Permission middleware: Auto-promoted first user ${user.email} to admin`,
+        );
       }
 
       // Admin users bypass permission checks
