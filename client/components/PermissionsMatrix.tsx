@@ -84,7 +84,14 @@ export function PermissionsMatrix({
               Manage Permissions
             </h2>
             <p className="text-sm text-slate-600 mt-1">
-              Set access rights for {userName}
+              {isAdmin ? (
+                <>
+                  <span className="font-medium text-blue-600">Admin user</span> - has all
+                  permissions by default
+                </>
+              ) : (
+                <>Set access rights for {userName}</>
+              )}
             </p>
           </div>
           <button
