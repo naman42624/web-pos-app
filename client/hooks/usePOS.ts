@@ -771,6 +771,33 @@ export function usePOS() {
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
         });
+      } else {
+        // Initialize with default settings if none exist
+        setSettings({
+          id: "",
+          businessName: "",
+          businessEmail: "",
+          businessPhone: "",
+          logoUrl: "",
+          businessAddress: "",
+          businessCity: "",
+          businessState: "",
+          businessZip: "",
+          taxId: "",
+          billingEmail: "",
+          billingName: "",
+          billingAddress: "",
+          billingCity: "",
+          billingState: "",
+          billingZip: "",
+          paymentTerms: "",
+          currency: "INR",
+          timezone: "Asia/Kolkata",
+          theme: "light",
+          language: "en",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
       }
     } catch (error) {
       console.error("Error loading settings:", error);
