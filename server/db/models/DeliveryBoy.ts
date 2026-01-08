@@ -39,7 +39,9 @@ const DeliveryBoySchema = new Schema<IDeliveryBoy>(
   },
 );
 
-export const DeliveryBoy = mongoose.model<IDeliveryBoy>(
-  "DeliveryBoy",
-  DeliveryBoySchema,
-);
+export const DeliveryBoy =
+  mongoose.models.DeliveryBoy ||
+  mongoose.model<IDeliveryBoy>(
+    "DeliveryBoy",
+    DeliveryBoySchema,
+  );
