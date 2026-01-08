@@ -7,6 +7,7 @@ import {
   CreditRecord,
   DeliveryBoy,
   Settings,
+  User,
 } from "../db/models/index.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
 import { connectDB } from "../db/connection.js";
