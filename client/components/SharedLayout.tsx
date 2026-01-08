@@ -34,7 +34,7 @@ interface SharedLayoutProps {
 export function SharedLayout({ children }: SharedLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, hasPermission } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
