@@ -56,10 +56,12 @@ export function createPermissionMiddleware(
 
       // Admin users bypass permission checks
       if (user && user.role === "admin") {
+        console.log(`[Permission] Admin user ${user.email} bypassing permission checks`);
         // Ensure admin users have all permissions
         if (!user.permissions) {
           (user as any).permissions = adminPermissions;
         }
+        console.log(`[Permission] Calling next() for admin user`);
         return next();
       }
 
