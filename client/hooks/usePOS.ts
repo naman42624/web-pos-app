@@ -380,78 +380,53 @@ export function usePOS() {
 
   // Load Customers
   const loadCustomers = async () => {
-    const { data, error } = await supabase.from("customers").select("*");
-    if (error) {
+    try {
+      const data = await api.fetchCustomers();
+      const customersData = data.map((customer: any) => ({
+        id: customer._id,
+        name: customer.name,
+        phone: customer.phone,
+        altPhone: customer.altPhone,
+        email: customer.email,
+        organization: customer.organization,
+        addresses: customer.addresses || [],
+        totalCredit: customer.totalCredit || 0,
+      }));
+      setCustomers(customersData);
+    } catch (error) {
       console.error("Error loading customers:", error);
-      return;
     }
-
-    const customersWithAddresses = await Promise.all(
-      data.map(async (customer: any) => {
-        const { data: addressesData } = await supabase
-          .from("addresses")
-          .select("*")
-          .eq("customer_id", customer.id);
-
-        return {
-          id: customer.id,
-          name: customer.name,
-          phone: customer.phone,
-          altPhone: customer.alt_phone,
-          email: customer.email,
-          organization: customer.organization,
-          addresses: addressesData
-            ? addressesData.map((addr: any) => ({
-                id: addr.id,
-                label: addr.label,
-                street: addr.street,
-                city: addr.city,
-                state: addr.state,
-                zip: addr.zip,
-              }))
-            : [],
-          totalCredit: parseFloat(customer.total_credit),
-        };
-      }),
-    );
-
-    setCustomers(customersWithAddresses);
   };
 
   const addCustomer = async (customer: Omit<Customer, "id">) => {
-    const { data, error } = await supabase
-      .from("customers")
-      .insert([
-        {
-          name: customer.name,
-          phone: customer.phone,
-          alt_phone: customer.altPhone,
-          email: customer.email,
-          organization: customer.organization,
-          total_credit: 0,
-        },
-      ])
-      .select()
-      .single();
+    try {
+      const data = await api.createCustomer({
+        name: customer.name,
+        phone: customer.phone,
+        altPhone: customer.altPhone,
+        email: customer.email,
+        organization: customer.organization,
+        addresses: customer.addresses,
+        totalCredit: 0,
+      });
 
-    if (error) {
+      const newCustomer: Customer = {
+        id: data._id,
+        name: data.name,
+        phone: data.phone,
+        altPhone: data.altPhone,
+        email: data.email,
+        organization: data.organization,
+        addresses: data.addresses || [],
+        totalCredit: 0,
+      };
+
+      setCustomers([...customers, newCustomer]);
+      return newCustomer;
+    } catch (error) {
       console.error("Error adding customer:", error);
       throw error;
     }
-
-    const newCustomer: Customer = {
-      id: data.id,
-      name: data.name,
-      phone: data.phone,
-      altPhone: data.alt_phone,
-      email: data.email,
-      organization: data.organization,
-      addresses: [],
-      totalCredit: 0,
-    };
-
-    setCustomers([...customers, newCustomer]);
-    return newCustomer;
   };
 
   const getCustomerByIds = (ids: string[]) => {
