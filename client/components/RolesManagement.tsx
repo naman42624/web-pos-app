@@ -64,6 +64,18 @@ export function RolesManagement() {
           edit: false,
           changeStatus: false,
         },
+        creditRecords: {
+          view: false,
+          add: false,
+          edit: false,
+          changeStatus: false,
+        },
+        settings: {
+          view: false,
+          add: false,
+          edit: false,
+          changeStatus: false,
+        },
       };
 
       await api.createRole({
