@@ -559,4 +559,114 @@ router.put(
   },
 );
 
+// ===== ROLES =====
+router.get(
+  "/roles",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const roles = await Role.find().lean();
+      res.json(roles);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
+router.post(
+  "/roles",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const currentUser = await User.findById(req.userId);
+      if (!currentUser || currentUser.role !== "admin") {
+        return res
+          .status(403)
+          .json({ error: "Only admins can create roles" });
+      }
+
+      const { name, description, permissions } = req.body;
+
+      if (!name || !permissions) {
+        return res
+          .status(400)
+          .json({ error: "Name and permissions are required" });
+      }
+
+      const existingRole = await Role.findOne({ name });
+      if (existingRole) {
+        return res.status(400).json({ error: "Role already exists" });
+      }
+
+      const role = new Role({ name, description, permissions });
+      await role.save();
+
+      res.status(201).json(role);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
+router.put(
+  "/roles/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const currentUser = await User.findById(req.userId);
+      if (!currentUser || currentUser.role !== "admin") {
+        return res
+          .status(403)
+          .json({ error: "Only admins can update roles" });
+      }
+
+      const { name, description, permissions } = req.body;
+
+      const updateData: any = {};
+      if (name !== undefined) updateData.name = name;
+      if (description !== undefined) updateData.description = description;
+      if (permissions !== undefined) updateData.permissions = permissions;
+
+      const role = await Role.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        { new: true },
+      );
+
+      if (!role) {
+        return res.status(404).json({ error: "Role not found" });
+      }
+
+      res.json(role);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
+router.delete(
+  "/roles/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const currentUser = await User.findById(req.userId);
+      if (!currentUser || currentUser.role !== "admin") {
+        return res
+          .status(403)
+          .json({ error: "Only admins can delete roles" });
+      }
+
+      const role = await Role.findByIdAndDelete(req.params.id);
+
+      if (!role) {
+        return res.status(404).json({ error: "Role not found" });
+      }
+
+      res.json({ message: "Role deleted" });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
 export default router;
