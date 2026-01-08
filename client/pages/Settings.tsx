@@ -882,6 +882,7 @@ function UsersManagement() {
           onPermissionsChange={handleUpdatePermissions}
           onClose={() => setSelectedUserForPermissions(null)}
           userName={selectedUserForPermissions.name || selectedUserForPermissions.email}
+          userRole={selectedUserForPermissions.role}
         />
       )}
     </div>
