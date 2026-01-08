@@ -34,6 +34,18 @@ export interface IRole extends Document {
       edit: boolean;
       changeStatus: boolean;
     };
+    creditRecords: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+    settings: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
   };
   createdAt: Date;
   updatedAt: Date;
@@ -78,6 +90,18 @@ const RoleSchema = new Schema<IRole>(
           changeStatus: Boolean,
         },
         deliveryBoys: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        creditRecords: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        settings: {
           view: Boolean,
           add: Boolean,
           edit: Boolean,
