@@ -16,7 +16,8 @@ export function RolesManagement() {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
-  const [selectedRoleForPermissions, setSelectedRoleForPermissions] = useState<Role | null>(null);
+  const [selectedRoleForPermissions, setSelectedRoleForPermissions] =
+    useState<Role | null>(null);
 
   const [newRole, setNewRole] = useState({
     name: "",
@@ -51,8 +52,18 @@ export function RolesManagement() {
         sales: { view: false, add: false, edit: false, changeStatus: false },
         items: { view: false, add: false, edit: false, changeStatus: false },
         products: { view: false, add: false, edit: false, changeStatus: false },
-        customers: { view: false, add: false, edit: false, changeStatus: false },
-        deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+        customers: {
+          view: false,
+          add: false,
+          edit: false,
+          changeStatus: false,
+        },
+        deliveryBoys: {
+          view: false,
+          add: false,
+          edit: false,
+          changeStatus: false,
+        },
       };
 
       await api.createRole({
@@ -152,7 +163,9 @@ export function RolesManagement() {
               <input
                 type="text"
                 value={newRole.name}
-                onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
+                onChange={(e) =>
+                  setNewRole({ ...newRole, name: e.target.value })
+                }
                 placeholder="e.g., Manager, Sales Lead"
                 className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />

@@ -23,9 +23,8 @@ export function UserRolesModal({
   onClose,
 }: UserRolesModalProps) {
   const [roles, setRoles] = useState<Role[]>([]);
-  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>(
-    assignedRoleIds,
-  );
+  const [selectedRoleIds, setSelectedRoleIds] =
+    useState<string[]>(assignedRoleIds);
   const [isLoading, setIsLoading] = useState(false);
   const [rolesLoading, setRolesLoading] = useState(true);
 

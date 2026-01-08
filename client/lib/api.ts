@@ -426,8 +426,18 @@ export async function createRole(role: {
   name: string;
   description?: string;
   permissions: {
-    sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-    items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+    sales: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
+    items: {
+      view: boolean;
+      add: boolean;
+      edit: boolean;
+      changeStatus: boolean;
+    };
     products: {
       view: boolean;
       add: boolean;
@@ -462,8 +472,18 @@ export async function updateRole(
     name: string;
     description: string;
     permissions: {
-      sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-      items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      sales: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      items: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
       products: {
         view: boolean;
         add: boolean;

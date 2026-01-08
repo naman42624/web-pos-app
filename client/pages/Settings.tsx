@@ -148,25 +148,25 @@ export default function SettingsPage() {
 
         {/* Tabs */}
         <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
-          {(["business", "billing", "preferences", "roles", "users"] as const).map(
-            (tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === tab
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {tab === "business" && "Business Info"}
-                {tab === "billing" && "Billing Details"}
-                {tab === "preferences" && "Preferences"}
-                {tab === "roles" && "Roles"}
-                {tab === "users" && "Users"}
-              </button>
-            ),
-          )}
+          {(
+            ["business", "billing", "preferences", "roles", "users"] as const
+          ).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
+                activeTab === tab
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              {tab === "business" && "Business Info"}
+              {tab === "billing" && "Billing Details"}
+              {tab === "preferences" && "Preferences"}
+              {tab === "roles" && "Roles"}
+              {tab === "users" && "Users"}
+            </button>
+          ))}
         </div>
 
         {/* Content */}
@@ -957,9 +957,7 @@ function UsersManagement() {
 
       {selectedUserForRoles && (
         <UserRolesModal
-          userName={
-            selectedUserForRoles.name || selectedUserForRoles.email
-          }
+          userName={selectedUserForRoles.name || selectedUserForRoles.email}
           assignedRoleIds={selectedUserForRoles.roleIds || []}
           onAssignRoles={handleAssignRoles}
           onClose={() => setSelectedUserForRoles(null)}

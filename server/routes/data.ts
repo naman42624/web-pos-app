@@ -500,7 +500,9 @@ router.put(
 
       const user = await User.findByIdAndUpdate(req.params.id, updateData, {
         new: true,
-      }).select("-password").populate("roleIds");
+      })
+        .select("-password")
+        .populate("roleIds");
 
       res.json(user);
     } catch (error: any) {
@@ -603,9 +605,7 @@ router.post(
     try {
       const currentUser = await User.findById(req.userId);
       if (!currentUser || currentUser.role !== "admin") {
-        return res
-          .status(403)
-          .json({ error: "Only admins can create roles" });
+        return res.status(403).json({ error: "Only admins can create roles" });
       }
 
       const { name, description, permissions } = req.body;
@@ -638,9 +638,7 @@ router.put(
     try {
       const currentUser = await User.findById(req.userId);
       if (!currentUser || currentUser.role !== "admin") {
-        return res
-          .status(403)
-          .json({ error: "Only admins can update roles" });
+        return res.status(403).json({ error: "Only admins can update roles" });
       }
 
       const { name, description, permissions } = req.body;
@@ -650,11 +648,9 @@ router.put(
       if (description !== undefined) updateData.description = description;
       if (permissions !== undefined) updateData.permissions = permissions;
 
-      const role = await Role.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true },
-      );
+      const role = await Role.findByIdAndUpdate(req.params.id, updateData, {
+        new: true,
+      });
 
       if (!role) {
         return res.status(404).json({ error: "Role not found" });
@@ -674,9 +670,7 @@ router.delete(
     try {
       const currentUser = await User.findById(req.userId);
       if (!currentUser || currentUser.role !== "admin") {
-        return res
-          .status(403)
-          .json({ error: "Only admins can delete roles" });
+        return res.status(403).json({ error: "Only admins can delete roles" });
       }
 
       const role = await Role.findByIdAndDelete(req.params.id);
