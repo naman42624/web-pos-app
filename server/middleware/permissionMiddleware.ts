@@ -9,6 +9,8 @@ const defaultPermissions = {
   products: { view: false, add: false, edit: false, changeStatus: false },
   customers: { view: false, add: false, edit: false, changeStatus: false },
   deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+  creditRecords: { view: false, add: false, edit: false, changeStatus: false },
+  settings: { view: false, add: false, edit: false, changeStatus: false },
 };
 
 const adminPermissions = {
@@ -17,6 +19,8 @@ const adminPermissions = {
   products: { view: true, add: true, edit: true, changeStatus: true },
   customers: { view: true, add: true, edit: true, changeStatus: true },
   deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+  creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+  settings: { view: true, add: true, edit: true, changeStatus: true },
 };
 
 export function createPermissionMiddleware(
