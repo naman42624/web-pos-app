@@ -624,6 +624,7 @@ function UsersManagement() {
 
   useEffect(() => {
     loadUsers();
+    loadRoles();
   }, []);
 
   const loadUsers = async () => {
@@ -636,6 +637,15 @@ function UsersManagement() {
       console.error("Error loading users:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadRoles = async () => {
+    try {
+      const data = await api.fetchRoles();
+      setRoles(data || []);
+    } catch (error) {
+      console.error("Error loading roles:", error);
     }
   };
 
