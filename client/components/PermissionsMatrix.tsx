@@ -22,6 +22,7 @@ interface PermissionsMatrixProps {
   onPermissionsChange: (permissions: Permissions) => void;
   onClose: () => void;
   userName: string;
+  userRole?: "admin" | "manager" | "staff";
 }
 
 const entities = ["sales", "items", "products", "customers", "deliveryBoys"] as const;
