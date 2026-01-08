@@ -8,11 +8,13 @@ interface ProtectedRouteProps {
     entity: string;
     action: string;
   };
+  adminOnly?: boolean;
 }
 
 export function ProtectedRoute({
   children,
   requiredPermission,
+  adminOnly,
 }: ProtectedRouteProps) {
   const { user, loading, hasPermission } = useAuth();
 
@@ -29,6 +31,10 @@ export function ProtectedRoute({
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (adminOnly && !user.isAdmin) {
+    return <Navigate to="/" replace />;
   }
 
   if (
