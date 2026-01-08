@@ -165,6 +165,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const hasPermission = (entity: string, action: string): boolean => {
+    if (!user) return false;
+
+    // Admin users always have all permissions
+    if (user.role === "admin") {
+      return true;
+    }
+
+    // For now, return false for non-admin users
+    // This will be enhanced to check actual role permissions from backend
+    return false;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -173,6 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         signup,
+        hasPermission,
       }}
     >
       {children}
