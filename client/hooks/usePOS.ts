@@ -593,41 +593,33 @@ export function usePOS() {
       | "delivery_attempted_once"
       | "delivery_attempted_twice",
   ) => {
-    const { error } = await supabase
-      .from("sales")
-      .update({ status })
-      .eq("id", saleId);
-
-    if (error) {
+    try {
+      await api.updateSale(saleId, { status });
+      setSales(
+        sales.map((sale) => (sale.id === saleId ? { ...sale, status } : sale)),
+      );
+    } catch (error) {
       const errorMsg =
         error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Error updating sale status:", errorMsg);
       throw error;
     }
-
-    setSales(
-      sales.map((sale) => (sale.id === saleId ? { ...sale, status } : sale)),
-    );
   };
 
   const markCashOnDeliveryReceived = async (saleId: string) => {
-    const { error } = await supabase
-      .from("sales")
-      .update({ payment_status: "paid" })
-      .eq("id", saleId);
-
-    if (error) {
+    try {
+      await api.updateSale(saleId, { paymentStatus: "paid" });
+      setSales(
+        sales.map((sale) =>
+          sale.id === saleId ? { ...sale, paymentStatus: "paid" } : sale,
+        ),
+      );
+    } catch (error) {
       const errorMsg =
         error instanceof Error ? error.message : JSON.stringify(error);
       console.error("Error marking COD as received:", errorMsg);
       throw error;
     }
-
-    setSales(
-      sales.map((sale) =>
-        sale.id === saleId ? { ...sale, paymentStatus: "paid" } : sale,
-      ),
-    );
   };
 
   const recordPayment = async (saleId: string, amountReceived: number) => {
