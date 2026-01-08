@@ -34,22 +34,12 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
-      console.log(
-        `[Permission Middleware] User: ${user.email}, Role: ${user.role}, RoleIds: ${
-          user.roleIds?.length || 0
-        }`,
-      );
-
       // Force-promote to admin if user is staff with no roles and is the first user created
       if (user.role !== "admin" && !user.roleIds?.length) {
         const firstUser = await User.findOne({}).sort({ createdAt: 1 }).lean();
-        console.log(
-          `[Check] User ${user.email} is ${user.role}, first user: ${firstUser?.email}`,
-        );
 
         // If this is the first user created, make them admin
         if (firstUser && firstUser._id.toString() === req.userId) {
-          console.log(`[Fix] Promoting ${user.email} to admin (first user)`);
           user = await User.findByIdAndUpdate(
             req.userId,
             { role: "admin" },
@@ -60,9 +50,6 @@ export function createPermissionMiddleware(
 
       // Admin users bypass permission checks
       if (user && user.role === "admin") {
-        console.log(
-          `[Admin Access] ${user.email} is admin, bypassing all checks`,
-        );
         // Ensure admin users have all permissions
         if (!user.permissions) {
           (user as any).permissions = adminPermissions;
