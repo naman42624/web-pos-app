@@ -57,6 +57,14 @@ const defaultPermissions: IPermissions = {
   deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
 };
 
+const adminPermissions: IPermissions = {
+  sales: { view: true, add: true, edit: true, changeStatus: true },
+  items: { view: true, add: true, edit: true, changeStatus: true },
+  products: { view: true, add: true, edit: true, changeStatus: true },
+  customers: { view: true, add: true, edit: true, changeStatus: true },
+  deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+};
+
 const UserSchema = new Schema<IUser>(
   {
     email: {
