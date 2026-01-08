@@ -383,4 +383,89 @@ router.put(
   },
 );
 
+// ===== USERS =====
+router.get(
+  "/users",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const users = await User.find().select("-password").lean();
+      res.json(users);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
+router.post(
+  "/users",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { email, password, name, role } = req.body;
+
+      if (!email || !password) {
+        return res
+          .status(400)
+          .json({ error: "Email and password are required" });
+      }
+
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "User already exists" });
+      }
+
+      const user = new User({
+        email,
+        password,
+        name,
+        role: role || "staff",
+        isActive: true,
+      });
+
+      await user.save();
+
+      const userWithoutPassword = user.toObject();
+      delete (userWithoutPassword as any).password;
+
+      res.status(201).json(userWithoutPassword);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
+router.put(
+  "/users/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { name, role, isActive } = req.body;
+
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { name, role, isActive },
+        { new: true },
+      ).select("-password");
+
+      res.json(user);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
+router.delete(
+  "/users/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      await User.findByIdAndDelete(req.params.id);
+      res.json({ message: "User deleted" });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
 export default router;
