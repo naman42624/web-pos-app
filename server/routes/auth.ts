@@ -144,13 +144,12 @@ router.post("/login", async (req: Request, res: Response) => {
       }
 
       // Add Admin role if not already assigned
-      if (!user.roleIds.some((roleId: any) => roleId.toString() === adminRole._id.toString())) {
+      const adminRoleIds = user.roleIds.map((id: any) => id.toString());
+      if (!adminRoleIds.includes(adminRole._id.toString())) {
         user.roleIds.push(adminRole._id);
         console.log(`Assigned Admin role to ${email} on login`);
+        await user.save();
       }
-
-      await user.save();
-      await user.populate("roleIds");
     }
 
     // Generate token
@@ -163,7 +162,7 @@ router.post("/login", async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
-        roleIds: user.roleIds || [],
+        roleIds: (user.roleIds || []).map((rid: any) => rid._id || rid),
       },
     });
   } catch (error: any) {
