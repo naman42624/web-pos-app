@@ -68,6 +68,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
     { path: "/credit-records", label: "Credit Records", icon: CreditCard },
     { path: "/admin/delivery-boys", label: "Delivery Boys", icon: Users },
     { path: "/admin/users", label: "Users", icon: Users, adminOnly: true },
+    { path: "/admin/roles", label: "Roles", icon: FileText, adminOnly: true },
     { path: "/settings", label: "Settings", icon: Settings },
   ];
 
