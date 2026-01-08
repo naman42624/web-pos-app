@@ -23,7 +23,9 @@ export async function ensureSuperAdminExists() {
         return;
       }
     } catch (findError) {
-      console.warn("Could not query existing user, will attempt to clear collection");
+      console.warn(
+        "Could not query existing user, will attempt to clear collection",
+      );
       await User.collection.deleteMany({});
     }
 

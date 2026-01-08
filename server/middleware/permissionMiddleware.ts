@@ -1,14 +1,11 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "./authMiddleware.js";
 import { User } from "../db/models/index.js";
-import {
-  PermissionEntity,
-  PermissionAction,
-} from "../db/models/Role.js";
+import { PermissionEntity, PermissionAction } from "../db/models/Role.js";
 
 export function checkPermission(
   entity: PermissionEntity,
-  action: PermissionAction
+  action: PermissionAction,
 ) {
   return async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {

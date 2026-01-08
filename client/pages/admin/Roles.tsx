@@ -98,11 +98,7 @@ export default function Roles() {
     setShowDialog(true);
   };
 
-  const togglePermission = (
-    entity: string,
-    action: string,
-    value: boolean
-  ) => {
+  const togglePermission = (entity: string, action: string, value: boolean) => {
     setFormData({
       ...formData,
       permissions: {
@@ -287,7 +283,10 @@ export default function Roles() {
               </label>
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {ENTITIES.map((entity) => (
-                  <div key={entity} className="border border-slate-200 rounded-lg p-3">
+                  <div
+                    key={entity}
+                    className="border border-slate-200 rounded-lg p-3"
+                  >
                     <h4 className="font-medium text-slate-900 mb-2 capitalize">
                       {entity}
                     </h4>

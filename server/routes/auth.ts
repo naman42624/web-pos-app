@@ -20,9 +20,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ error: "Email and password are required" });
+      return res.status(400).json({ error: "Email and password are required" });
     }
 
     const user = await User.findOne({ email }).populate("role");
@@ -98,9 +96,11 @@ router.post(
       res.status(200).json({ message: "Password changed successfully" });
     } catch (error: any) {
       console.error("Change password error:", error);
-      res.status(500).json({ error: error.message || "Password change failed" });
+      res
+        .status(500)
+        .json({ error: error.message || "Password change failed" });
     }
-  }
+  },
 );
 
 router.get("/me", authMiddleware, async (req: AuthRequest, res: Response) => {

@@ -92,8 +92,10 @@ export default function Login() {
 
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="text-xs text-slate-500 text-center">
-              Demo Credentials:<br />
-              Email: gauravbhatia3630@gmail.com<br />
+              Demo Credentials:
+              <br />
+              Email: gauravbhatia3630@gmail.com
+              <br />
               Password: Gaurav
             </p>
           </div>

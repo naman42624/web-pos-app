@@ -50,7 +50,7 @@ const RoleSchema = new Schema<IRole>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const Role =

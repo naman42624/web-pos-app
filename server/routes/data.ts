@@ -34,7 +34,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.post(
@@ -50,7 +50,7 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.put(
@@ -66,7 +66,7 @@ router.put(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.delete(
@@ -80,7 +80,7 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -94,7 +94,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.post(
@@ -110,7 +110,7 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.put(
@@ -119,16 +119,14 @@ router.put(
   checkPermission("products", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const product = await Product.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
+      const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
       res.json(product);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.delete(
@@ -142,7 +140,7 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -156,7 +154,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.post(
@@ -171,7 +169,7 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -185,7 +183,7 @@ router.get(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.put(
@@ -197,13 +195,13 @@ router.put(
       const customer = await Customer.findByIdAndUpdate(
         req.params.id,
         req.body,
-        { new: true }
+        { new: true },
       );
       res.json(customer);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.delete(
@@ -217,7 +215,7 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -231,7 +229,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -245,7 +243,7 @@ router.get(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.post(
@@ -260,7 +258,7 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.put(
@@ -276,7 +274,7 @@ router.put(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.delete(
@@ -290,7 +288,7 @@ router.delete(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -304,7 +302,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.post(
@@ -319,7 +317,7 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -333,7 +331,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.post(
@@ -348,7 +346,7 @@ router.post(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.put(
@@ -357,16 +355,14 @@ router.put(
   checkPermission("deliveryBoys", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const boy = await DeliveryBoy.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
+      const boy = await DeliveryBoy.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
       res.json(boy);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.get(
@@ -380,7 +376,7 @@ router.get(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
-  }
+  },
 );
 
 router.put(
@@ -400,7 +396,7 @@ router.put(
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
-  }
+  },
 );
 
 export default router;

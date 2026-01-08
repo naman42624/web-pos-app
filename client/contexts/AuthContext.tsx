@@ -34,12 +34,15 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+  ) => Promise<void>;
   hasPermission: (entity: string, action: string) => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -137,7 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const changePassword = async (
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ) => {
     const token = localStorage.getItem("token");
     if (!token) {

@@ -24,7 +24,7 @@ async function handleResponse(response: Response) {
       throw new Error(error.error || `API request failed: ${response.status}`);
     } catch (parseError) {
       throw new Error(
-        `API request failed: ${response.status} ${response.statusText}`
+        `API request failed: ${response.status} ${response.statusText}`,
       );
     }
   }
@@ -71,7 +71,7 @@ export async function updateUser(
     name?: string;
     roleId?: string;
     isActive?: boolean;
-  }
+  },
 ) {
   const response = await fetch(`${API_BASE}/users/${id}`, {
     method: "PUT",
@@ -137,7 +137,7 @@ export async function updateRole(
         delete?: boolean;
       };
     };
-  }
+  },
 ) {
   const response = await fetch(`${API_BASE}/roles/${id}`, {
     method: "PUT",
@@ -186,7 +186,7 @@ export async function updateItem(
     price: number;
     stock: number;
     image: string;
-  }>
+  }>,
 ) {
   const response = await fetch(`${DATA_BASE}/items/${id}`, {
     method: "PUT",
@@ -244,7 +244,7 @@ export async function updateProduct(
       customPrice?: number;
       quantity: number;
     }>;
-  }>
+  }>,
 ) {
   const response = await fetch(`${DATA_BASE}/products/${id}`, {
     method: "PUT",
@@ -317,7 +317,7 @@ export async function updateCustomer(
       zip: string;
     }>;
     totalCredit: number;
-  }>
+  }>,
 ) {
   const response = await fetch(`${DATA_BASE}/customers/${id}`, {
     method: "PUT",
@@ -426,7 +426,7 @@ export async function updateDeliveryBoy(
     pin: string;
     idProofUrl: string;
     status: "available" | "busy";
-  }>
+  }>,
 ) {
   const response = await fetch(`${DATA_BASE}/delivery-boys/${id}`, {
     method: "PUT",
