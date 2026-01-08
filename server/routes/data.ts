@@ -91,6 +91,7 @@ router.delete(
 router.get(
   "/products",
   authMiddleware,
+  createPermissionMiddleware("products", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const products = await Product.find().lean();
@@ -104,6 +105,7 @@ router.get(
 router.post(
   "/products",
   authMiddleware,
+  createPermissionMiddleware("products", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const { name, price, stock, image, items } = req.body;
@@ -119,6 +121,7 @@ router.post(
 router.put(
   "/products/:id",
   authMiddleware,
+  createPermissionMiddleware("products", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -134,6 +137,7 @@ router.put(
 router.delete(
   "/products/:id",
   authMiddleware,
+  createPermissionMiddleware("products", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       await Product.findByIdAndDelete(req.params.id);
