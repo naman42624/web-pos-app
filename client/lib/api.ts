@@ -378,3 +378,12 @@ export async function deleteUser(id: string) {
   });
   return handleResponse(response);
 }
+
+export async function changeUserPassword(id: string, newPassword: string) {
+  const response = await fetch(`${API_BASE}/users/${id}/password`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify({ newPassword }),
+  });
+  return handleResponse(response);
+}
