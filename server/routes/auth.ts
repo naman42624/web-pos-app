@@ -33,9 +33,6 @@ router.post("/signup", async (req: Request, res: Response) => {
     // Determine if this should be a super admin (Gaurav Bhatia)
     const isSuperAdmin = email === "gauravbhatia3630@gmail.com";
 
-    // Import Role model
-    const { Role } = await import("../db/models/index.js");
-
     let roleIds: any[] = [];
     let role = "staff";
 
