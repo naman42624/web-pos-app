@@ -855,9 +855,6 @@ function UsersManagement() {
                     Email
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
-                    Role (Legacy)
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
                     Assigned Roles
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-slate-900">
