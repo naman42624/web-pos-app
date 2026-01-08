@@ -26,7 +26,7 @@ router.use(async (req, res, next) => {
   }
 });
 
-// Get current user with roles
+// Get current user with roles and aggregated permissions
 router.get(
   "/me",
   authMiddleware,
@@ -44,7 +44,43 @@ router.get(
         return res.status(404).json({ error: "User not found" });
       }
 
-      res.json(user);
+      // Aggregate permissions from all assigned roles
+      const aggregatedPermissions: any = {
+        sales: { view: false, add: false, edit: false, changeStatus: false },
+        items: { view: false, add: false, edit: false, changeStatus: false },
+        products: { view: false, add: false, edit: false, changeStatus: false },
+        customers: { view: false, add: false, edit: false, changeStatus: false },
+        deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+        creditRecords: { view: false, add: false, edit: false, changeStatus: false },
+        settings: { view: false, add: false, edit: false, changeStatus: false },
+      };
+
+      // If admin, grant all permissions
+      if (user.role === "admin") {
+        for (const entity in aggregatedPermissions) {
+          for (const action in aggregatedPermissions[entity]) {
+            aggregatedPermissions[entity][action] = true;
+          }
+        }
+      } else if (Array.isArray(user.roleIds)) {
+        // Aggregate permissions from all roles (OR logic - if any role has it, user has it)
+        for (const roleDoc of user.roleIds as any[]) {
+          if (roleDoc && roleDoc.permissions) {
+            for (const entity in aggregatedPermissions) {
+              for (const action in aggregatedPermissions[entity]) {
+                if (roleDoc.permissions[entity]?.[action]) {
+                  aggregatedPermissions[entity][action] = true;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      const userResponse = user.toJSON();
+      userResponse.permissions = aggregatedPermissions;
+
+      res.json(userResponse);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
