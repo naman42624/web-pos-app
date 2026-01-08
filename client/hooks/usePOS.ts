@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import * as api from "@/lib/api";
 
 export interface ProductItem {
   itemId?: string;
