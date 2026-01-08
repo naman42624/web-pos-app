@@ -11,7 +11,7 @@ router.use(async (req, res, next) => {
     await connectDB();
     next();
   } catch (error) {
-    res.status(500).json({ error: "Database connection failed" });
+    return res.status(500).json({ error: "Database connection failed" });
   }
 });
 
