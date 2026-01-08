@@ -793,62 +793,31 @@ export function usePOS() {
     boy: Omit<DeliveryBoy, "id" | "createdAt">,
     idProofFile?: File,
   ) => {
-    let idProofUrl: string | undefined;
+    try {
+      const data = await api.createDeliveryBoy({
+        name: boy.name,
+        phone: boy.phone,
+        pin: boy.pin,
+        idProofUrl: boy.idProofUrl,
+        status: boy.status,
+      });
 
-    if (idProofFile) {
-      const fileExt = idProofFile.name.split(".").pop();
-      const fileName = `${boy.phone}-${Date.now()}.${fileExt}`;
+      const newBoy: DeliveryBoy = {
+        id: data._id,
+        name: data.name,
+        phone: data.phone,
+        pin: data.pin,
+        idProofUrl: data.idProofUrl,
+        status: data.status,
+        createdAt: data.createdAt,
+      };
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("delivery_boy_id_proofs")
-        .upload(fileName, idProofFile, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("Error uploading ID proof:", uploadError);
-        throw uploadError;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("delivery_boy_id_proofs")
-        .getPublicUrl(uploadData.path);
-
-      idProofUrl = publicUrlData.publicUrl;
-    }
-
-    const { data, error } = await supabase
-      .from("delivery_boys")
-      .insert([
-        {
-          name: boy.name,
-          phone: boy.phone,
-          pin: boy.pin,
-          id_proof_url: idProofUrl,
-          status: boy.status,
-        },
-      ])
-      .select()
-      .single();
-
-    if (error) {
+      setDeliveryBoys([newBoy, ...deliveryBoys]);
+      return newBoy;
+    } catch (error) {
       console.error("Error adding delivery boy:", error);
       throw error;
     }
-
-    const newBoy: DeliveryBoy = {
-      id: data.id,
-      name: data.name,
-      phone: data.phone,
-      pin: data.pin,
-      idProofUrl: data.id_proof_url,
-      status: data.status,
-      createdAt: data.created_at,
-    };
-
-    setDeliveryBoys([newBoy, ...deliveryBoys]);
-    return newBoy;
   };
 
   const updateDeliveryBoy = async (
@@ -856,67 +825,36 @@ export function usePOS() {
     updates: Partial<Omit<DeliveryBoy, "id" | "createdAt">>,
     idProofFile?: File,
   ) => {
-    let idProofUrl = updates.idProofUrl;
+    try {
+      await api.updateDeliveryBoy(id, updates);
 
-    if (idProofFile) {
-      const fileExt = idProofFile.name.split(".").pop();
-      const fileName = `${updates.phone || id}-${Date.now()}.${fileExt}`;
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("delivery_boy_id_proofs")
-        .upload(fileName, idProofFile, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("Error uploading ID proof:", uploadError);
-        throw uploadError;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("delivery_boy_id_proofs")
-        .getPublicUrl(uploadData.path);
-
-      idProofUrl = publicUrlData.publicUrl;
-    }
-
-    const updateData: any = {};
-    if (updates.name) updateData.name = updates.name;
-    if (updates.phone) updateData.phone = updates.phone;
-    if (updates.pin) updateData.pin = updates.pin;
-    if (updates.status) updateData.status = updates.status;
-    if (idProofUrl) updateData.id_proof_url = idProofUrl;
-
-    const { error } = await supabase
-      .from("delivery_boys")
-      .update(updateData)
-      .eq("id", id);
-
-    if (error) {
+      setDeliveryBoys(
+        deliveryBoys.map((boy) =>
+          boy.id === id ? { ...boy, ...updates } : boy,
+        ),
+      );
+    } catch (error) {
       console.error("Error updating delivery boy:", error);
       throw error;
     }
-
-    setDeliveryBoys(
-      deliveryBoys.map((boy) =>
-        boy.id === id ? { ...boy, ...updates, idProofUrl } : boy,
-      ),
-    );
   };
 
   const deleteDeliveryBoy = async (id: string) => {
-    const { error } = await supabase
-      .from("delivery_boys")
-      .delete()
-      .eq("id", id);
+    try {
+      // Implement delete function in API
+      await fetch(`/api/data/delivery-boys/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    if (error) {
+      setDeliveryBoys(deliveryBoys.filter((boy) => boy.id !== id));
+    } catch (error) {
       console.error("Error deleting delivery boy:", error);
       throw error;
     }
-
-    setDeliveryBoys(deliveryBoys.filter((boy) => boy.id !== id));
   };
 
   const verifyDeliveryBoyPin = async (phone: string, pin: string) => {
