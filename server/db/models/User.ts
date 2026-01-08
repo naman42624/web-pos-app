@@ -159,6 +159,23 @@ UserSchema.pre("save", function () {
   }
 });
 
+// Ensure admin permissions are set when loading admin users
+UserSchema.post("findOne", function (doc: any) {
+  if (doc && doc.role === "admin") {
+    doc.permissions = adminPermissions;
+  }
+});
+
+UserSchema.post("find", function (docs: any[]) {
+  if (Array.isArray(docs)) {
+    docs.forEach((doc) => {
+      if (doc && doc.role === "admin") {
+        doc.permissions = adminPermissions;
+      }
+    });
+  }
+});
+
 // Method to compare passwords
 UserSchema.methods.comparePassword = async function (
   candidatePassword: string,
