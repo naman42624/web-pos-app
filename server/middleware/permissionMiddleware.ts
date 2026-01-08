@@ -79,6 +79,9 @@ export function createPermissionMiddleware(
         Array.isArray(userWithRoles.roleIds) &&
         userWithRoles.roleIds.length > 0
       ) {
+        console.log(
+          `[Role Check] ${userWithRoles.email} has ${userWithRoles.roleIds.length} role(s)`,
+        );
         // Aggregate permissions from all assigned roles
         let hasPermission = false;
         for (const roleDoc of userWithRoles.roleIds as any[]) {
@@ -88,12 +91,18 @@ export function createPermissionMiddleware(
             roleDoc.permissions[entity] &&
             roleDoc.permissions[entity][action]
           ) {
+            console.log(
+              `[Role Check] Permission granted via role ${(roleDoc as any).name}`,
+            );
             hasPermission = true;
             break;
           }
         }
 
         if (!hasPermission) {
+          console.log(
+            `[Role Check] No role grants ${action} on ${entity}`,
+          );
           return res.status(403).json({
             error: `Access denied: You don't have permission to ${action} ${entity}`,
           });
@@ -103,16 +112,23 @@ export function createPermissionMiddleware(
       }
 
       // Fallback to legacy per-user permissions if no roles assigned
-      const userPermissions = user.permissions || defaultPermissions;
+      console.log(
+        `[Legacy Fallback] No roles assigned, checking user permissions`,
+      );
+      const userPermissions = user!.permissions || defaultPermissions;
       const entityPermissions = (userPermissions as any)[entity];
 
       if (!entityPermissions) {
+        console.log(`[Legacy Fallback] No permissions for entity ${entity}`);
         return res.status(403).json({
           error: `Access denied: No permissions configured for ${entity}`,
         });
       }
 
       const hasPermission = entityPermissions[action];
+      console.log(
+        `[Legacy Fallback] ${entity}.${action} = ${hasPermission}`,
+      );
       if (!hasPermission) {
         return res.status(403).json({
           error: `Access denied: You don't have permission to ${action} ${entity}`,
