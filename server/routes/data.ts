@@ -716,6 +716,8 @@ router.put(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
+      await connectDB();
+
       const currentUser = await User.findById(req.userId);
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ error: "Only admins can update roles" });
@@ -738,6 +740,7 @@ router.put(
 
       res.json(role);
     } catch (error: any) {
+      console.error("Error updating role:", error);
       res.status(400).json({ error: error.message });
     }
   },
