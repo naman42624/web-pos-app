@@ -907,6 +907,16 @@ function UsersManagement() {
           userRole={selectedUserForPermissions.role}
         />
       )}
+
+      {selectedUserForPasswordChange && (
+        <ChangePasswordModal
+          userName={
+            selectedUserForPasswordChange.name || selectedUserForPasswordChange.email
+          }
+          onChangePassword={handleChangePassword}
+          onClose={() => setSelectedUserForPasswordChange(null)}
+        />
+      )}
     </div>
   );
 }
