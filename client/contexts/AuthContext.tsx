@@ -6,20 +6,27 @@ import {
   useState,
 } from "react";
 
+export interface Role {
+  _id: string;
+  name: string;
+  description: string;
+  permissions: {
+    [entity: string]: {
+      view?: boolean;
+      add?: boolean;
+      edit?: boolean;
+      delete?: boolean;
+    };
+  };
+}
+
 export interface User {
   id: string;
   email: string;
-  name?: string;
-  role?: "admin" | "manager" | "staff";
-  roleIds?: string[];
-  permissions?: {
-    [entity: string]: {
-      view: boolean;
-      add: boolean;
-      edit: boolean;
-      changeStatus: boolean;
-    };
-  };
+  name: string;
+  isAdmin: boolean;
+  isActive: boolean;
+  role: Role | null;
 }
 
 interface AuthContextType {
@@ -27,23 +34,21 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  signup: (email: string, password: string, name?: string) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   hasPermission: (entity: string, action: string) => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user is already logged in on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // Fetch full user details with roles from backend
       fetchCurrentUser(token);
     } else {
       setLoading(false);
@@ -52,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchCurrentUser = async (token: string) => {
     try {
-      const response = await fetch("/api/data/me", {
+      const response = await fetch("/api/auth/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,22 +66,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const userData = await response.json();
         setUser({
-          id: userData._id,
+          id: userData.id,
           email: userData.email,
           name: userData.name,
+          isAdmin: userData.isAdmin,
+          isActive: userData.isActive,
           role: userData.role,
-          roleIds: userData.roleIds || [],
-          permissions: userData.permissions,
         });
       } else {
-        // Token invalid, clear storage
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
       }
     } catch (error) {
-      console.error("Failed to fetch user details:", error);
+      console.error("Failed to fetch user:", error);
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
     } finally {
       setLoading(false);
     }
@@ -92,25 +94,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        console.error("Failed to parse response:", parseError);
-        throw new Error("Server returned invalid response");
-      }
-
       if (!response.ok) {
-        throw new Error(data.error || "Login failed");
+        const error = await response.json();
+        throw new Error(error.error || "Login failed");
       }
 
-      const { token, user } = data;
-
-      // Store token and user data
+      const { token, user: userData } = await response.json();
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
 
-      setUser(user);
+      setUser({
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        isAdmin: userData.isAdmin,
+        isActive: userData.isActive,
+        role: userData.role,
+      });
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -124,7 +123,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await fetch("/api/auth/logout", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
@@ -132,66 +130,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear local storage and state regardless of logout success
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
       setUser(null);
     }
   };
 
-  const signup = async (email: string, password: string, name?: string) => {
-    try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, name }),
-      });
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Not authenticated");
+    }
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        console.error("Failed to parse response:", parseError);
-        throw new Error("Server returned invalid response");
-      }
+    const response = await fetch("/api/auth/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
 
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
-
-      const { token, user } = data;
-
-      // Store token and user data
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      setUser(user);
-    } catch (error) {
-      console.error("Signup error:", error);
-      throw error;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Failed to change password");
     }
   };
 
   const hasPermission = (entity: string, action: string): boolean => {
     if (!user) return false;
+    if (user.isAdmin) return true;
+    if (!user.role) return false;
 
-    // Admin users always have all permissions
-    if (user.role === "admin") {
-      return true;
-    }
-
-    // Check aggregated permissions from roles
-    if (user.permissions && user.permissions[entity]) {
-      return (
-        user.permissions[entity][
-          action as keyof (typeof user.permissions)[string]
-        ] || false
-      );
-    }
-
-    return false;
+    const entityPerms = user.role.permissions[entity];
+    return entityPerms?.[action as keyof typeof entityPerms] || false;
   };
 
   return (
@@ -201,7 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         login,
         logout,
-        signup,
+        changePassword,
         hasPermission,
       }}
     >
