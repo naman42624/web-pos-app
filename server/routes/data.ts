@@ -680,6 +680,8 @@ router.post(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
+      await connectDB();
+
       const currentUser = await User.findById(req.userId);
       if (!currentUser || currentUser.role !== "admin") {
         return res.status(403).json({ error: "Only admins can create roles" });
@@ -703,6 +705,7 @@ router.post(
 
       res.status(201).json(role);
     } catch (error: any) {
+      console.error("Error creating role:", error);
       res.status(400).json({ error: error.message });
     }
   },
