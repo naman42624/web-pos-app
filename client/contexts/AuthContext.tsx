@@ -182,8 +182,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     }
 
-    // For now, return false for non-admin users
-    // This will be enhanced to check actual role permissions from backend
+    // Check aggregated permissions from roles
+    if (user.permissions && user.permissions[entity]) {
+      return user.permissions[entity][action as keyof typeof user.permissions[string]] || false;
+    }
+
     return false;
   };
 
