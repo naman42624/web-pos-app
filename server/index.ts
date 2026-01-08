@@ -14,6 +14,12 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Request logging
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+  });
+
   // Initialize database connection
   connectDB().catch((error) => {
     console.error("Failed to connect to MongoDB:", error);
