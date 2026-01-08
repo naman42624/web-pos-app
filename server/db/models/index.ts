@@ -1,4 +1,5 @@
 export { User } from "./User";
+export { Role } from "./Role";
 export { Item } from "./Item";
 export { Product } from "./Product";
 export { Customer } from "./Customer";
@@ -9,6 +10,7 @@ export { DeliveryAssignment } from "./DeliveryAssignment";
 export { Settings } from "./Settings";
 
 export type { IUser } from "./User";
+export type { IRole } from "./Role";
 export type { IItem } from "./Item";
 export type { IProduct } from "./Product";
 export type { ICustomer, IAddress } from "./Customer";
