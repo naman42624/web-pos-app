@@ -90,4 +90,6 @@ const CustomerSchema = new Schema<ICustomer>(
   },
 );
 
-export const Customer = mongoose.model<ICustomer>("Customer", CustomerSchema);
+export const Customer =
+  mongoose.models.Customer ||
+  mongoose.model<ICustomer>("Customer", CustomerSchema);
