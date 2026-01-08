@@ -690,6 +690,19 @@ function UsersManagement() {
     }
   };
 
+  const handleChangePassword = async (newPassword: string) => {
+    if (!selectedUserForPasswordChange) return;
+
+    try {
+      await api.changeUserPassword(selectedUserForPasswordChange._id, newPassword);
+      toast.success("User password changed successfully!");
+      setSelectedUserForPasswordChange(null);
+      await loadUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to change user password");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Add User Form */}
