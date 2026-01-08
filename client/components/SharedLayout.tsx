@@ -74,26 +74,34 @@ export function SharedLayout({ children }: SharedLayoutProps) {
 
   const NavContent = () => (
     <div className="p-4 sm:p-6 space-y-2">
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        const active = isActive(item.path);
-        return (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={() => setMobileMenuOpen(false)}
-            className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200",
-              active
-                ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-600"
-                : "text-slate-700 hover:bg-slate-50",
-            )}
-          >
-            <Icon className="w-5 h-5 flex-shrink-0" />
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
+      {navItems
+        .filter((item) => {
+          // Hide Settings if user doesn't have settings view permission
+          if (item.path === "/settings" && !hasPermission("settings", "view")) {
+            return false;
+          }
+          return true;
+        })
+        .map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.path);
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200",
+                active
+                  ? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-600"
+                  : "text-slate-700 hover:bg-slate-50",
+              )}
+            >
+              <Icon className="w-5 h-5 flex-shrink-0" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
     </div>
   );
 
