@@ -38,8 +38,6 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
-      console.log(`[Permission] Checking ${action} on ${entity} for user ${user.email}, role: ${user.role}`);
-
       // Force-promote to admin if user is staff with no roles and is the first user created
       if (user.role !== "admin" && !user.roleIds?.length) {
         const firstUser = await User.findOne({}).sort({ createdAt: 1 }).lean();
@@ -56,12 +54,10 @@ export function createPermissionMiddleware(
 
       // Admin users bypass permission checks
       if (user && user.role === "admin") {
-        console.log(`[Permission] Admin user ${user.email} bypassing permission checks`);
         // Ensure admin users have all permissions
         if (!user.permissions) {
           (user as any).permissions = adminPermissions;
         }
-        console.log(`[Permission] Calling next() for admin user`);
         return next();
       }
 
@@ -116,8 +112,8 @@ export function createPermissionMiddleware(
 
       next();
     } catch (error: any) {
-      console.error("Permission middleware error:", error.message, error.stack);
-      return res.status(500).json({ error: "Permission check failed", details: error.message });
+      console.error("Permission middleware error:", error);
+      return res.status(500).json({ error: "Permission check failed" });
     }
   };
 }
