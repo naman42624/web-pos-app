@@ -147,6 +147,13 @@ UserSchema.pre("save", async function () {
   }
 });
 
+// Set admin permissions for admin role
+UserSchema.pre("save", function () {
+  if (this.role === "admin") {
+    this.permissions = adminPermissions;
+  }
+});
+
 // Method to compare passwords
 UserSchema.methods.comparePassword = async function (
   candidatePassword: string,
