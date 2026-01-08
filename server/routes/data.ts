@@ -10,6 +10,7 @@ import {
   User,
 } from "../db/models/index.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
+import { createPermissionMiddleware } from "../middleware/permissionMiddleware.js";
 import { connectDB } from "../db/connection.js";
 
 const router = Router();
