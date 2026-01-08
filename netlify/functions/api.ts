@@ -3,9 +3,17 @@ import { createServer } from "../../server/index.js";
 
 let handler: any;
 
-export default async (req: any, res: any) => {
-  if (!handler) {
-    handler = serverless(createServer());
+export const handler = async (req: any, res: any) => {
+  try {
+    if (!handler) {
+      const app = createServer();
+      handler = serverless(app);
+    }
+    return handler(req, res);
+  } catch (error) {
+    console.error("Handler error:", error);
+    res.statusCode = 500;
+    res.body = JSON.stringify({ error: "Internal server error" });
+    return res;
   }
-  return handler(req, res);
 };
