@@ -135,12 +135,12 @@ export default function SettingsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-slate-200">
-          {(["business", "billing", "preferences"] as const).map((tab) => (
+        <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
+          {(["business", "billing", "preferences", "users"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+              className={`px-4 sm:px-6 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab
                   ? "border-blue-600 text-blue-600"
                   : "border-transparent text-slate-600 hover:text-slate-900"
@@ -149,6 +149,7 @@ export default function SettingsPage() {
               {tab === "business" && "Business Info"}
               {tab === "billing" && "Billing Details"}
               {tab === "preferences" && "Preferences"}
+              {tab === "users" && "Users"}
             </button>
           ))}
         </div>
