@@ -30,8 +30,12 @@ router.post("/signup", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "User already exists" });
     }
 
+    // Check if this is the first user - if so, make them an admin
+    const userCount = await User.countDocuments();
+    const role = userCount === 0 ? "admin" : "staff";
+
     // Create new user
-    const user = new User({ email, password, name });
+    const user = new User({ email, password, name, role });
     await user.save();
 
     // Generate token
@@ -43,6 +47,7 @@ router.post("/signup", async (req: Request, res: Response) => {
         id: user._id,
         email: user.email,
         name: user.name,
+        role: user.role,
       },
     });
   } catch (error: any) {
