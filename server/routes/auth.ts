@@ -73,9 +73,6 @@ router.post("/signup", async (req: Request, res: Response) => {
     });
     await user.save();
 
-    // Populate roleIds for response
-    await user.populate("roleIds");
-
     // Generate token
     const token = generateToken(user._id.toString(), user.email);
 
@@ -86,7 +83,7 @@ router.post("/signup", async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
-        roleIds: user.roleIds || [],
+        roleIds: roleIds.map((id) => id.toString ? id.toString() : id),
       },
     });
   } catch (error: any) {
