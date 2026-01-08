@@ -48,6 +48,7 @@ router.post("/signup", async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        roleIds: user.roleIds || [],
       },
     });
   } catch (error: any) {
@@ -95,6 +96,7 @@ router.post("/login", async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        roleIds: user.roleIds || [],
       },
     });
   } catch (error: any) {
