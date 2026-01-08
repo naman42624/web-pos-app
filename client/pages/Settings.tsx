@@ -867,13 +867,20 @@ function UsersManagement() {
                       </button>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <button
                           onClick={() => setSelectedUserForPermissions(user)}
                           className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm font-medium transition-colors flex items-center gap-1"
                         >
                           <Shield className="w-4 h-4" />
                           Permissions
+                        </button>
+                        <button
+                          onClick={() => setSelectedUserForPasswordChange(user)}
+                          className="px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded text-sm font-medium transition-colors flex items-center gap-1"
+                        >
+                          <Lock className="w-4 h-4" />
+                          Change Pass
                         </button>
                         <button
                           onClick={() => handleDeleteUser(user._id)}
