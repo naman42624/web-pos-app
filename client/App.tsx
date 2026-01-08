@@ -119,7 +119,9 @@ function AppContent() {
             <Route
               path="/create-product"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "products", action: "view" }}
+                >
                   <CreateProduct />
                 </ProtectedRoute>
               }
@@ -127,7 +129,9 @@ function AppContent() {
             <Route
               path="/customers"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "customers", action: "view" }}
+                >
                   <Customers />
                 </ProtectedRoute>
               }
@@ -135,7 +139,9 @@ function AppContent() {
             <Route
               path="/customer/:id"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "customers", action: "view" }}
+                >
                   <CustomerDetail />
                 </ProtectedRoute>
               }
@@ -143,7 +149,9 @@ function AppContent() {
             <Route
               path="/deliveries"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "deliveryBoys", action: "view" }}
+                >
                   <Deliveries />
                 </ProtectedRoute>
               }
@@ -151,7 +159,9 @@ function AppContent() {
             <Route
               path="/pickups"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "deliveryBoys", action: "view" }}
+                >
                   <Pickups />
                 </ProtectedRoute>
               }
@@ -159,7 +169,9 @@ function AppContent() {
             <Route
               path="/credit-records"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "creditRecords", action: "view" }}
+                >
                   <CreditRecords />
                 </ProtectedRoute>
               }
@@ -167,7 +179,9 @@ function AppContent() {
             <Route
               path="/admin/delivery-boys"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                  requiredPermission={{ entity: "deliveryBoys", action: "view" }}
+                >
                   <DeliveryBoys />
                 </ProtectedRoute>
               }
