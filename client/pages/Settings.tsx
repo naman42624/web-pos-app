@@ -878,22 +878,6 @@ function UsersManagement() {
                       {user.email}
                     </td>
                     <td className="px-6 py-4">
-                      <select
-                        value={user.role}
-                        onChange={(e) =>
-                          handleUpdateRole(
-                            user._id,
-                            e.target.value as "admin" | "manager" | "staff",
-                          )
-                        }
-                        className="px-3 py-1 border border-slate-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                      >
-                        <option value="staff">Staff</option>
-                        <option value="manager">Manager</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
                       <div className="text-sm">
                         {user.roleIds && user.roleIds.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
