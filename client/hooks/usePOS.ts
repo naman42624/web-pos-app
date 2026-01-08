@@ -437,102 +437,57 @@ export function usePOS() {
     return creditRecords.filter((c) => c.customerId === customerId);
   };
 
-  // Load Sales - simplified to avoid N+1 queries
+  // Load Sales
   const loadSales = async () => {
-    const { data, error } = await supabase.from("sales").select("*");
-    if (error) {
+    try {
+      const data = await api.fetchSales();
+      const sales = data.map((sale: any) => ({
+        id: sale._id,
+        items: sale.items || [],
+        paymentMode: sale.paymentMode,
+        paymentModes: sale.paymentModes,
+        paymentAmounts: sale.paymentAmounts,
+        customerId: sale.customerId,
+        total: parseFloat(sale.total),
+        date: sale.date,
+        orderType: sale.orderType,
+        pickupDate: sale.pickupDate,
+        pickupTime: sale.pickupTime,
+        discountType: sale.discountType,
+        discountValue: sale.discountValue ? parseFloat(sale.discountValue) : undefined,
+        discountAmount: sale.discountAmount
+          ? parseFloat(sale.discountAmount)
+          : undefined,
+        deliveryCharges: sale.deliveryCharges
+          ? parseFloat(sale.deliveryCharges)
+          : undefined,
+        deliveryDetails: sale.deliveryDetails,
+        status: sale.status || "pending",
+        paymentStatus: sale.paymentStatus || "pending",
+        assignedDeliveryBoyId: sale.assignedDeliveryBoyId,
+        isQuickSale: sale.isQuickSale || false,
+      }));
+      setSales(sales);
+    } catch (error) {
       console.error("Error loading sales:", error);
-      return;
     }
-
-    const simpleSales = data.map((sale: any) => ({
-      id: sale.id,
-      items: [],
-      paymentMode: sale.payment_mode,
-      paymentModes: sale.payment_modes,
-      paymentAmounts: sale.payment_amounts,
-      customerId: sale.customer_id,
-      total: parseFloat(sale.total),
-      date: sale.date,
-      orderType: sale.order_type,
-      pickupDate: sale.pickup_date,
-      pickupTime: sale.pickup_time,
-      discountType: sale.discount_type,
-      discountValue: sale.discount_value
-        ? parseFloat(sale.discount_value)
-        : undefined,
-      discountAmount: sale.discount_amount
-        ? parseFloat(sale.discount_amount)
-        : undefined,
-      deliveryCharges: sale.delivery_charges
-        ? parseFloat(sale.delivery_charges)
-        : undefined,
-      deliveryDetails: sale.delivery_receiver_name
-        ? {
-            receiverName: sale.delivery_receiver_name,
-            receiverAddress: sale.delivery_receiver_address,
-            receiverPhone: sale.delivery_receiver_phone,
-            message: sale.delivery_message,
-            senderName: sale.delivery_sender_name,
-            senderPhone: sale.delivery_sender_phone,
-          }
-        : undefined,
-      status: sale.status || "pending",
-      paymentStatus: sale.payment_status || "pending",
-      assignedDeliveryBoyId: sale.delivery_boy_id,
-      isQuickSale: sale.is_quick_sale || false,
-    }));
-
-    setSales(simpleSales);
   };
 
   // Load sale details with items when needed
   const loadSaleDetails = async (saleId: string) => {
-    const { data: itemsData, error } = await supabase
-      .from("sale_items")
-      .select("*")
-      .eq("sale_id", saleId);
+    try {
+      const saleData = await api.fetchSale(saleId);
+      const saleItems = saleData.items || [];
 
-    if (error) {
+      setSales((prevSales) =>
+        prevSales.map((s) => (s.id === saleId ? { ...s, items: saleItems } : s)),
+      );
+
+      return saleItems;
+    } catch (error) {
       console.error("Error loading sale items:", error);
       return [];
     }
-
-    if (!itemsData) return [];
-
-    const saleItems = await Promise.all(
-      itemsData.map(async (si: any) => {
-        const { data: compData } = await supabase
-          .from("sale_item_composition")
-          .select("*")
-          .eq("sale_item_id", si.id);
-
-        return {
-          id: si.id,
-          name: si.name,
-          quantity: si.quantity,
-          price: parseFloat(si.price),
-          image: si.image,
-          productId: si.product_id,
-          composition: compData
-            ? compData.map((c: any) => ({
-                itemId: c.item_id,
-                customName: c.custom_name,
-                customPrice: c.custom_price
-                  ? parseFloat(c.custom_price)
-                  : undefined,
-                quantity: c.quantity,
-              }))
-            : undefined,
-        };
-      }),
-    );
-
-    setSales((prevSales) =>
-      prevSales.map((s) => (s.id === saleId ? { ...s, items: saleItems } : s)),
-    );
-
-    return saleItems;
   };
 
   const addSale = async (sale: Omit<Sale, "id" | "date">) => {
