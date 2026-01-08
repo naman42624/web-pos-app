@@ -886,6 +886,29 @@ function UsersManagement() {
                       </select>
                     </td>
                     <td className="px-6 py-4">
+                      <div className="text-sm">
+                        {user.roleIds && user.roleIds.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {user.roleIds.map((roleId: string) => {
+                              const roleName = roles?.find(
+                                (r: any) => r._id === roleId,
+                              )?.name;
+                              return roleName ? (
+                                <span
+                                  key={roleId}
+                                  className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium"
+                                >
+                                  {roleName}
+                                </span>
+                              ) : null;
+                            })}
+                          </div>
+                        ) : (
+                          <span className="text-slate-500">None assigned</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
                       <button
                         onClick={() =>
                           handleToggleActive(user._id, user.isActive)
