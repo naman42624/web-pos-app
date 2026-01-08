@@ -3,6 +3,7 @@ import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import { Settings as SettingsIcon, Upload, Save, X } from "lucide-react";
 import { toast } from "sonner";
+import * as api from "@/lib/api";
 
 export default function SettingsPage() {
   const { settings, updateSettings } = usePOSContext();
