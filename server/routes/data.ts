@@ -24,14 +24,18 @@ router.use(async (req, res, next) => {
 });
 
 // ===== ITEMS =====
-router.get("/items", authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const items = await Item.find().lean();
-    res.json(items);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get(
+  "/items",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const items = await Item.find().lean();
+      res.json(items);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
 
 router.post(
   "/items",

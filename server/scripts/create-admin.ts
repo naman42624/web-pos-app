@@ -8,8 +8,9 @@ async function createAdmin() {
   const name = process.argv[4] || "Admin";
 
   try {
-    const mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017/pos-system";
-    
+    const mongoUrl =
+      process.env.MONGODB_URL || "mongodb://localhost:27017/pos-system";
+
     console.log("Connecting to MongoDB...");
     await mongoose.connect(mongoUrl);
     console.log("✓ Connected to MongoDB");

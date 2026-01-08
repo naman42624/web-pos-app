@@ -353,7 +353,9 @@ export function usePOS() {
         ...(product.items && { items: product.items }),
       });
 
-      setProducts(products.map((p) => (p.id === id ? { ...p, ...product } : p)));
+      setProducts(
+        products.map((p) => (p.id === id ? { ...p, ...product } : p)),
+      );
     } catch (error) {
       console.error("Error updating product:", error);
       throw error;
@@ -454,7 +456,9 @@ export function usePOS() {
         pickupDate: sale.pickupDate,
         pickupTime: sale.pickupTime,
         discountType: sale.discountType,
-        discountValue: sale.discountValue ? parseFloat(sale.discountValue) : undefined,
+        discountValue: sale.discountValue
+          ? parseFloat(sale.discountValue)
+          : undefined,
         discountAmount: sale.discountAmount
           ? parseFloat(sale.discountAmount)
           : undefined,
@@ -480,7 +484,9 @@ export function usePOS() {
       const saleItems = saleData.items || [];
 
       setSales((prevSales) =>
-        prevSales.map((s) => (s.id === saleId ? { ...s, items: saleItems } : s)),
+        prevSales.map((s) =>
+          s.id === saleId ? { ...s, items: saleItems } : s,
+        ),
       );
 
       return saleItems;

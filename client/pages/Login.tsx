@@ -35,7 +35,8 @@ export default function Login() {
       let errorMessage = "Login failed. Please try again.";
 
       if (error?.message?.includes("Failed to fetch")) {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage =
+          "Network error. Please check your connection and try again.";
       } else if (error?.message?.includes("Invalid login credentials")) {
         errorMessage = "Invalid email or password.";
       } else if (error?.message) {
@@ -72,9 +73,11 @@ export default function Login() {
       let errorMessage = "Signup failed. Please try again.";
 
       if (error?.message?.includes("Failed to fetch")) {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage =
+          "Network error. Please check your connection and try again.";
       } else if (error?.message?.includes("already exists")) {
-        errorMessage = "An account with this email already exists. Please log in.";
+        errorMessage =
+          "An account with this email already exists. Please log in.";
       } else if (error?.message) {
         errorMessage = error.message;
       }
@@ -99,7 +102,9 @@ export default function Login() {
             Admin Panel
           </h1>
           <p className="text-center text-slate-600 mb-8">
-            {isSignup ? "Create your account" : "Sign in to your account to continue"}
+            {isSignup
+              ? "Create your account"
+              : "Sign in to your account to continue"}
           </p>
 
           {/* Signup/Login Toggle Buttons */}
@@ -231,7 +236,9 @@ export default function Login() {
 
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="text-center text-sm text-slate-600">
-              {isSignup ? "Your account will be created immediately." : "Contact your administrator if you need access."}
+              {isSignup
+                ? "Your account will be created immediately."
+                : "Contact your administrator if you need access."}
             </p>
           </div>
         </div>

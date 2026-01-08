@@ -39,7 +39,8 @@ router.all(/.*/, async (req: Request, res: Response) => {
     // Build query string
     const queryString =
       Object.keys(req.query).length > 0
-        ? "?" + new URLSearchParams(req.query as Record<string, string>).toString()
+        ? "?" +
+          new URLSearchParams(req.query as Record<string, string>).toString()
         : "";
 
     const fetchUrl = url + queryString;
@@ -61,7 +62,7 @@ router.all(/.*/, async (req: Request, res: Response) => {
 
     try {
       responseText = await response.text();
-      
+
       if (contentType?.includes("application/json") && responseText.trim()) {
         data = JSON.parse(responseText);
       } else if (responseText.trim()) {
@@ -70,7 +71,12 @@ router.all(/.*/, async (req: Request, res: Response) => {
         data = {};
       }
     } catch (parseError) {
-      console.error("Failed to parse response body:", parseError, "Body:", responseText);
+      console.error(
+        "Failed to parse response body:",
+        parseError,
+        "Body:",
+        responseText,
+      );
       // Return original text if JSON parsing fails
       data = responseText || {};
     }
@@ -91,10 +97,11 @@ router.all(/.*/, async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.error("Supabase proxy error:", error);
-    
-    const errorMessage = error?.message || "Failed to proxy request to Supabase";
+
+    const errorMessage =
+      error?.message || "Failed to proxy request to Supabase";
     const statusCode = error?.code === "ENOTFOUND" ? 503 : 500;
-    
+
     res.status(statusCode).json({
       error: "Failed to proxy request to Supabase",
       message: errorMessage,
