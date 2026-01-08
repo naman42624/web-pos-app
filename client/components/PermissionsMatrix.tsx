@@ -9,6 +9,14 @@ export type Permissions = {
   deliveryBoys: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
 };
 
+const DEFAULT_PERMISSIONS: Permissions = {
+  sales: { view: false, add: false, edit: false, changeStatus: false },
+  items: { view: false, add: false, edit: false, changeStatus: false },
+  products: { view: false, add: false, edit: false, changeStatus: false },
+  customers: { view: false, add: false, edit: false, changeStatus: false },
+  deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+};
+
 interface PermissionsMatrixProps {
   permissions: Permissions;
   onPermissionsChange: (permissions: Permissions) => void;
