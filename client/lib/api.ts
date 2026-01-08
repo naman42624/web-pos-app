@@ -19,10 +19,18 @@ function getHeaders(): HeadersInit {
 
 async function handleResponse(response: Response) {
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "API request failed");
+    try {
+      const error = await response.json();
+      throw new Error(error.error || `API request failed: ${response.status}`);
+    } catch (parseError) {
+      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    }
   }
-  return response.json();
+  try {
+    return await response.json();
+  } catch (parseError) {
+    throw new Error("Failed to parse API response");
+  }
 }
 
 // Items
