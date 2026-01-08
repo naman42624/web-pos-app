@@ -354,6 +354,7 @@ export async function updateUser(
     name: string;
     role: "admin" | "manager" | "staff";
     isActive: boolean;
+    roleIds: string[];
     permissions: {
       sales: {
         view: boolean;
