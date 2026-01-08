@@ -22,6 +22,18 @@ export type Permissions = {
     edit: boolean;
     changeStatus: boolean;
   };
+  creditRecords: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  settings: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
 };
 
 const DEFAULT_PERMISSIONS: Permissions = {
@@ -30,6 +42,8 @@ const DEFAULT_PERMISSIONS: Permissions = {
   products: { view: false, add: false, edit: false, changeStatus: false },
   customers: { view: false, add: false, edit: false, changeStatus: false },
   deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+  creditRecords: { view: false, add: false, edit: false, changeStatus: false },
+  settings: { view: false, add: false, edit: false, changeStatus: false },
 };
 
 interface PermissionsMatrixProps {
@@ -46,6 +60,8 @@ const entities = [
   "products",
   "customers",
   "deliveryBoys",
+  "creditRecords",
+  "settings",
 ] as const;
 const actions = ["view", "add", "edit", "changeStatus"] as const;
 
@@ -55,6 +71,8 @@ const entityLabels: Record<(typeof entities)[number], string> = {
   products: "Products",
   customers: "Customers",
   deliveryBoys: "Delivery Boys",
+  creditRecords: "Credit Records",
+  settings: "Settings",
 };
 
 const actionLabels: Record<(typeof actions)[number], string> = {
