@@ -35,10 +35,12 @@ export function UserRolesModal({
   const loadRoles = async () => {
     try {
       const data = await api.fetchRoles();
+      console.log("Fetched roles:", data);
       setRoles(data || []);
     } catch (error) {
       toast.error("Failed to load roles");
       console.error("Error loading roles:", error);
+      setRoles([]);
     } finally {
       setRolesLoading(false);
     }
