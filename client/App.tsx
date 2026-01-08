@@ -152,7 +152,10 @@ function AppContent() {
               path="/deliveries"
               element={
                 <ProtectedRoute
-                  requiredPermission={{ entity: "deliveryBoys", action: "view" }}
+                  requiredPermission={{
+                    entity: "deliveryBoys",
+                    action: "view",
+                  }}
                 >
                   <Deliveries />
                 </ProtectedRoute>
@@ -162,7 +165,10 @@ function AppContent() {
               path="/pickups"
               element={
                 <ProtectedRoute
-                  requiredPermission={{ entity: "deliveryBoys", action: "view" }}
+                  requiredPermission={{
+                    entity: "deliveryBoys",
+                    action: "view",
+                  }}
                 >
                   <Pickups />
                 </ProtectedRoute>
@@ -172,7 +178,10 @@ function AppContent() {
               path="/credit-records"
               element={
                 <ProtectedRoute
-                  requiredPermission={{ entity: "creditRecords", action: "view" }}
+                  requiredPermission={{
+                    entity: "creditRecords",
+                    action: "view",
+                  }}
                 >
                   <CreditRecords />
                 </ProtectedRoute>
@@ -182,7 +191,10 @@ function AppContent() {
               path="/admin/delivery-boys"
               element={
                 <ProtectedRoute
-                  requiredPermission={{ entity: "deliveryBoys", action: "view" }}
+                  requiredPermission={{
+                    entity: "deliveryBoys",
+                    action: "view",
+                  }}
                 >
                   <DeliveryBoys />
                 </ProtectedRoute>
