@@ -303,6 +303,7 @@ router.delete(
 router.get(
   "/credit-records",
   authMiddleware,
+  createPermissionMiddleware("creditRecords", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const records = await CreditRecord.find().lean();
@@ -316,6 +317,7 @@ router.get(
 router.post(
   "/credit-records",
   authMiddleware,
+  createPermissionMiddleware("creditRecords", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const record = new CreditRecord(req.body);
