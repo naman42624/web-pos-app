@@ -993,6 +993,17 @@ function UsersManagement() {
           onClose={() => setSelectedUserForPasswordChange(null)}
         />
       )}
+
+      {selectedUserForRoles && (
+        <UserRolesModal
+          userName={
+            selectedUserForRoles.name || selectedUserForRoles.email
+          }
+          assignedRoleIds={selectedUserForRoles.roleIds || []}
+          onAssignRoles={handleAssignRoles}
+          onClose={() => setSelectedUserForRoles(null)}
+        />
+      )}
     </div>
   );
 }
