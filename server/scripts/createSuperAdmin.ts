@@ -13,6 +13,8 @@ export async function ensureSuperAdminExists() {
         existingUser.isAdmin = true;
         await existingUser.save();
         console.log(`Updated ${superAdminEmail} to admin status`);
+      } else {
+        console.log(`Super admin already exists: ${superAdminEmail}`);
       }
       return;
     }
@@ -23,12 +25,12 @@ export async function ensureSuperAdminExists() {
       name: "Gaurav Bhatia",
       isAdmin: true,
       isActive: true,
-      role: null,
     });
 
     await superAdmin.save();
     console.log(`Created super admin user: ${superAdminEmail}`);
   } catch (error: any) {
     console.error("Error creating super admin:", error.message);
+    console.error("Full error:", error);
   }
 }
