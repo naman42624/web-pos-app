@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { PermissionsMatrix, Permissions } from "@/components/PermissionsMatrix";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
+import { RolesManagement } from "@/components/RolesManagement";
 
 export default function SettingsPage() {
   const { settings, updateSettings } = usePOSContext();
