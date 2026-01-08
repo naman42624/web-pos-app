@@ -82,9 +82,7 @@ const actionLabels: Record<(typeof actions)[number], string> = {
   changeStatus: "Change Status",
 };
 
-function mergePermissions(
-  provided: Permissions | undefined,
-): Permissions {
+function mergePermissions(provided: Permissions | undefined): Permissions {
   if (!provided) {
     return DEFAULT_PERMISSIONS;
   }
