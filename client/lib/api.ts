@@ -325,3 +325,49 @@ export async function updateSettings(settings: any) {
   });
   return handleResponse(response);
 }
+
+// Users
+export async function fetchUsers() {
+  const response = await fetch(`${API_BASE}/users`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function createUser(user: {
+  email: string;
+  password: string;
+  name?: string;
+  role?: "admin" | "manager" | "staff";
+}) {
+  const response = await fetch(`${API_BASE}/users`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(user),
+  });
+  return handleResponse(response);
+}
+
+export async function updateUser(
+  id: string,
+  user: Partial<{
+    name: string;
+    role: "admin" | "manager" | "staff";
+    isActive: boolean;
+  }>,
+) {
+  const response = await fetch(`${API_BASE}/users/${id}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(user),
+  });
+  return handleResponse(response);
+}
+
+export async function deleteUser(id: string) {
+  const response = await fetch(`${API_BASE}/users/${id}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
