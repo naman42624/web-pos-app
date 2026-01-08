@@ -537,6 +537,7 @@ export default function SettingsPage() {
               </div>
             )}
 
+            {activeTab === "roles" && <RolesManagement />}
             {activeTab === "users" && <UsersManagement />}
           </div>
 
