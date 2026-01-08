@@ -48,8 +48,18 @@ router.post("/signup", async (req: Request, res: Response) => {
           items: { view: true, add: true, edit: true, changeStatus: true },
           products: { view: true, add: true, edit: true, changeStatus: true },
           customers: { view: true, add: true, edit: true, changeStatus: true },
-          deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
-          creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+          deliveryBoys: {
+            view: true,
+            add: true,
+            edit: true,
+            changeStatus: true,
+          },
+          creditRecords: {
+            view: true,
+            add: true,
+            edit: true,
+            changeStatus: true,
+          },
           settings: { view: true, add: true, edit: true, changeStatus: true },
         };
         adminRole = await Role.create({
@@ -83,7 +93,7 @@ router.post("/signup", async (req: Request, res: Response) => {
         email: user.email,
         name: user.name,
         role: user.role,
-        roleIds: roleIds.map((id) => id.toString ? id.toString() : id),
+        roleIds: roleIds.map((id) => (id.toString ? id.toString() : id)),
       },
     });
   } catch (error: any) {
@@ -128,8 +138,18 @@ router.post("/login", async (req: Request, res: Response) => {
           items: { view: true, add: true, edit: true, changeStatus: true },
           products: { view: true, add: true, edit: true, changeStatus: true },
           customers: { view: true, add: true, edit: true, changeStatus: true },
-          deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
-          creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+          deliveryBoys: {
+            view: true,
+            add: true,
+            edit: true,
+            changeStatus: true,
+          },
+          creditRecords: {
+            view: true,
+            add: true,
+            edit: true,
+            changeStatus: true,
+          },
           settings: { view: true, add: true, edit: true, changeStatus: true },
         };
         adminRole = await Role.create({
