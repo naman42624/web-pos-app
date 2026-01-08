@@ -30,6 +30,15 @@ const UserSchema = new Schema<IUser>(
       type: String,
       trim: true,
     },
+    role: {
+      type: String,
+      enum: ["admin", "manager", "staff"],
+      default: "staff",
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
