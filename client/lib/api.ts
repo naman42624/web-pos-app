@@ -354,6 +354,13 @@ export async function updateUser(
     name: string;
     role: "admin" | "manager" | "staff";
     isActive: boolean;
+    permissions: {
+      sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      products: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      customers: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      deliveryBoys: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+    };
   }>,
 ) {
   const response = await fetch(`${API_BASE}/users/${id}`, {
