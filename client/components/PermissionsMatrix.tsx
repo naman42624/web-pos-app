@@ -90,9 +90,16 @@ export function PermissionsMatrix({
   userRole,
 }: PermissionsMatrixProps) {
   const isAdmin = userRole === "admin";
-  const [localPermissions, setLocalPermissions] = useState<Permissions>(
-    permissions || DEFAULT_PERMISSIONS,
-  );
+  const [localPermissions, setLocalPermissions] = useState<Permissions>(() => {
+    if (!permissions) {
+      return DEFAULT_PERMISSIONS;
+    }
+    // Merge with defaults to ensure all entities exist
+    return {
+      ...DEFAULT_PERMISSIONS,
+      ...permissions,
+    };
+  });
 
   const handlePermissionToggle = (
     entity: (typeof entities)[number],
