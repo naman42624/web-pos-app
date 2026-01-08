@@ -564,11 +564,30 @@ router.put(
 );
 
 // ===== ROLES =====
+const defaultAdminRole = {
+  name: "Admin",
+  description: "Full access to all features and permissions",
+  permissions: {
+    sales: { view: true, add: true, edit: true, changeStatus: true },
+    items: { view: true, add: true, edit: true, changeStatus: true },
+    products: { view: true, add: true, edit: true, changeStatus: true },
+    customers: { view: true, add: true, edit: true, changeStatus: true },
+    deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+  },
+};
+
 router.get(
   "/roles",
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
+      // Create default Admin role if it doesn't exist
+      const adminRoleExists = await Role.findOne({ name: "Admin" });
+      if (!adminRoleExists) {
+        await Role.create(defaultAdminRole);
+        console.log("Created default Admin role");
+      }
+
       const roles = await Role.find().lean();
       res.json(roles);
     } catch (error: any) {
