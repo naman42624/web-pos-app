@@ -676,6 +676,18 @@ function UsersManagement() {
     }
   };
 
+  const handleUpdatePermissions = async (permissions: Permissions) => {
+    if (!selectedUserForPermissions) return;
+
+    try {
+      await api.updateUser(selectedUserForPermissions._id, { permissions });
+      toast.success("Permissions updated successfully!");
+      await loadUsers();
+    } catch (error: any) {
+      toast.error("Failed to update permissions");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Add User Form */}
