@@ -49,6 +49,14 @@ export interface IUser extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
+const defaultPermissions: IPermissions = {
+  sales: { view: false, add: false, edit: false, changeStatus: false },
+  items: { view: false, add: false, edit: false, changeStatus: false },
+  products: { view: false, add: false, edit: false, changeStatus: false },
+  customers: { view: false, add: false, edit: false, changeStatus: false },
+  deliveryBoys: { view: false, add: false, edit: false, changeStatus: false },
+};
+
 const UserSchema = new Schema<IUser>(
   {
     email: {
@@ -75,6 +83,41 @@ const UserSchema = new Schema<IUser>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    permissions: {
+      type: {
+        sales: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        items: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        products: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        customers: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+        deliveryBoys: {
+          view: Boolean,
+          add: Boolean,
+          edit: Boolean,
+          changeStatus: Boolean,
+        },
+      },
+      default: defaultPermissions,
     },
   },
   {
