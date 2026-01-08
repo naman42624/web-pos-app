@@ -108,7 +108,7 @@ router.post("/login", async (req: Request, res: Response) => {
     }
 
     // Find user by email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("roleIds");
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
@@ -119,12 +119,42 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Auto-promote first user to admin on login
-    const userCount = await User.countDocuments();
-    if (userCount === 1 && user.role !== "admin") {
-      user.role = "admin";
+    // Ensure super admin (Gaurav Bhatia) has admin role and Admin roleId
+    if (email === "gauravbhatia3630@gmail.com") {
+      if (user.role !== "admin") {
+        user.role = "admin";
+        console.log(`Ensured ${email} has admin role on login`);
+      }
+
+      // Ensure super admin has the Admin role assigned
+      const { Role } = await import("../db/models/index.js");
+      let adminRole = await Role.findOne({ name: "Admin" });
+      if (!adminRole) {
+        const adminPermissions = {
+          sales: { view: true, add: true, edit: true, changeStatus: true },
+          items: { view: true, add: true, edit: true, changeStatus: true },
+          products: { view: true, add: true, edit: true, changeStatus: true },
+          customers: { view: true, add: true, edit: true, changeStatus: true },
+          deliveryBoys: { view: true, add: true, edit: true, changeStatus: true },
+          creditRecords: { view: true, add: true, edit: true, changeStatus: true },
+          settings: { view: true, add: true, edit: true, changeStatus: true },
+        };
+        adminRole = await Role.create({
+          name: "Admin",
+          description: "Full access to all features and permissions",
+          permissions: adminPermissions,
+        });
+        console.log("Created default Admin role");
+      }
+
+      // Add Admin role if not already assigned
+      if (!user.roleIds.some((roleId: any) => roleId.toString() === adminRole._id.toString())) {
+        user.roleIds.push(adminRole._id);
+        console.log(`Assigned Admin role to ${email} on login`);
+      }
+
       await user.save();
-      console.log(`Auto-promoted first user ${email} to admin on login`);
+      await user.populate("roleIds");
     }
 
     // Generate token
