@@ -221,34 +221,28 @@ export function usePOS() {
   };
 
   const addItem = async (item: Omit<Item, "id">) => {
-    const { data, error } = await supabase
-      .from("items")
-      .insert([
-        {
-          name: item.name,
-          price: item.price,
-          stock: item.stock,
-          image: item.image,
-        },
-      ])
-      .select()
-      .single();
+    try {
+      const data = await api.createItem({
+        name: item.name,
+        price: item.price,
+        stock: item.stock,
+        image: item.image,
+      });
 
-    if (error) {
+      const newItem = {
+        id: data._id,
+        name: data.name,
+        price: parseFloat(data.price),
+        stock: data.stock,
+        image: data.image,
+      };
+
+      setItems([...items, newItem]);
+      return newItem;
+    } catch (error) {
       console.error("Error adding item:", error);
       throw error;
     }
-
-    const newItem = {
-      id: data.id,
-      name: data.name,
-      price: parseFloat(data.price),
-      stock: data.stock,
-      image: data.image,
-    };
-
-    setItems([...items, newItem]);
-    return newItem;
   };
 
   const updateItem = async (id: string, item: Partial<Item>) => {
