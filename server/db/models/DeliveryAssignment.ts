@@ -34,7 +34,9 @@ const DeliveryAssignmentSchema = new Schema<IDeliveryAssignment>(
   },
 );
 
-export const DeliveryAssignment = mongoose.model<IDeliveryAssignment>(
-  "DeliveryAssignment",
-  DeliveryAssignmentSchema,
-);
+export const DeliveryAssignment =
+  mongoose.models.DeliveryAssignment ||
+  mongoose.model<IDeliveryAssignment>(
+    "DeliveryAssignment",
+    DeliveryAssignmentSchema,
+  );
