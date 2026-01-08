@@ -99,52 +99,139 @@ export default function Login() {
             Admin Panel
           </h1>
           <p className="text-center text-slate-600 mb-8">
-            Sign in to your account to continue
+            {isSignup ? "Create your account" : "Sign in to your account to continue"}
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Email Address
-              </label>
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-                className="w-full"
-                autoComplete="email"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Password
-              </label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                className="w-full"
-                autoComplete="current-password"
-              />
-            </div>
-
+          {/* Signup/Login Toggle Buttons */}
+          <div className="flex gap-2 mb-6">
             <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              type="button"
+              variant={!isSignup ? "default" : "outline"}
+              className="flex-1"
+              onClick={() => {
+                setIsSignup(false);
+                setEmail("");
+                setPassword("");
+                setName("");
+              }}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              Sign In
             </Button>
-          </form>
+            <Button
+              type="button"
+              variant={isSignup ? "default" : "outline"}
+              className="flex-1"
+              onClick={() => {
+                setIsSignup(true);
+                setEmail("");
+                setPassword("");
+                setName("");
+              }}
+            >
+              Sign Up
+            </Button>
+          </div>
+
+          {isSignup ? (
+            <form onSubmit={handleSignup} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Full Name (Optional)
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={loading}
+                  className="w-full"
+                  autoComplete="name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Email Address
+                </label>
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                  className="w-full"
+                  autoComplete="email"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Password
+                </label>
+                <Input
+                  type="password"
+                  placeholder="At least 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  className="w-full"
+                  autoComplete="new-password"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                {loading ? "Creating account..." : "Create Account"}
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Email Address
+                </label>
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
+                  className="w-full"
+                  autoComplete="email"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Password
+                </label>
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  className="w-full"
+                  autoComplete="current-password"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                {loading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
+          )}
 
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="text-center text-sm text-slate-600">
-              Contact your administrator if you need access.
+              {isSignup ? "Your account will be created immediately." : "Contact your administrator if you need access."}
             </p>
           </div>
         </div>
