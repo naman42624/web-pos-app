@@ -493,11 +493,9 @@ router.put(
       if (isActive !== undefined) updateData.isActive = isActive;
       if (permissions !== undefined) updateData.permissions = permissions;
 
-      const user = await User.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true },
-      ).select("-password");
+      const user = await User.findByIdAndUpdate(req.params.id, updateData, {
+        new: true,
+      }).select("-password");
 
       res.json(user);
     } catch (error: any) {

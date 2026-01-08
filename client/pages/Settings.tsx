@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { Settings as SettingsIcon, Upload, Save, X, Shield, Lock } from "lucide-react";
+import {
+  Settings as SettingsIcon,
+  Upload,
+  Save,
+  X,
+  Shield,
+  Lock,
+} from "lucide-react";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { PermissionsMatrix, Permissions } from "@/components/PermissionsMatrix";
@@ -598,8 +605,10 @@ function UsersManagement() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [selectedUserForPermissions, setSelectedUserForPermissions] = useState<any>(null);
-  const [selectedUserForPasswordChange, setSelectedUserForPasswordChange] = useState<any>(null);
+  const [selectedUserForPermissions, setSelectedUserForPermissions] =
+    useState<any>(null);
+  const [selectedUserForPasswordChange, setSelectedUserForPasswordChange] =
+    useState<any>(null);
   const [newUser, setNewUser] = useState({
     email: "",
     password: "",
@@ -694,7 +703,10 @@ function UsersManagement() {
     if (!selectedUserForPasswordChange) return;
 
     try {
-      await api.changeUserPassword(selectedUserForPasswordChange._id, newPassword);
+      await api.changeUserPassword(
+        selectedUserForPasswordChange._id,
+        newPassword,
+      );
       toast.success("User password changed successfully!");
       setSelectedUserForPasswordChange(null);
       await loadUsers();
@@ -903,7 +915,9 @@ function UsersManagement() {
           permissions={selectedUserForPermissions.permissions}
           onPermissionsChange={handleUpdatePermissions}
           onClose={() => setSelectedUserForPermissions(null)}
-          userName={selectedUserForPermissions.name || selectedUserForPermissions.email}
+          userName={
+            selectedUserForPermissions.name || selectedUserForPermissions.email
+          }
           userRole={selectedUserForPermissions.role}
         />
       )}
@@ -911,7 +925,8 @@ function UsersManagement() {
       {selectedUserForPasswordChange && (
         <ChangePasswordModal
           userName={
-            selectedUserForPasswordChange.name || selectedUserForPasswordChange.email
+            selectedUserForPasswordChange.name ||
+            selectedUserForPasswordChange.email
           }
           onChangePassword={handleChangePassword}
           onClose={() => setSelectedUserForPasswordChange(null)}

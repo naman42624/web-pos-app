@@ -355,11 +355,36 @@ export async function updateUser(
     role: "admin" | "manager" | "staff";
     isActive: boolean;
     permissions: {
-      sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-      items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-      products: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-      customers: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-      deliveryBoys: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+      sales: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      items: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      products: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      customers: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
+      deliveryBoys: {
+        view: boolean;
+        add: boolean;
+        edit: boolean;
+        changeStatus: boolean;
+      };
     };
   }>,
 ) {

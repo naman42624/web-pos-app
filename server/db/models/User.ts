@@ -2,7 +2,12 @@ import mongoose, { Schema, Document } from "mongoose";
 import bcryptjs from "bcryptjs";
 
 export type PermissionAction = "view" | "add" | "edit" | "changeStatus";
-export type PermissionEntity = "sales" | "items" | "products" | "customers" | "deliveryBoys";
+export type PermissionEntity =
+  | "sales"
+  | "items"
+  | "products"
+  | "customers"
+  | "deliveryBoys";
 
 export interface IPermissions {
   sales: {

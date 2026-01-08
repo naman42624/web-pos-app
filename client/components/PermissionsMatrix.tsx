@@ -4,9 +4,24 @@ import { useState } from "react";
 export type Permissions = {
   sales: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
   items: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-  products: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-  customers: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
-  deliveryBoys: { view: boolean; add: boolean; edit: boolean; changeStatus: boolean };
+  products: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  customers: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
+  deliveryBoys: {
+    view: boolean;
+    add: boolean;
+    edit: boolean;
+    changeStatus: boolean;
+  };
 };
 
 const DEFAULT_PERMISSIONS: Permissions = {
@@ -25,10 +40,16 @@ interface PermissionsMatrixProps {
   userRole?: "admin" | "manager" | "staff";
 }
 
-const entities = ["sales", "items", "products", "customers", "deliveryBoys"] as const;
+const entities = [
+  "sales",
+  "items",
+  "products",
+  "customers",
+  "deliveryBoys",
+] as const;
 const actions = ["view", "add", "edit", "changeStatus"] as const;
 
-const entityLabels: Record<typeof entities[number], string> = {
+const entityLabels: Record<(typeof entities)[number], string> = {
   sales: "Sales/Orders",
   items: "Items",
   products: "Products",
@@ -36,7 +57,7 @@ const entityLabels: Record<typeof entities[number], string> = {
   deliveryBoys: "Delivery Boys",
 };
 
-const actionLabels: Record<typeof actions[number], string> = {
+const actionLabels: Record<(typeof actions)[number], string> = {
   view: "View",
   add: "Add",
   edit: "Edit",
@@ -56,8 +77,8 @@ export function PermissionsMatrix({
   );
 
   const handlePermissionToggle = (
-    entity: typeof entities[number],
-    action: typeof actions[number],
+    entity: (typeof entities)[number],
+    action: (typeof actions)[number],
   ) => {
     if (isAdmin) return;
 
@@ -65,7 +86,8 @@ export function PermissionsMatrix({
       ...prev,
       [entity]: {
         ...prev[entity],
-        [action]: !prev[entity][action as keyof typeof prev[typeof entity[number]]],
+        [action]:
+          !prev[entity][action as keyof (typeof prev)[(typeof entity)[number]]],
       },
     }));
   };
@@ -86,8 +108,8 @@ export function PermissionsMatrix({
             <p className="text-sm text-slate-600 mt-1">
               {isAdmin ? (
                 <>
-                  <span className="font-medium text-blue-600">Admin user</span> - has all
-                  permissions by default
+                  <span className="font-medium text-blue-600">Admin user</span>{" "}
+                  - has all permissions by default
                 </>
               ) : (
                 <>Set access rights for {userName}</>
@@ -122,23 +144,33 @@ export function PermissionsMatrix({
               </thead>
               <tbody>
                 {entities.map((entity) => (
-                  <tr key={entity} className="border-b border-slate-200 hover:bg-slate-50">
+                  <tr
+                    key={entity}
+                    className="border-b border-slate-200 hover:bg-slate-50"
+                  >
                     <td className="py-4 pr-4 text-sm font-medium text-slate-900">
                       {entityLabels[entity]}
                     </td>
                     {actions.map((action) => (
-                      <td key={`${entity}-${action}`} className="py-4 text-center">
+                      <td
+                        key={`${entity}-${action}`}
+                        className="py-4 text-center"
+                      >
                         <input
                           type="checkbox"
                           checked={
                             localPermissions[entity][
-                              action as keyof typeof localPermissions[typeof entity[number]]
+                              action as keyof (typeof localPermissions)[(typeof entity)[number]]
                             ]
                           }
-                          onChange={() => handlePermissionToggle(entity, action)}
+                          onChange={() =>
+                            handlePermissionToggle(entity, action)
+                          }
                           disabled={isAdmin}
                           className={`w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 ${
-                            isAdmin ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                            isAdmin
+                              ? "cursor-not-allowed opacity-60"
+                              : "cursor-pointer"
                           }`}
                         />
                       </td>
