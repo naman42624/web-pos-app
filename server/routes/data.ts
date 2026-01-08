@@ -428,7 +428,10 @@ router.get(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
-      const users = await User.find().select("-password").lean();
+      const users = await User.find()
+        .select("-password")
+        .populate("roleIds")
+        .lean();
       const usersWithPermissions = users.map((user: any) => ({
         ...user,
         permissions:
