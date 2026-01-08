@@ -330,6 +330,7 @@ router.post(
 router.get(
   "/delivery-boys",
   authMiddleware,
+  createPermissionMiddleware("deliveryBoys", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
       const boys = await DeliveryBoy.find().lean();
@@ -343,6 +344,7 @@ router.get(
 router.post(
   "/delivery-boys",
   authMiddleware,
+  createPermissionMiddleware("deliveryBoys", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
       const boy = new DeliveryBoy(req.body);
@@ -357,6 +359,7 @@ router.post(
 router.put(
   "/delivery-boys/:id",
   authMiddleware,
+  createPermissionMiddleware("deliveryBoys", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
       const boy = await DeliveryBoy.findByIdAndUpdate(req.params.id, req.body, {
