@@ -170,6 +170,10 @@ UserSchema.methods.comparePassword = async function (
 UserSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
+  // Ensure admin users always have admin permissions
+  if (user.role === "admin") {
+    user.permissions = adminPermissions;
+  }
   return user;
 };
 
