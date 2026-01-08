@@ -7,6 +7,7 @@ import dataRoutes from "./routes/data.js";
 import usersRoutes from "./routes/users.js";
 import rolesRoutes from "./routes/roles.js";
 import { connectDB } from "./db/connection.js";
+import { ensureSuperAdminExists } from "./scripts/createSuperAdmin.js";
 
 export function createServer() {
   const app = express();
