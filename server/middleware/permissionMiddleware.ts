@@ -40,18 +40,16 @@ export function createPermissionMiddleware(
         }`,
       );
 
-      // Force-promote to admin if user is staff with no roles (likely the first/only user)
+      // Force-promote to admin if user is staff with no roles and is the first user created
       if (user.role !== "admin" && !user.roleIds?.length) {
-        const userCount = await User.countDocuments();
+        const firstUser = await User.findOne({}).sort({ createdAt: 1 }).lean();
         console.log(
-          `[Check] User ${user.email} is ${user.role}, has ${
-            user.roleIds?.length || 0
-          } roles, total users: ${userCount}`,
+          `[Check] User ${user.email} is ${user.role}, first user: ${firstUser?.email}`,
         );
 
-        // If this is the only user, make them admin
-        if (userCount === 1) {
-          console.log(`[Fix] Promoting ${user.email} to admin (only user)`);
+        // If this is the first user created, make them admin
+        if (firstUser && firstUser._id.toString() === req.userId) {
+          console.log(`[Fix] Promoting ${user.email} to admin (first user)`);
           user = await User.findByIdAndUpdate(
             req.userId,
             { role: "admin" },
