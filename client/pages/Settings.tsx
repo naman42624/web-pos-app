@@ -720,6 +720,19 @@ function UsersManagement() {
     }
   };
 
+  const handleAssignRoles = async (roleIds: string[]) => {
+    if (!selectedUserForRoles) return;
+
+    try {
+      await api.updateUser(selectedUserForRoles._id, { roleIds });
+      toast.success("Roles assigned successfully!");
+      setSelectedUserForRoles(null);
+      await loadUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to assign roles");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Add User Form */}
