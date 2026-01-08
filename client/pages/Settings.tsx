@@ -607,6 +607,7 @@ export default function SettingsPage() {
 
 function UsersManagement() {
   const [users, setUsers] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [selectedUserForPermissions, setSelectedUserForPermissions] =
