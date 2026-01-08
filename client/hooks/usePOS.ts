@@ -623,77 +623,62 @@ export function usePOS() {
   };
 
   const recordPayment = async (saleId: string, amountReceived: number) => {
-    const sale = sales.find((s) => s.id === saleId);
-    if (!sale) {
-      throw new Error("Sale not found");
-    }
+    try {
+      const sale = sales.find((s) => s.id === saleId);
+      if (!sale) {
+        throw new Error("Sale not found");
+      }
 
-    if (sale.paymentMode !== "credit") {
-      throw new Error("Only credit sales can be marked as paid");
-    }
+      if (sale.paymentMode !== "credit") {
+        throw new Error("Only credit sales can be marked as paid");
+      }
 
-    if (amountReceived <= 0) {
-      throw new Error("Amount received must be greater than 0");
-    }
+      if (amountReceived <= 0) {
+        throw new Error("Amount received must be greater than 0");
+      }
 
-    if (amountReceived > sale.total) {
-      throw new Error(
-        `Amount received cannot exceed ₹${sale.total.toLocaleString("en-IN")}`,
-      );
-    }
-
-    const isPaid = amountReceived === sale.total;
-
-    // Update sale payment status
-    const { error: saleError } = await supabase
-      .from("sales")
-      .update({ payment_status: isPaid ? "paid" : "pending" })
-      .eq("id", saleId);
-
-    if (saleError) {
-      const errorMsg =
-        saleError instanceof Error
-          ? saleError.message
-          : JSON.stringify(saleError);
-      console.error("Error recording payment:", errorMsg);
-      throw saleError;
-    }
-
-    // Update customer total credit
-    if (sale.customerId) {
-      const customer = customers.find((c) => c.id === sale.customerId);
-      if (customer) {
-        const newTotalCredit = Math.max(
-          0,
-          customer.totalCredit - amountReceived,
+      if (amountReceived > sale.total) {
+        throw new Error(
+          `Amount received cannot exceed ₹${sale.total.toLocaleString("en-IN")}`,
         );
-        const { error: customerError } = await supabase
-          .from("customers")
-          .update({ total_credit: newTotalCredit })
-          .eq("id", sale.customerId);
+      }
 
-        if (customerError) {
-          const errorMsg =
-            customerError instanceof Error
-              ? customerError.message
-              : JSON.stringify(customerError);
-          console.error("Error updating customer credit:", errorMsg);
-          throw customerError;
+      const isPaid = amountReceived === sale.total;
+
+      // Update sale payment status
+      await api.updateSale(saleId, {
+        paymentStatus: isPaid ? "paid" : "pending",
+      });
+
+      // Update customer total credit
+      if (sale.customerId) {
+        const customer = customers.find((c) => c.id === sale.customerId);
+        if (customer) {
+          const newTotalCredit = Math.max(
+            0,
+            customer.totalCredit - amountReceived,
+          );
+          await api.updateCustomer(sale.customerId, {
+            totalCredit: newTotalCredit,
+          });
         }
       }
+
+      // Update local state
+      setSales(
+        sales.map((s) =>
+          s.id === saleId
+            ? { ...s, paymentStatus: isPaid ? "paid" : s.paymentStatus }
+            : s,
+        ),
+      );
+
+      // Reload customers to reflect updated credit
+      await loadCustomers();
+    } catch (error) {
+      console.error("Error recording payment:", error);
+      throw error;
     }
-
-    // Update local state
-    setSales(
-      sales.map((s) =>
-        s.id === saleId
-          ? { ...s, paymentStatus: isPaid ? "paid" : s.paymentStatus }
-          : s,
-      ),
-    );
-
-    // Reload customers to reflect updated credit
-    await loadCustomers();
   };
 
   // Load Credit Records
