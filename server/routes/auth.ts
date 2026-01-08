@@ -77,14 +77,12 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // Auto-promote first user to admin
-    if (user.role !== "admin") {
-      const userCount = await User.countDocuments();
-      if (userCount === 1) {
-        user.role = "admin";
-        await user.save();
-        console.log(`Auto-promoted first user ${email} to admin`);
-      }
+    // Auto-promote first user to admin on login
+    const userCount = await User.countDocuments();
+    if (userCount === 1 && user.role !== "admin") {
+      user.role = "admin";
+      await user.save();
+      console.log(`Auto-promoted first user ${email} to admin on login`);
     }
 
     // Generate token
