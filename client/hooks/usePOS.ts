@@ -863,61 +863,38 @@ export function usePOS() {
   };
 
   const assignDeliveryBoy = async (saleId: string, deliveryBoyId: string) => {
-    const { data, error } = await supabase
-      .from("delivery_assignments")
-      .upsert({
-        sale_id: saleId,
-        delivery_boy_id: deliveryBoyId,
-        assigned_at: new Date().toISOString(),
-      })
-      .select()
-      .single();
+    try {
+      // Update sale with assignedDeliveryBoyId
+      await api.updateSale(saleId, { assignedDeliveryBoyId: deliveryBoyId });
 
-    if (error) {
+      // Update local sales state
+      setSales(
+        sales.map((s) =>
+          s.id === saleId ? { ...s, assignedDeliveryBoyId: deliveryBoyId } : s,
+        ),
+      );
+    } catch (error) {
       console.error("Error assigning delivery boy:", error);
       throw error;
     }
-
-    // Update sale with delivery_boy_id
-    const { error: saleError } = await supabase
-      .from("sales")
-      .update({ delivery_boy_id: deliveryBoyId })
-      .eq("id", saleId);
-
-    if (saleError) {
-      console.error("Error updating sale with delivery boy:", saleError);
-      throw saleError;
-    }
-
-    // Update local sales state
-    setSales(
-      sales.map((s) =>
-        s.id === saleId ? { ...s, assignedDeliveryBoyId: deliveryBoyId } : s,
-      ),
-    );
-
-    return data;
   };
 
   const getDeliveryBoyAssignments = async (deliveryBoyId: string) => {
-    const { data, error } = await supabase
-      .from("delivery_assignments")
-      .select("*")
-      .eq("delivery_boy_id", deliveryBoyId)
-      .in("status", ["assigned", "in_transit"]);
-
-    if (error) {
+    try {
+      // Return sales assigned to the delivery boy
+      return sales
+        .filter((s) => s.assignedDeliveryBoyId === deliveryBoyId)
+        .map((s) => ({
+          id: s.id,
+          saleId: s.id,
+          deliveryBoyId: deliveryBoyId,
+          assignedAt: s.date,
+          status: s.status || "assigned",
+        }));
+    } catch (error) {
       console.error("Error fetching delivery boy assignments:", error);
       return [];
     }
-
-    return data.map((assignment: any) => ({
-      id: assignment.id,
-      saleId: assignment.sale_id,
-      deliveryBoyId: assignment.delivery_boy_id,
-      assignedAt: assignment.assigned_at,
-      status: assignment.status,
-    }));
   };
 
   return {
