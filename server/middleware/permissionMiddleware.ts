@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "./authMiddleware.js";
-import { User } from "../db/models/index.js";
+import { User, Role } from "../db/models/index.js";
 import { PermissionEntity, PermissionAction } from "../db/models/User.js";
 
 const defaultPermissions = {
