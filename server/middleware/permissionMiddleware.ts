@@ -34,8 +34,28 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User not found" });
       }
 
+      // Force-promote to admin if user is staff with no roles (likely the first/only user)
+      if (user.role !== "admin" && !user.roleIds?.length) {
+        const userCount = await User.countDocuments();
+        console.log(
+          `[Check] User ${user.email} is ${user.role}, has ${
+            user.roleIds?.length || 0
+          } roles, total users: ${userCount}`,
+        );
+
+        // If this is the only user, make them admin
+        if (userCount === 1) {
+          console.log(`[Fix] Promoting ${user.email} to admin (only user)`);
+          user = await User.findByIdAndUpdate(
+            req.userId,
+            { role: "admin" },
+            { new: true },
+          );
+        }
+      }
+
       // Admin users bypass permission checks
-      if (user.role === "admin") {
+      if (user && user.role === "admin") {
         console.log(
           `[Admin Access] ${user.email} is admin, bypassing all checks`,
         );
