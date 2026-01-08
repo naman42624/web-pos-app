@@ -31,6 +31,10 @@ export function createServer() {
   app.use("/api/auth", authRoutes);
 
   // Data routes (with authentication)
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+  });
   app.use("/api/data", dataRoutes);
 
   // Global error handler
