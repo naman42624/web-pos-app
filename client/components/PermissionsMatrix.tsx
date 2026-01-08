@@ -48,7 +48,9 @@ export function PermissionsMatrix({
   onPermissionsChange,
   onClose,
   userName,
+  userRole,
 }: PermissionsMatrixProps) {
+  const isAdmin = userRole === "admin";
   const [localPermissions, setLocalPermissions] = useState<Permissions>(
     permissions || DEFAULT_PERMISSIONS,
   );
@@ -57,6 +59,8 @@ export function PermissionsMatrix({
     entity: typeof entities[number],
     action: typeof actions[number],
   ) => {
+    if (isAdmin) return;
+
     setLocalPermissions((prev) => ({
       ...prev,
       [entity]: {
