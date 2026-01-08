@@ -48,7 +48,9 @@ export function PermissionsMatrix({
   onClose,
   userName,
 }: PermissionsMatrixProps) {
-  const [localPermissions, setLocalPermissions] = useState<Permissions>(permissions);
+  const [localPermissions, setLocalPermissions] = useState<Permissions>(
+    permissions || DEFAULT_PERMISSIONS,
+  );
 
   const handlePermissionToggle = (
     entity: typeof entities[number],
