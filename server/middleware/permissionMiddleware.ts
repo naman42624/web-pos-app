@@ -29,23 +29,40 @@ export function createPermissionMiddleware(
         return res.status(401).json({ error: "User ID not found in request" });
       }
 
-      const user = await User.findById(req.userId);
+      let user = await User.findById(req.userId);
       if (!user) {
         return res.status(401).json({ error: "User not found" });
       }
 
+      console.log(
+        `[Permission Check] User: ${user.email}, Role: ${user.role}, Entity: ${entity}, Action: ${action}`,
+      );
+
       // Auto-promote first user to admin if not already
       const userCount = await User.countDocuments();
       if (userCount === 1 && user.role !== "admin") {
-        user.role = "admin";
-        await user.save();
         console.log(
-          `Permission middleware: Auto-promoted first user ${user.email} to admin`,
+          `[Auto-promote] Only 1 user found, promoting ${user.email} to admin`,
+        );
+        user.role = "admin";
+        user = await User.findByIdAndUpdate(
+          req.userId,
+          { role: "admin" },
+          { new: true },
+        );
+        console.log(
+          `[Auto-promote] User ${user?.email} promoted. New role: ${user?.role}`,
         );
       }
 
+      // Reload user to ensure we have latest data
+      if (!user || user.role !== "admin") {
+        user = await User.findById(req.userId);
+      }
+
       // Admin users bypass permission checks
-      if (user.role === "admin") {
+      if (user && user.role === "admin") {
+        console.log(`[Admin Access] ${user.email} is admin, bypassing checks`);
         // Ensure admin users have all permissions
         if (!user.permissions) {
           (user as any).permissions = adminPermissions;
