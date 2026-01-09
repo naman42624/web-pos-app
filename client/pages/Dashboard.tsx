@@ -112,12 +112,14 @@ export default function Dashboard() {
     statuses,
     icon: Icon,
     orderType,
+    date,
   }: {
     title: string;
     orders: Sale[];
     statuses: string[];
     icon: React.ReactNode;
     orderType: string;
+    date: string;
   }) => {
     return (
       <div className="mb-8">
