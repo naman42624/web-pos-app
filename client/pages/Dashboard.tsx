@@ -137,7 +137,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
+        <div className="flex flex-wrap gap-4 pb-4">
           {statuses.map((status) => {
             const statusOrders = orders.filter(
               (o) => (o.status || "pending") === status,
@@ -145,7 +145,7 @@ export default function Dashboard() {
             return (
               <div
                 key={status}
-                className="flex-shrink-0 w-full md:w-auto lg:min-w-80"
+                className="flex-1 min-w-72"
               >
                 <div
                   className={`${getStatusBgBorder(status)} rounded-lg p-4 border`}
