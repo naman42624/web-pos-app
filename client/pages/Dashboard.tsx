@@ -131,7 +131,7 @@ export default function Dashboard() {
             <h2 className="text-2xl font-bold text-slate-900">{title}</h2>
             <p className="text-sm text-slate-500">
               Scheduled for{" "}
-              {new Date(today).toLocaleDateString("en-IN", {
+              {new Date(date).toLocaleDateString("en-IN", {
                 weekday: "long",
                 year: "numeric",
                 month: "long",
