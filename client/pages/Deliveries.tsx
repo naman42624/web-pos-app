@@ -52,7 +52,9 @@ export default function Deliveries() {
 
     return allDeliveries.filter((sale) => {
       if (!sale.pickupDate) return false;
-      const deliveryDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+      const deliveryDate = new Date(sale.pickupDate)
+        .toISOString()
+        .split("T")[0];
       return deliveryDate === selectedDate;
     });
   }, [sales, selectedDate]);
