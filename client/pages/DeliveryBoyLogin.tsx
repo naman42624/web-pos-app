@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePOSContext } from "@/contexts/usePOSContext";
+import { verifyDeliveryBoyPin } from "@/lib/api";
 import { ShoppingCart, LogIn, AlertCircle } from "lucide-react";
 
 export default function DeliveryBoyLogin() {
   const navigate = useNavigate();
-  const { verifyDeliveryBoyPin } = usePOSContext();
 
   const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
