@@ -150,9 +150,7 @@ router.post("/delivery-boy/verify", async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("Delivery boy verification error:", error);
-    res
-      .status(500)
-      .json({ error: error.message || "Verification failed" });
+    res.status(500).json({ error: error.message || "Verification failed" });
   }
 });
 
