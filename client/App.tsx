@@ -29,6 +29,7 @@ import DeliveryBoyLogin from "./pages/DeliveryBoyLogin";
 import DeliveryBoyDashboard from "./pages/DeliveryBoyDashboard";
 import DeliveryBoyAllOrders from "./pages/DeliveryBoyAllOrders";
 import Login from "./pages/Login";
+import LoginLanding from "./pages/LoginLanding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
