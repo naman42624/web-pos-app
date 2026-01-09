@@ -190,14 +190,16 @@ export default function Dashboard() {
                                     {order.items.length !== 1 ? "s" : ""}
                                   </p>
                                   <div className="space-y-0.5">
-                                    {order.items.slice(0, 3).map((item, idx) => (
-                                      <p
-                                        key={idx}
-                                        className="text-xs text-slate-600"
-                                      >
-                                        • {item.name} × {item.quantity}
-                                      </p>
-                                    ))}
+                                    {order.items
+                                      .slice(0, 3)
+                                      .map((item, idx) => (
+                                        <p
+                                          key={idx}
+                                          className="text-xs text-slate-600"
+                                        >
+                                          • {item.name} × {item.quantity}
+                                        </p>
+                                      ))}
                                     {order.items.length > 3 && (
                                       <p className="text-xs text-slate-500 italic">
                                         +{order.items.length - 3} more
