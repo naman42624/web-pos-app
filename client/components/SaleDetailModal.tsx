@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Sale } from "@/hooks/usePOS";
-import { X, Printer, Eye } from "lucide-react";
+import { X, Printer, Eye, AlertCircle } from "lucide-react";
 import { ReceiptModal } from "./ReceiptModal";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import { getOrderNumber } from "@/lib/utils";
