@@ -117,10 +117,31 @@ export function SaleDetailModal({
             {/* Order Summary */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-slate-50 p-4 rounded-lg">
-                <p className="text-sm text-slate-600 mb-1">Status</p>
-                <p className="text-lg font-semibold text-slate-900 capitalize">
-                  {sale.isQuickSale ? "Quick Sale" : sale.status || "pending"}
-                </p>
+                <p className="text-sm text-slate-600 mb-2">Status</p>
+                {sale.isQuickSale ? (
+                  <p className="text-lg font-semibold text-slate-900">
+                    Quick Sale
+                  </p>
+                ) : (
+                  <select
+                    value={sale.status || "pending"}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    disabled={isUpdatingStatus}
+                    className="w-full px-3 py-2 rounded border border-slate-300 text-sm font-medium text-slate-900 bg-white hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {getStatusOptions().map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {statusError && (
+                  <div className="mt-2 flex items-start gap-2 text-red-600 text-xs">
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{statusError}</span>
+                  </div>
+                )}
               </div>
               <div className="bg-slate-50 p-4 rounded-lg">
                 <p className="text-sm text-slate-600 mb-1">Total Amount</p>
