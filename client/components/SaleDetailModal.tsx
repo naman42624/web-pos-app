@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Sale } from "@/hooks/usePOS";
-import { X, Printer, Eye, AlertCircle } from "lucide-react";
+import { X, Printer, Eye, AlertCircle, User } from "lucide-react";
 import { ReceiptModal } from "./ReceiptModal";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { getOrderNumber } from "@/lib/utils";
+import { getOrderNumber, cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 interface SaleDetailModalProps {
@@ -21,10 +21,20 @@ export function SaleDetailModal({
     customers,
     items: inventoryItems,
     updateSaleStatus,
+    deliveryBoys,
+    assignDeliveryBoy,
   } = usePOSContext();
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [showDeliveryBoyModal, setShowDeliveryBoyModal] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState<{
+    saleId: string;
+    newStatus: string;
+  } | null>(null);
+  const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState<string | null>(
+    null,
+  );
 
   if (!isOpen) return null;
 
