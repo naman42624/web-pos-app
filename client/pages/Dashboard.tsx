@@ -353,6 +353,7 @@ export default function Dashboard() {
           statuses={deliveryStatuses}
           icon={<Truck className="w-6 h-6 text-orange-600" />}
           orderType="delivery"
+          date={selectedDate}
         />
 
         {/* Pickups Kanban */}
