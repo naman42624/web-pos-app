@@ -224,6 +224,7 @@ function AppContent() {
         </POSProvider>
       ) : (
         <Routes>
+          <Route path="/" element={<LoginLanding />} />
           <Route path="/login" element={<Login />} />
           <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
           <Route
@@ -234,7 +235,7 @@ function AppContent() {
             path="/delivery-boy/all-orders"
             element={<DeliveryBoyAllOrders />}
           />
-          <Route path="*" element={<Login />} />
+          <Route path="*" element={<LoginLanding />} />
         </Routes>
       )}
     </>
