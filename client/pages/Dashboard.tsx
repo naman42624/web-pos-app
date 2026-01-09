@@ -5,11 +5,15 @@ import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleDetailModal } from "@/components/SaleDetailModal";
 import { Sale } from "@/hooks/usePOS";
 import { getOrderNumber } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ShoppingCart, Loader, Truck, Package, MapPin } from "lucide-react";
 
 export default function Dashboard() {
   const { sales, loading } = usePOSContext();
 
+  const today = new Date().toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(today);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [showSaleDetail, setShowSaleDetail] = useState(false);
 
@@ -31,20 +35,18 @@ export default function Dashboard() {
     );
   }
 
-  const today = new Date().toISOString().split("T")[0];
-
   const deliveryOrders = sales.filter((sale) => {
     if (sale.orderType !== "delivery") return false;
     if (!sale.pickupDate) return false;
     const deliveryDate = new Date(sale.pickupDate).toISOString().split("T")[0];
-    return deliveryDate === today;
+    return deliveryDate === selectedDate;
   });
 
   const pickupOrders = sales.filter((sale) => {
     if (sale.orderType !== "pickup_later") return false;
     if (!sale.pickupDate) return false;
     const pickupDate = new Date(sale.pickupDate).toISOString().split("T")[0];
-    return pickupDate === today;
+    return pickupDate === selectedDate;
   });
 
   const deliveryStatuses = [
@@ -292,30 +294,51 @@ export default function Dashboard() {
     <SharedLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">
-              Operations Dashboard
-            </h1>
-            <p className="text-slate-500 mt-2">
-              Manage today's deliveries and pickups
-            </p>
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">
+                Operations Dashboard
+              </h1>
+              <p className="text-slate-500 mt-2">
+                Manage deliveries and pickups
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <Link
+                to="/quick-sale"
+                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold text-sm py-3 px-6 rounded-lg shadow-md transition-all hover:shadow-lg"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                Quick Sale
+              </Link>
+              <Link
+                to="/add-sale"
+                className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-sm py-3 px-6 rounded-lg shadow-md transition-all hover:shadow-lg"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                New Sale
+              </Link>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <Link
-              to="/quick-sale"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold text-sm py-3 px-6 rounded-lg shadow-md transition-all hover:shadow-lg"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              Quick Sale
-            </Link>
-            <Link
-              to="/add-sale"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-sm py-3 px-6 rounded-lg shadow-md transition-all hover:shadow-lg"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              New Sale
-            </Link>
+
+          {/* Date Filter */}
+          <div className="flex items-end gap-4">
+            <div className="w-full sm:w-48">
+              <Label
+                htmlFor="dashboard-date"
+                className="text-sm font-medium text-slate-700 block mb-2"
+              >
+                View Orders for Date
+              </Label>
+              <Input
+                id="dashboard-date"
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full"
+              />
+            </div>
           </div>
         </div>
 
