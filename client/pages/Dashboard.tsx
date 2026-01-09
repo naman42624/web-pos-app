@@ -363,6 +363,7 @@ export default function Dashboard() {
           statuses={pickupStatuses}
           icon={<Package className="w-6 h-6 text-purple-600" />}
           orderType="pickup_later"
+          date={selectedDate}
         />
       </div>
 
