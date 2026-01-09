@@ -136,7 +136,9 @@ export function SaleDetailModal({
       setSelectedDeliveryBoy(null);
     } catch (error) {
       const errorMsg =
-        error instanceof Error ? error.message : "Failed to assign and update status";
+        error instanceof Error
+          ? error.message
+          : "Failed to assign and update status";
       setStatusError(errorMsg);
       console.error("Failed to assign and update status:", errorMsg);
     } finally {
@@ -512,7 +514,9 @@ export function SaleDetailModal({
                                   : "bg-yellow-100 text-yellow-700",
                               )}
                             >
-                              {boy.status === "available" ? "Available" : "Busy"}
+                              {boy.status === "available"
+                                ? "Available"
+                                : "Busy"}
                             </span>
                           </div>
                         </div>
