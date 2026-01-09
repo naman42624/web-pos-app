@@ -229,11 +229,19 @@ function AppContent() {
           <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
           <Route
             path="/delivery-boy/dashboard"
-            element={<DeliveryBoyDashboard />}
+            element={
+              <POSProvider>
+                <DeliveryBoyDashboard />
+              </POSProvider>
+            }
           />
           <Route
             path="/delivery-boy/all-orders"
-            element={<DeliveryBoyAllOrders />}
+            element={
+              <POSProvider>
+                <DeliveryBoyAllOrders />
+              </POSProvider>
+            }
           />
           <Route path="*" element={<LoginLanding />} />
         </Routes>
