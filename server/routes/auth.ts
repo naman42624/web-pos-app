@@ -125,4 +125,35 @@ router.get("/me", authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.post("/delivery-boy/verify", async (req: Request, res: Response) => {
+  try {
+    const { phone, pin } = req.body;
+
+    if (!phone || !pin) {
+      return res.status(400).json({ error: "Phone and PIN are required" });
+    }
+
+    const deliveryBoy = await DeliveryBoy.findOne({
+      phone: phone.trim(),
+      pin: pin.trim(),
+    });
+
+    if (!deliveryBoy) {
+      return res.status(401).json({ error: "Invalid phone number or PIN" });
+    }
+
+    res.status(200).json({
+      id: deliveryBoy._id,
+      name: deliveryBoy.name,
+      phone: deliveryBoy.phone,
+      status: deliveryBoy.status,
+    });
+  } catch (error: any) {
+    console.error("Delivery boy verification error:", error);
+    res
+      .status(500)
+      .json({ error: error.message || "Verification failed" });
+  }
+});
+
 export default router;
