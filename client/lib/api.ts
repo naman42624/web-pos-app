@@ -2,19 +2,21 @@ import { toast } from "sonner";
 
 const API_BASE = "/api";
 
-function getAuthToken(): string {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No authentication token found");
-  }
-  return token;
+function getAuthToken(): string | null {
+  return localStorage.getItem("token");
 }
 
 function getHeaders(): HeadersInit {
-  return {
+  const headers: HeadersInit = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${getAuthToken()}`,
   };
+
+  const token = getAuthToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
 }
 
 async function handleResponse(response: Response) {
