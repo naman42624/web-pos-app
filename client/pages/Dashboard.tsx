@@ -5,13 +5,7 @@ import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleDetailModal } from "@/components/SaleDetailModal";
 import { Sale } from "@/hooks/usePOS";
 import { getOrderNumber } from "@/lib/utils";
-import {
-  ShoppingCart,
-  Loader,
-  Truck,
-  Package,
-  MapPin,
-} from "lucide-react";
+import { ShoppingCart, Loader, Truck, Package, MapPin } from "lucide-react";
 
 export default function Dashboard() {
   const { sales, loading } = usePOSContext();
@@ -42,9 +36,7 @@ export default function Dashboard() {
   const deliveryOrders = sales.filter((sale) => {
     if (sale.orderType !== "delivery") return false;
     if (!sale.pickupDate) return false;
-    const deliveryDate = new Date(sale.pickupDate)
-      .toISOString()
-      .split("T")[0];
+    const deliveryDate = new Date(sale.pickupDate).toISOString().split("T")[0];
     return deliveryDate === today;
   });
 
@@ -55,7 +47,13 @@ export default function Dashboard() {
     return pickupDate === today;
   });
 
-  const deliveryStatuses = ["pending", "pick_up_ready", "in_transit", "delivered", "cancelled"];
+  const deliveryStatuses = [
+    "pending",
+    "pick_up_ready",
+    "in_transit",
+    "delivered",
+    "cancelled",
+  ];
   const pickupStatuses = ["pending", "pick_up_ready", "picked_up", "cancelled"];
 
   const getStatusLabel = (status: string) => {
@@ -106,7 +104,13 @@ export default function Dashboard() {
     }
   };
 
-  const KanbanBoard = ({ title, orders, statuses, icon: Icon, orderType }: {
+  const KanbanBoard = ({
+    title,
+    orders,
+    statuses,
+    icon: Icon,
+    orderType,
+  }: {
     title: string;
     orders: Sale[];
     statuses: string[];
@@ -121,22 +125,38 @@ export default function Dashboard() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-slate-900">{title}</h2>
-            <p className="text-sm text-slate-500">Scheduled for {new Date(today).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p className="text-sm text-slate-500">
+              Scheduled for{" "}
+              {new Date(today).toLocaleDateString("en-IN", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
           {statuses.map((status) => {
-            const statusOrders = orders.filter((o) => (o.status || "pending") === status);
+            const statusOrders = orders.filter(
+              (o) => (o.status || "pending") === status,
+            );
             return (
-              <div key={status} className="flex-shrink-0 w-full md:w-auto lg:min-w-80">
-                <div className={`${getStatusBgBorder(status)} rounded-lg p-4 border`}>
+              <div
+                key={status}
+                className="flex-shrink-0 w-full md:w-auto lg:min-w-80"
+              >
+                <div
+                  className={`${getStatusBgBorder(status)} rounded-lg p-4 border`}
+                >
                   <div className="mb-4 pb-4 border-b border-slate-300">
                     <h3 className="font-semibold text-slate-900 text-sm">
                       {getStatusLabel(status)}
                     </h3>
                     <p className="text-xs text-slate-600 mt-1">
-                      {statusOrders.length} {statusOrders.length === 1 ? "order" : "orders"}
+                      {statusOrders.length}{" "}
+                      {statusOrders.length === 1 ? "order" : "orders"}
                     </p>
                   </div>
 
@@ -165,11 +185,15 @@ export default function Dashboard() {
                             {order.items.length > 0 && (
                               <div className="border-t border-slate-300 pt-2">
                                 <p className="text-xs font-medium text-slate-700 mb-1">
-                                  {order.items.length} item{order.items.length !== 1 ? "s" : ""}
+                                  {order.items.length} item
+                                  {order.items.length !== 1 ? "s" : ""}
                                 </p>
                                 <div className="space-y-0.5">
                                   {order.items.slice(0, 3).map((item, idx) => (
-                                    <p key={idx} className="text-xs text-slate-600">
+                                    <p
+                                      key={idx}
+                                      className="text-xs text-slate-600"
+                                    >
                                       • {item.name} × {item.quantity}
                                     </p>
                                   ))}
