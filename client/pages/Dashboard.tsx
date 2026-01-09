@@ -271,7 +271,7 @@ export default function Dashboard() {
 
           {/* Pickups */}
           <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Package className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               </div>
@@ -279,43 +279,58 @@ export default function Dashboard() {
                 Pickup Status
               </h3>
             </div>
-            <div className="space-y-2">
-              <Link
-                to="/pickups?status=pending"
-                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
-              >
-                <span className="text-slate-600 text-sm">Pending</span>
-                <span className="font-semibold text-slate-900">
-                  {pickupStatusCounts.pending}
-                </span>
-              </Link>
-              <Link
-                to="/pickups?status=pick_up_ready"
-                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
-              >
-                <span className="text-slate-600 text-sm">Ready for Pickup</span>
-                <span className="font-semibold text-slate-900">
-                  {pickupStatusCounts.pick_up_ready}
-                </span>
-              </Link>
-              <Link
-                to="/pickups?status=picked_up"
-                className="flex justify-between items-center py-2 border-b border-slate-200 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
-              >
-                <span className="text-slate-600 text-sm">Picked Up</span>
-                <span className="font-semibold text-slate-900">
-                  {pickupStatusCounts.picked_up}
-                </span>
-              </Link>
-              <Link
-                to="/pickups?status=cancelled"
-                className="flex justify-between items-center py-2 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors cursor-pointer"
-              >
-                <span className="text-slate-600 text-sm">Cancelled</span>
-                <span className="font-semibold text-slate-900">
-                  {pickupStatusCounts.cancelled}
-                </span>
-              </Link>
+            <div className="space-y-6">
+              {["pending", "pick_up_ready", "picked_up", "cancelled"].map((status) => {
+                const statusLabel = {
+                  pending: "Pending",
+                  pick_up_ready: "Ready for Pickup",
+                  picked_up: "Picked Up",
+                  cancelled: "Cancelled",
+                }[status];
+
+                const statusOrders = pickupOrders.filter((o) => (o.status || "pending") === status);
+
+                return (
+                  <div key={status}>
+                    <Link
+                      to={`/pickups?status=${status}`}
+                      className="flex justify-between items-center mb-3 hover:text-blue-600 transition-colors"
+                    >
+                      <span className="text-slate-600 text-sm font-medium">{statusLabel}</span>
+                      <span className="font-semibold text-slate-900 text-sm">
+                        {statusOrders.length}
+                      </span>
+                    </Link>
+                    {statusOrders.length > 0 ? (
+                      <div className="space-y-2 mb-4 pl-2 border-l-2 border-slate-200">
+                        {statusOrders.map((order) => (
+                          <div key={order.id} className="text-xs space-y-1 py-2">
+                            <div className="font-semibold text-slate-900">
+                              Order {getOrderNumber(order.id)}
+                            </div>
+                            {order.items.length > 0 && (
+                              <div className="text-slate-600">
+                                <span className="font-medium">{order.items.length} item{order.items.length !== 1 ? "s" : ""}:</span>
+                                <div className="mt-1 space-y-0.5">
+                                  {order.items.map((item, idx) => (
+                                    <div key={idx} className="text-slate-500 ml-4">
+                                      • {item.name} × {item.quantity}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-slate-400 italic mb-4">
+                        No orders
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
