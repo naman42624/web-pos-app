@@ -4,6 +4,7 @@ import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleDetailModal } from "@/components/SaleDetailModal";
 import { Sale } from "@/hooks/usePOS";
+import { getOrderNumber } from "@/lib/utils";
 import {
   ShoppingCart,
   TrendingUp,
@@ -13,6 +14,7 @@ import {
   Loader,
   Truck,
   Package,
+  MapPin,
 } from "lucide-react";
 
 export default function Dashboard() {
