@@ -51,8 +51,9 @@ export default function Deliveries() {
     if (!selectedDate) return allDeliveries;
 
     return allDeliveries.filter((sale) => {
-      const saleDate = new Date(sale.date).toISOString().split("T")[0];
-      return saleDate === selectedDate;
+      if (!sale.pickupDate) return false;
+      const deliveryDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+      return deliveryDate === selectedDate;
     });
   }, [sales, selectedDate]);
 
