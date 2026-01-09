@@ -43,6 +43,53 @@ export function SaleDetailModal({
     return item?.price || 0;
   };
 
+  const getStatusOptions = () => {
+    if (sale.orderType === "delivery") {
+      return [
+        { value: "pending", label: "Pending" },
+        { value: "pick_up_ready", label: "Ready for Pickup" },
+        { value: "in_transit", label: "In Transit" },
+        { value: "delivered", label: "Delivered" },
+        { value: "cancelled", label: "Cancelled" },
+      ];
+    } else if (sale.orderType === "pickup_later") {
+      return [
+        { value: "pending", label: "Pending" },
+        { value: "pick_up_ready", label: "Ready for Pickup" },
+        { value: "picked_up", label: "Picked Up" },
+        { value: "cancelled", label: "Cancelled" },
+      ];
+    }
+    return [];
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (newStatus === (sale.status || "pending")) return;
+
+    setIsUpdatingStatus(true);
+    setStatusError(null);
+
+    try {
+      await updateSaleStatus(
+        sale.id,
+        newStatus as
+          | "pending"
+          | "pick_up_ready"
+          | "in_transit"
+          | "delivered"
+          | "picked_up"
+          | "cancelled",
+      );
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to update status";
+      setStatusError(errorMsg);
+      console.error("Status update error:", errorMsg);
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
