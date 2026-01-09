@@ -79,6 +79,13 @@ export function SaleDetailModal({
   const handleStatusChange = async (newStatus: string) => {
     if (newStatus === (sale.status || "pending")) return;
 
+    if (newStatus === "in_transit" && sale.orderType === "delivery") {
+      setPendingStatusChange({ saleId: sale.id, newStatus });
+      setShowDeliveryBoyModal(true);
+      setSelectedDeliveryBoy(null);
+      return;
+    }
+
     setIsUpdatingStatus(true);
     setStatusError(null);
 
@@ -98,6 +105,40 @@ export function SaleDetailModal({
         error instanceof Error ? error.message : "Failed to update status";
       setStatusError(errorMsg);
       console.error("Status update error:", errorMsg);
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
+  const handleAssignAndUpdateStatus = async () => {
+    if (!pendingStatusChange || !selectedDeliveryBoy) {
+      setStatusError("Please select a delivery boy");
+      return;
+    }
+
+    setIsUpdatingStatus(true);
+    setStatusError(null);
+
+    try {
+      await assignDeliveryBoy(pendingStatusChange.saleId, selectedDeliveryBoy);
+      await updateSaleStatus(
+        pendingStatusChange.saleId,
+        pendingStatusChange.newStatus as
+          | "pending"
+          | "pick_up_ready"
+          | "in_transit"
+          | "delivered"
+          | "picked_up"
+          | "cancelled",
+      );
+      setShowDeliveryBoyModal(false);
+      setPendingStatusChange(null);
+      setSelectedDeliveryBoy(null);
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to assign and update status";
+      setStatusError(errorMsg);
+      console.error("Failed to assign and update status:", errorMsg);
     } finally {
       setIsUpdatingStatus(false);
     }
