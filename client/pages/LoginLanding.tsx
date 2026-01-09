@@ -13,9 +13,7 @@ export default function LoginLanding() {
             <ShoppingCart className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-slate-900 mb-3">POS System</h1>
-          <p className="text-lg text-slate-600">
-            Who is using the Portal?
-          </p>
+          <p className="text-lg text-slate-600">Who is using the Portal?</p>
         </div>
 
         {/* Role Selection Cards */}
@@ -82,7 +80,8 @@ export default function LoginLanding() {
         {/* Footer */}
         <div className="mt-12 text-center text-sm text-slate-500">
           <p>
-            Select your role above to access the POS system with your credentials
+            Select your role above to access the POS system with your
+            credentials
           </p>
         </div>
       </div>
