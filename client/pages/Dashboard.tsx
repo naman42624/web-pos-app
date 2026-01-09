@@ -7,10 +7,6 @@ import { Sale } from "@/hooks/usePOS";
 import { getOrderNumber } from "@/lib/utils";
 import {
   ShoppingCart,
-  TrendingUp,
-  Users,
-  CreditCard,
-  ArrowRight,
   Loader,
   Truck,
   Package,
@@ -18,13 +14,7 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
-  const {
-    sales,
-    customers,
-    getTodaySalesTotal,
-    getTodayTransactionCount,
-    loading,
-  } = usePOSContext();
+  const { sales, loading } = usePOSContext();
 
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [showSaleDetail, setShowSaleDetail] = useState(false);
@@ -47,21 +37,14 @@ export default function Dashboard() {
     );
   }
 
-  const todayTotal = getTodaySalesTotal();
-  const todayCount = getTodayTransactionCount();
-  const totalCustomers = customers.length;
-  const pendingCreditIssued = sales
-    .filter(
-      (sale) => sale.paymentMode === "credit" && sale.paymentStatus !== "paid",
-    )
-    .reduce((sum, sale) => sum + sale.total, 0);
-
   const today = new Date().toISOString().split("T")[0];
 
   const deliveryOrders = sales.filter((sale) => {
     if (sale.orderType !== "delivery") return false;
     if (!sale.pickupDate) return false;
-    const deliveryDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+    const deliveryDate = new Date(sale.pickupDate)
+      .toISOString()
+      .split("T")[0];
     return deliveryDate === today;
   });
 
@@ -72,333 +55,204 @@ export default function Dashboard() {
     return pickupDate === today;
   });
 
-  const deliveryStatusCounts = {
-    pending: deliveryOrders.filter((o) => o.status === "pending").length,
-    pick_up_ready: deliveryOrders.filter((o) => o.status === "pick_up_ready")
-      .length,
-    in_transit: deliveryOrders.filter((o) => o.status === "in_transit").length,
-    delivered: deliveryOrders.filter((o) => o.status === "delivered").length,
-    cancelled: deliveryOrders.filter((o) => o.status === "cancelled").length,
+  const deliveryStatuses = ["pending", "pick_up_ready", "in_transit", "delivered", "cancelled"];
+  const pickupStatuses = ["pending", "pick_up_ready", "picked_up", "cancelled"];
+
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      pending: "Pending",
+      pick_up_ready: "Ready",
+      in_transit: "In Transit",
+      delivered: "Delivered",
+      picked_up: "Picked Up",
+      cancelled: "Cancelled",
+    };
+    return labels[status] || status;
   };
 
-  const pickupStatusCounts = {
-    pending: pickupOrders.filter((o) => o.status === "pending").length,
-    pick_up_ready: pickupOrders.filter((o) => o.status === "pick_up_ready")
-      .length,
-    picked_up: pickupOrders.filter((o) => o.status === "picked_up").length,
-    cancelled: pickupOrders.filter((o) => o.status === "cancelled").length,
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-amber-50 border-amber-200";
+      case "pick_up_ready":
+        return "bg-blue-50 border-blue-200";
+      case "in_transit":
+        return "bg-purple-50 border-purple-200";
+      case "delivered":
+      case "picked_up":
+        return "bg-green-50 border-green-200";
+      case "cancelled":
+        return "bg-red-50 border-red-200";
+      default:
+        return "bg-slate-50 border-slate-200";
+    }
   };
 
-  const recentSales = sales.slice(-5).reverse();
+  const getStatusBgBorder = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "bg-amber-100 border-amber-300";
+      case "pick_up_ready":
+        return "bg-blue-100 border-blue-300";
+      case "in_transit":
+        return "bg-purple-100 border-purple-300";
+      case "delivered":
+      case "picked_up":
+        return "bg-green-100 border-green-300";
+      case "cancelled":
+        return "bg-red-100 border-red-300";
+      default:
+        return "bg-slate-100 border-slate-300";
+    }
+  };
+
+  const KanbanBoard = ({ title, orders, statuses, icon: Icon, orderType }: {
+    title: string;
+    orders: Sale[];
+    statuses: string[];
+    icon: React.ReactNode;
+    orderType: string;
+  }) => {
+    return (
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center">
+            {Icon}
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">{title}</h2>
+            <p className="text-sm text-slate-500">Scheduled for {new Date(today).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 overflow-x-auto pb-4">
+          {statuses.map((status) => {
+            const statusOrders = orders.filter((o) => (o.status || "pending") === status);
+            return (
+              <div key={status} className="flex-shrink-0 w-full md:w-auto lg:min-w-80">
+                <div className={`${getStatusBgBorder(status)} rounded-lg p-4 border`}>
+                  <div className="mb-4 pb-4 border-b border-slate-300">
+                    <h3 className="font-semibold text-slate-900 text-sm">
+                      {getStatusLabel(status)}
+                    </h3>
+                    <p className="text-xs text-slate-600 mt-1">
+                      {statusOrders.length} {statusOrders.length === 1 ? "order" : "orders"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 min-h-[200px]">
+                    {statusOrders.length > 0 ? (
+                      statusOrders.map((order) => (
+                        <button
+                          key={order.id}
+                          onClick={() => handleSaleClick(order)}
+                          className={`w-full text-left p-3 rounded-lg border-2 transition-all hover:shadow-md ${getStatusColor(status)}`}
+                        >
+                          <div className="space-y-2">
+                            <div className="font-semibold text-slate-900 text-sm">
+                              Order {getOrderNumber(order.id)}
+                            </div>
+
+                            {order.deliveryDetails?.receiverAddress && (
+                              <div className="flex gap-2 text-slate-700">
+                                <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                                <span className="text-xs line-clamp-2">
+                                  {order.deliveryDetails.receiverAddress}
+                                </span>
+                              </div>
+                            )}
+
+                            {order.items.length > 0 && (
+                              <div className="border-t border-slate-300 pt-2">
+                                <p className="text-xs font-medium text-slate-700 mb-1">
+                                  {order.items.length} item{order.items.length !== 1 ? "s" : ""}
+                                </p>
+                                <div className="space-y-0.5">
+                                  {order.items.slice(0, 3).map((item, idx) => (
+                                    <p key={idx} className="text-xs text-slate-600">
+                                      • {item.name} × {item.quantity}
+                                    </p>
+                                  ))}
+                                  {order.items.length > 3 && (
+                                    <p className="text-xs text-slate-500 italic">
+                                      +{order.items.length - 3} more
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="border-t border-slate-300 pt-2 mt-2">
+                              <p className="text-xs font-medium text-slate-900">
+                                ₹{order.total.toLocaleString("en-IN")}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="flex items-center justify-center h-[200px] text-slate-400">
+                        <p className="text-xs italic">No orders</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <SharedLayout>
-      <div className="space-y-6 sm:space-y-8">
+      <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              Dashboard
+            <h1 className="text-3xl font-bold text-slate-900">
+              Operations Dashboard
             </h1>
-            <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
-              Welcome back! Here's your sales overview.
+            <p className="text-slate-500 mt-2">
+              Manage today's deliveries and pickups
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Link
               to="/quick-sale"
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold text-base sm:text-sm py-4 sm:py-3 px-6 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-2 sm:order-1"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold text-sm py-3 px-6 rounded-lg shadow-md transition-all hover:shadow-lg"
             >
-              <ShoppingCart className="w-6 h-6 sm:w-5 sm:h-5" />
+              <ShoppingCart className="w-5 h-5" />
               Quick Sale
             </Link>
             <Link
               to="/add-sale"
-              className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-base sm:text-sm py-4 sm:py-3 px-6 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg order-1 sm:order-2"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-sm py-3 px-6 rounded-lg shadow-md transition-all hover:shadow-lg"
             >
-              <ShoppingCart className="w-6 h-6 sm:w-5 sm:h-5" />
+              <ShoppingCart className="w-5 h-5" />
               New Sale
             </Link>
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {/* Today's Sales */}
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-slate-500 text-xs sm:text-sm font-medium">
-                  Today's Sales
-                </p>
-                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2 truncate">
-                  ₹{todayTotal.toLocaleString("en-IN")}
-                </p>
-              </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-600" />
-              </div>
-            </div>
-          </div>
+        {/* Deliveries Kanban */}
+        <KanbanBoard
+          title="Deliveries"
+          orders={deliveryOrders}
+          statuses={deliveryStatuses}
+          icon={<Truck className="w-6 h-6 text-orange-600" />}
+          orderType="delivery"
+        />
 
-          {/* Today's Transactions */}
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-slate-500 text-xs sm:text-sm font-medium">
-                  Transactions
-                </p>
-                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2">
-                  {todayCount}
-                </p>
-              </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-lime-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-lime-600" />
-              </div>
-            </div>
-          </div>
-
-          {/* Total Customers */}
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-slate-500 text-xs sm:text-sm font-medium">
-                  Customers
-                </p>
-                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2">
-                  {totalCustomers}
-                </p>
-              </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
-              </div>
-            </div>
-          </div>
-
-          {/* Total Credit */}
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-slate-500 text-xs sm:text-sm font-medium">
-                  Credit Issued (Pending)
-                </p>
-                <p className="text-xl sm:text-3xl font-bold text-slate-900 mt-1 sm:mt-2 truncate">
-                  ₹{pendingCreditIssued.toLocaleString("en-IN")}
-                </p>
-              </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Delivery Status Counts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          {/* Deliveries */}
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900">
-                Delivery Status
-              </h3>
-            </div>
-            <div className="space-y-6">
-              {["pending", "pick_up_ready", "in_transit", "delivered", "cancelled"].map((status) => {
-                const statusLabel = {
-                  pending: "Pending",
-                  pick_up_ready: "Ready for Pickup",
-                  in_transit: "In Transit",
-                  delivered: "Delivered",
-                  cancelled: "Cancelled",
-                }[status];
-
-                const statusOrders = deliveryOrders.filter((o) => (o.status || "pending") === status);
-
-                return (
-                  <div key={status}>
-                    <Link
-                      to={`/deliveries?status=${status}`}
-                      className="flex justify-between items-center mb-3 hover:text-blue-600 transition-colors"
-                    >
-                      <span className="text-slate-600 text-sm font-medium">{statusLabel}</span>
-                      <span className="font-semibold text-slate-900 text-sm">
-                        {statusOrders.length}
-                      </span>
-                    </Link>
-                    {statusOrders.length > 0 ? (
-                      <div className="space-y-2 mb-4 pl-2 border-l-2 border-slate-200">
-                        {statusOrders.map((order) => (
-                          <div key={order.id} className="text-xs space-y-1 py-2">
-                            <div className="font-semibold text-slate-900">
-                              Order {getOrderNumber(order.id)}
-                            </div>
-                            {order.deliveryDetails?.receiverAddress && (
-                              <div className="flex gap-2 text-slate-600">
-                                <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                <span className="line-clamp-2">
-                                  {order.deliveryDetails.receiverAddress}
-                                </span>
-                              </div>
-                            )}
-                            {order.items.length > 0 && (
-                              <div className="text-slate-600">
-                                <span className="font-medium">{order.items.length} item{order.items.length !== 1 ? "s" : ""}:</span>
-                                <div className="mt-1 space-y-0.5">
-                                  {order.items.map((item, idx) => (
-                                    <div key={idx} className="text-slate-500 ml-4">
-                                      • {item.name} × {item.quantity}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-xs text-slate-400 italic mb-4">
-                        No orders
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Pickups */}
-          <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900">
-                Pickup Status
-              </h3>
-            </div>
-            <div className="space-y-6">
-              {["pending", "pick_up_ready", "picked_up", "cancelled"].map((status) => {
-                const statusLabel = {
-                  pending: "Pending",
-                  pick_up_ready: "Ready for Pickup",
-                  picked_up: "Picked Up",
-                  cancelled: "Cancelled",
-                }[status];
-
-                const statusOrders = pickupOrders.filter((o) => (o.status || "pending") === status);
-
-                return (
-                  <div key={status}>
-                    <Link
-                      to={`/pickups?status=${status}`}
-                      className="flex justify-between items-center mb-3 hover:text-blue-600 transition-colors"
-                    >
-                      <span className="text-slate-600 text-sm font-medium">{statusLabel}</span>
-                      <span className="font-semibold text-slate-900 text-sm">
-                        {statusOrders.length}
-                      </span>
-                    </Link>
-                    {statusOrders.length > 0 ? (
-                      <div className="space-y-2 mb-4 pl-2 border-l-2 border-slate-200">
-                        {statusOrders.map((order) => (
-                          <div key={order.id} className="text-xs space-y-1 py-2">
-                            <div className="font-semibold text-slate-900">
-                              Order {getOrderNumber(order.id)}
-                            </div>
-                            {order.items.length > 0 && (
-                              <div className="text-slate-600">
-                                <span className="font-medium">{order.items.length} item{order.items.length !== 1 ? "s" : ""}:</span>
-                                <div className="mt-1 space-y-0.5">
-                                  {order.items.map((item, idx) => (
-                                    <div key={idx} className="text-slate-500 ml-4">
-                                      • {item.name} × {item.quantity}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-xs text-slate-400 italic mb-4">
-                        No orders
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Recent Sales */}
-        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-              Recent Sales
-            </h2>
-            <Link
-              to="/all-sales"
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1 w-fit"
-            >
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {recentSales.length > 0 ? (
-            <div className="space-y-3">
-              {recentSales.map((sale) => (
-                <button
-                  key={sale.id}
-                  onClick={() => handleSaleClick(sale)}
-                  className="w-full text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors cursor-pointer group"
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-slate-900 text-sm sm:text-base group-hover:text-blue-600 transition-colors">
-                        {sale.items.length} item
-                        {sale.items.length !== 1 ? "s" : ""}
-                      </p>
-                      {sale.isQuickSale && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold whitespace-nowrap">
-                          Quick Sale
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                      {new Date(sale.date).toLocaleTimeString("en-IN", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:text-right gap-4">
-                    <p className="font-bold text-slate-900 text-sm sm:text-base">
-                      ₹{sale.total.toLocaleString("en-IN")}
-                    </p>
-                    <p className="text-xs sm:text-sm text-slate-500 capitalize whitespace-nowrap">
-                      {sale.paymentMode}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 sm:py-12">
-              <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto mb-3 sm:mb-4" />
-              <p className="text-slate-500 font-medium text-sm sm:text-base">
-                No sales yet
-              </p>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1">
-                Start by creating your first sale
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Pickups Kanban */}
+        <KanbanBoard
+          title="Pickups"
+          orders={pickupOrders}
+          statuses={pickupStatuses}
+          icon={<Package className="w-6 h-6 text-purple-600" />}
+          orderType="pickup_later"
+        />
       </div>
 
       {/* Sale Detail Modal */}
