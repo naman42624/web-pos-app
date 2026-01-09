@@ -58,8 +58,9 @@ export default function Dashboard() {
 
   const deliveryOrders = sales.filter((sale) => {
     if (sale.orderType !== "delivery") return false;
-    const saleDate = new Date(sale.date).toISOString().split("T")[0];
-    return saleDate === today;
+    if (!sale.pickupDate) return false;
+    const deliveryDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+    return deliveryDate === today;
   });
 
   const pickupOrders = sales.filter((sale) => {
