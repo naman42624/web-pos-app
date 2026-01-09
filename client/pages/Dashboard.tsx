@@ -137,93 +137,152 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-4 pb-4">
-          {statuses.map((status) => {
-            const statusOrders = orders.filter(
-              (o) => (o.status || "pending") === status,
-            );
-            return (
-              <div
-                key={status}
-                className="flex-1 min-w-72"
-              >
-                <div
-                  className={`${getStatusBgBorder(status)} rounded-lg p-4 border`}
-                >
-                  <div className="mb-4 pb-4 border-b border-slate-300">
-                    <h3 className="font-semibold text-slate-900 text-sm">
-                      {getStatusLabel(status)}
-                    </h3>
-                    <p className="text-xs text-slate-600 mt-1">
-                      {statusOrders.length}{" "}
-                      {statusOrders.length === 1 ? "order" : "orders"}
-                    </p>
-                  </div>
+        <div className="space-y-4 pb-4">
+          {/* Large columns: Pending and Ready */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {statuses.slice(0, 2).map((status) => {
+              const statusOrders = orders.filter(
+                (o) => (o.status || "pending") === status,
+              );
+              return (
+                <div key={status}>
+                  <div
+                    className={`${getStatusBgBorder(status)} rounded-lg p-4 border`}
+                  >
+                    <div className="mb-4 pb-4 border-b border-slate-300">
+                      <h3 className="font-semibold text-slate-900 text-sm">
+                        {getStatusLabel(status)}
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-1">
+                        {statusOrders.length}{" "}
+                        {statusOrders.length === 1 ? "order" : "orders"}
+                      </p>
+                    </div>
 
-                  <div className="space-y-3 min-h-[200px]">
-                    {statusOrders.length > 0 ? (
-                      statusOrders.map((order) => (
-                        <button
-                          key={order.id}
-                          onClick={() => handleSaleClick(order)}
-                          className={`w-full text-left p-3 rounded-lg border-2 transition-all hover:shadow-md ${getStatusColor(status)}`}
-                        >
-                          <div className="space-y-2">
-                            <div className="font-semibold text-slate-900 text-sm">
-                              Order {getOrderNumber(order.id)}
-                            </div>
-
-                            {order.deliveryDetails?.receiverAddress && (
-                              <div className="flex gap-2 text-slate-700">
-                                <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs line-clamp-2">
-                                  {order.deliveryDetails.receiverAddress}
-                                </span>
+                    <div className="space-y-3 min-h-[300px]">
+                      {statusOrders.length > 0 ? (
+                        statusOrders.map((order) => (
+                          <button
+                            key={order.id}
+                            onClick={() => handleSaleClick(order)}
+                            className={`w-full text-left p-3 rounded-lg border-2 transition-all hover:shadow-md ${getStatusColor(status)}`}
+                          >
+                            <div className="space-y-2">
+                              <div className="font-semibold text-slate-900 text-sm">
+                                Order {getOrderNumber(order.id)}
                               </div>
-                            )}
 
-                            {order.items.length > 0 && (
-                              <div className="border-t border-slate-300 pt-2">
-                                <p className="text-xs font-medium text-slate-700 mb-1">
-                                  {order.items.length} item
-                                  {order.items.length !== 1 ? "s" : ""}
-                                </p>
-                                <div className="space-y-0.5">
-                                  {order.items.slice(0, 3).map((item, idx) => (
-                                    <p
-                                      key={idx}
-                                      className="text-xs text-slate-600"
-                                    >
-                                      • {item.name} × {item.quantity}
-                                    </p>
-                                  ))}
-                                  {order.items.length > 3 && (
-                                    <p className="text-xs text-slate-500 italic">
-                                      +{order.items.length - 3} more
-                                    </p>
-                                  )}
+                              {order.deliveryDetails?.receiverAddress && (
+                                <div className="flex gap-2 text-slate-700">
+                                  <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-xs line-clamp-2">
+                                    {order.deliveryDetails.receiverAddress}
+                                  </span>
                                 </div>
-                              </div>
-                            )}
+                              )}
 
-                            <div className="border-t border-slate-300 pt-2 mt-2">
-                              <p className="text-xs font-medium text-slate-900">
-                                ₹{order.total.toLocaleString("en-IN")}
-                              </p>
+                              {order.items.length > 0 && (
+                                <div className="border-t border-slate-300 pt-2">
+                                  <p className="text-xs font-medium text-slate-700 mb-1">
+                                    {order.items.length} item
+                                    {order.items.length !== 1 ? "s" : ""}
+                                  </p>
+                                  <div className="space-y-0.5">
+                                    {order.items.slice(0, 3).map((item, idx) => (
+                                      <p
+                                        key={idx}
+                                        className="text-xs text-slate-600"
+                                      >
+                                        • {item.name} × {item.quantity}
+                                      </p>
+                                    ))}
+                                    {order.items.length > 3 && (
+                                      <p className="text-xs text-slate-500 italic">
+                                        +{order.items.length - 3} more
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="border-t border-slate-300 pt-2 mt-2">
+                                <p className="text-xs font-medium text-slate-900">
+                                  ₹{order.total.toLocaleString("en-IN")}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </button>
-                      ))
-                    ) : (
-                      <div className="flex items-center justify-center h-[200px] text-slate-400">
-                        <p className="text-xs italic">No orders</p>
-                      </div>
-                    )}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="flex items-center justify-center h-[300px] text-slate-400">
+                          <p className="text-xs italic">No orders</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Small columns: In Transit, Delivered, Cancelled */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {statuses.slice(2).map((status) => {
+              const statusOrders = orders.filter(
+                (o) => (o.status || "pending") === status,
+              );
+              return (
+                <div key={status}>
+                  <div
+                    className={`${getStatusBgBorder(status)} rounded-lg p-3 border`}
+                  >
+                    <div className="mb-3 pb-3 border-b border-slate-300">
+                      <h3 className="font-semibold text-slate-900 text-xs">
+                        {getStatusLabel(status)}
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-0.5">
+                        {statusOrders.length}{" "}
+                        {statusOrders.length === 1 ? "order" : "orders"}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 min-h-[200px] overflow-y-auto">
+                      {statusOrders.length > 0 ? (
+                        statusOrders.map((order) => (
+                          <button
+                            key={order.id}
+                            onClick={() => handleSaleClick(order)}
+                            className={`w-full text-left p-2 rounded border transition-all hover:shadow-md ${getStatusColor(status)}`}
+                          >
+                            <div className="space-y-1">
+                              <div className="font-semibold text-slate-900 text-xs">
+                                Order {getOrderNumber(order.id)}
+                              </div>
+
+                              {order.items.length > 0 && (
+                                <div className="text-xs text-slate-600">
+                                  {order.items.length} item
+                                  {order.items.length !== 1 ? "s" : ""}
+                                </div>
+                              )}
+
+                              <div className="text-xs font-medium text-slate-900">
+                                ₹{order.total.toLocaleString("en-IN")}
+                              </div>
+                            </div>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="flex items-center justify-center h-[200px] text-slate-400">
+                          <p className="text-xs italic">No orders</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
