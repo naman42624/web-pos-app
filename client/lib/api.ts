@@ -454,7 +454,7 @@ export async function updateSettings(settings: any) {
 
 // ===== DELIVERY BOY LOGIN =====
 export async function verifyDeliveryBoyPin(phone: string, pin: string) {
-  const response = await fetch(`${API_BASE}/delivery-boy/verify`, {
+  const response = await fetch(`${API_BASE}/auth/delivery-boy/verify`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
