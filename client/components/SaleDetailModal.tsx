@@ -17,8 +17,11 @@ export function SaleDetailModal({
   isOpen,
   onClose,
 }: SaleDetailModalProps) {
-  const { customers, items: inventoryItems } = usePOSContext();
+  const { customers, items: inventoryItems, updateSaleStatus } =
+    usePOSContext();
   const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
