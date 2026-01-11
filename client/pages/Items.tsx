@@ -141,7 +141,7 @@ export default function Items() {
 
         {/* Items Table/Grid */}
         <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          {items.length > 0 ? (
+          {filteredItems.length > 0 ? (
             <>
               {/* Mobile Card Layout */}
               <div className="md:hidden divide-y divide-slate-200">
