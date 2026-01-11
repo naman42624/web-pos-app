@@ -95,26 +95,48 @@ export default function Items() {
     <SharedLayout>
       <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              Items
-            </h1>
-            <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
-              Manage inventory items, prices, and stock levels
-            </p>
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                Items
+              </h1>
+              <p className="text-sm sm:text-base text-slate-500 mt-1 sm:mt-2">
+                Manage inventory items, prices, and stock levels
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setEditingId(null);
+                setFormData({ name: "", price: "", stock: "", image: "" });
+                setShowAddItemModal(true);
+              }}
+              className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg w-full sm:w-auto"
+            >
+              <Plus className="w-5 h-5" />
+              Add Item
+            </button>
           </div>
-          <button
-            onClick={() => {
-              setEditingId(null);
-              setFormData({ name: "", price: "", stock: "", image: "" });
-              setShowAddItemModal(true);
-            }}
-            className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg w-full sm:w-auto"
-          >
-            <Plus className="w-5 h-5" />
-            Add Item
-          </button>
+
+          {/* Search Bar */}
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+            <Input
+              type="text"
+              placeholder="Search items by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Items Table/Grid */}
