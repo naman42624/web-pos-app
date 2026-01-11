@@ -44,11 +44,24 @@ router.post(
   async (req: AuthRequest, res: Response) => {
     try {
       const { name, price, stock, image } = req.body;
+
+      // Validate image size (limit to 5MB)
+      if (image && image.length > 5 * 1024 * 1024) {
+        return res
+          .status(400)
+          .json({ error: "Image size must be less than 5MB" });
+      }
+
       const item = new Item({ name, price, stock, image });
       await item.save();
       res.status(201).json(item);
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      console.error("Error creating item:", error);
+      if (error.message.includes("document exceeds")) {
+        res.status(400).json({ error: "Document size too large. Image is too big." });
+      } else {
+        res.status(400).json({ error: error.message });
+      }
     }
   },
 );
