@@ -145,7 +145,7 @@ export default function Items() {
             <>
               {/* Mobile Card Layout */}
               <div className="md:hidden divide-y divide-slate-200">
-                {items.map((item) => (
+                {filteredItems.map((item) => (
                   <div
                     key={item.id}
                     className="p-4 space-y-3 hover:bg-slate-50 transition-colors"
