@@ -364,7 +364,7 @@ export default function Items() {
         {/* Add/Edit Item Modal */}
         {showAddItemModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-slate-900">
                   {editingId ? "Edit Item" : "Add New Item"}
@@ -376,6 +376,12 @@ export default function Items() {
                   <X className="w-6 h-6" />
                 </button>
               </div>
+
+              {errorMessage && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-700">{errorMessage}</p>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <div>
