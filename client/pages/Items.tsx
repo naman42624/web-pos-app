@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
-import { Plus, X, Edit2, Trash2, Image as ImageIcon, Search } from "lucide-react";
+import {
+  Plus,
+  X,
+  Edit2,
+  Trash2,
+  Image as ImageIcon,
+  Search,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
