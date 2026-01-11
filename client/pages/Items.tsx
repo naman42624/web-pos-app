@@ -313,11 +313,19 @@ export default function Items() {
           ) : (
             <div className="text-center py-12">
               <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center mx-auto mb-4">
-                <Plus className="w-6 h-6 text-slate-400" />
+                {searchQuery ? (
+                  <Search className="w-6 h-6 text-slate-400" />
+                ) : (
+                  <Plus className="w-6 h-6 text-slate-400" />
+                )}
               </div>
-              <p className="text-slate-500 font-medium">No items yet</p>
+              <p className="text-slate-500 font-medium">
+                {searchQuery ? "No items found" : "No items yet"}
+              </p>
               <p className="text-slate-400 text-sm mt-1">
-                Add your first item to get started
+                {searchQuery
+                  ? `Try adjusting your search for "${searchQuery}"`
+                  : "Add your first item to get started"}
               </p>
             </div>
           )}
