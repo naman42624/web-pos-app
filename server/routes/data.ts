@@ -58,7 +58,9 @@ router.post(
     } catch (error: any) {
       console.error("Error creating item:", error);
       if (error.message.includes("document exceeds")) {
-        res.status(400).json({ error: "Document size too large. Image is too big." });
+        res
+          .status(400)
+          .json({ error: "Document size too large. Image is too big." });
       } else {
         res.status(400).json({ error: error.message });
       }
