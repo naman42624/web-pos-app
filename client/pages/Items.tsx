@@ -35,6 +35,13 @@ export default function Items() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Limit file size to 3MB
+      if (file.size > 3 * 1024 * 1024) {
+        alert("Image size must be less than 3MB");
+        e.target.value = "";
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
