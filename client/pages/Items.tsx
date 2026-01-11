@@ -118,6 +118,7 @@ export default function Items() {
     setShowAddItemModal(false);
     setEditingId(null);
     setFormData({ name: "", price: "", stock: "", image: "" });
+    setErrorMessage(null);
   };
 
   return (
