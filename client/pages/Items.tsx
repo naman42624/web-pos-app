@@ -437,7 +437,7 @@ export default function Items() {
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
                   />
                   <p className="text-xs text-slate-500 mt-1">
-                    Supported formats: JPG, PNG, GIF, WebP
+                    Supported formats: JPG, PNG, GIF, WebP (Max 3MB)
                   </p>
                 </div>
               </div>
