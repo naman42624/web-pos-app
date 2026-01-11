@@ -53,41 +53,54 @@ export default function Items() {
     }
   };
 
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
+    setErrorMessage(null);
+
     if (!formData.name.trim()) {
-      alert("Please enter item name");
+      setErrorMessage("Please enter item name");
       return;
     }
 
     if (!formData.price || parseFloat(formData.price) <= 0) {
-      alert("Please enter valid price");
+      setErrorMessage("Please enter valid price");
       return;
     }
 
     if (!formData.stock || parseInt(formData.stock) < 0) {
-      alert("Please enter valid stock quantity");
+      setErrorMessage("Please enter valid stock quantity");
       return;
     }
 
-    if (editingId) {
-      updateItem(editingId, {
-        name: formData.name.trim(),
-        price: parseFloat(formData.price),
-        stock: parseInt(formData.stock),
-        image: formData.image || undefined,
-      });
-      setEditingId(null);
-    } else {
-      addItem({
-        name: formData.name.trim(),
-        price: parseFloat(formData.price),
-        stock: parseInt(formData.stock),
-        image: formData.image || undefined,
-      });
-    }
+    setIsSubmitting(true);
 
-    setFormData({ name: "", price: "", stock: "", image: "" });
-    setShowAddItemModal(false);
+    try {
+      if (editingId) {
+        await updateItem(editingId, {
+          name: formData.name.trim(),
+          price: parseFloat(formData.price),
+          stock: parseInt(formData.stock),
+          image: formData.image || undefined,
+        });
+        setEditingId(null);
+      } else {
+        await addItem({
+          name: formData.name.trim(),
+          price: parseFloat(formData.price),
+          stock: parseInt(formData.stock),
+          image: formData.image || undefined,
+        });
+      }
+
+      setFormData({ name: "", price: "", stock: "", image: "" });
+      setShowAddItemModal(false);
+    } catch (error: any) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to add item";
+      setErrorMessage(errorMsg);
+      console.error("Error adding item:", errorMsg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleEditItem = (item: any) => {
