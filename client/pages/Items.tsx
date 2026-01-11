@@ -234,7 +234,7 @@ export default function Items() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200">
-                    {items.map((item) => (
+                    {filteredItems.map((item) => (
                       <tr
                         key={item.id}
                         className="hover:bg-slate-50 transition-colors"
