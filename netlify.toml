@@ -3,13 +3,27 @@
   functions = "netlify/functions"
   publish = "dist/spa"
 
+[build.environment]
+  NODE_ENV = "production"
+  NODE_VERSION = "18.19.0"
 
 [functions]
-  external_node_modules = ["express", "mongoose", "bcryptjs", "jsonwebtoken"]
+  external_node_modules = ["express", "mongoose", "bcryptjs", "jsonwebtoken", "cors", "date-fns"]
   node_bundler = "esbuild"
-  
+
+  [functions.api]
+    included_files = ["dist/**/*"]
+    memory = 1024
+    timeout = 30
+
 [[redirects]]
   force = true
   from = "/api/*"
   status = 200
   to = "/.netlify/functions/api/:splat"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  condition = "!req.headers.Accept || req.headers.Accept.includes(\"text/html\")"
