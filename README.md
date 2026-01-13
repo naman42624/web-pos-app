@@ -32,26 +32,30 @@ A modern, full-stack Point of Sale (POS) system built with React, Express, and M
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <your-repo-url>
    cd pos-system
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Create environment file**
+
    ```bash
    cp .env.example .env.local
    ```
-   
+
    Update `.env.local` with:
    - `MONGODB_URL`: Your MongoDB connection string
    - `JWT_SECRET`: A random secret for JWT signing
 
 4. **Start development server**
+
    ```bash
    pnpm dev
    ```
@@ -69,6 +73,7 @@ A modern, full-stack Point of Sale (POS) system built with React, Express, and M
 The project is configured for Netlify serverless deployment. See [NETLIFY_DEPLOYMENT.md](./NETLIFY_DEPLOYMENT.md) for detailed instructions.
 
 **Quick Start:**
+
 1. Connect your GitHub repository to Netlify
 2. Set environment variables in Netlify dashboard
 3. Deploy (automatic on push to main)
@@ -99,11 +104,13 @@ See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for step-by-step guidan
 ## Key Modules
 
 ### Authentication
+
 - JWT-based authentication
 - Role-based access control
 - Login page with role selection (Admin/Delivery Boy)
 
 ### Pages
+
 - **Dashboard**: Operations dashboard with Kanban board for deliveries/pickups
 - **Sales**: Sales management (quick sale, add sale, view all sales)
 - **Deliveries**: Delivery tracking and management
@@ -113,6 +120,7 @@ See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for step-by-step guidan
 - **Roles**: Permission management (admin only)
 
 ### Context & State
+
 - `POSProvider`: Manages POS data (sales, items, customers, etc.)
 - `AuthContext`: Manages user authentication state
 
@@ -121,12 +129,14 @@ See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for step-by-step guidan
 All API routes are protected with authentication middleware.
 
 ### Authentication
+
 - `POST /auth/login` - User login
 - `POST /auth/logout` - User logout
 - `GET /auth/me` - Get current user
 - `POST /auth/delivery-boy/verify` - Verify delivery boy PIN
 
 ### Data Management
+
 - `/data/items` - Inventory items
 - `/data/products` - Products
 - `/data/sales` - Sales records
@@ -135,6 +145,7 @@ All API routes are protected with authentication middleware.
 - `/data/credit-records` - Credit transactions
 
 ### User & Role Management
+
 - `/users` - User management
 - `/roles` - Role and permission management
 
@@ -161,12 +172,14 @@ pnpm start            # Run production build locally
 ## Environment Variables
 
 ### Local Development (.env.local)
+
 ```
 MONGODB_URL=mongodb://localhost:27017/pos-system
 JWT_SECRET=your-secret-key
 ```
 
 ### Production (Netlify Dashboard)
+
 ```
 MONGODB_URL=mongodb+srv://user:pass@cluster.mongodb.net/?retryWrites=true&w=majority
 JWT_SECRET=your-production-secret
@@ -183,16 +196,19 @@ NODE_ENV=production
 ## Troubleshooting
 
 ### MongoDB Connection Issues
+
 - Verify connection string is correct
 - Check MongoDB Atlas IP whitelist
 - Ensure database user has correct permissions
 
 ### API Errors
+
 - Check browser console for detailed error messages
 - Review Netlify Function logs in Netlify dashboard
 - Verify environment variables are set correctly
 
 ### Build Failures
+
 - Run `pnpm install` to ensure dependencies
 - Check Node.js version (18+)
 - Try `pnpm build` locally to see detailed errors

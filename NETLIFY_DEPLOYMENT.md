@@ -29,7 +29,8 @@ JWT_SECRET=your-very-long-random-secret-key-here
 NODE_ENV=production
 ```
 
-**Important:** 
+**Important:**
+
 - For `MONGODB_URL`, use MongoDB Atlas (recommended for serverless). Free tier available at https://www.mongodb.com/cloud/atlas
 - For `JWT_SECRET`, generate a strong random string. Use: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
 - Do NOT commit these values to git
@@ -66,6 +67,7 @@ Your site will automatically deploy when you push to your repository's main bran
 ### Option B: Self-hosted MongoDB
 
 If you have your own MongoDB server, ensure it's:
+
 - Accessible from the internet
 - Has proper firewall rules allowing Netlify's IPs
 - Has connection pooling enabled
@@ -73,20 +75,24 @@ If you have your own MongoDB server, ensure it's:
 ## Troubleshooting
 
 ### "Failed to connect to MongoDB"
+
 - Check `MONGODB_URL` environment variable is set correctly
 - Ensure IP whitelist includes Netlify servers (use `0.0.0.0/0` for testing, but limit it in production)
 - Verify MongoDB user credentials
 
 ### "Function execution timeout"
+
 - Default is 30 seconds. Optimize your API calls
 - Check MongoDB query performance
 - Increase timeout in `netlify.toml` if needed (up to 30s for Netlify Free tier)
 
 ### "CORS errors"
+
 - Already configured in `server/index.ts`
 - If issues persist, check browser console for exact error message
 
 ### "Cold start delays"
+
 - Netlify serverless functions have initial cold start (~1-5s)
 - This is normal and improves after first request
 - Subsequent requests are much faster
@@ -110,6 +116,7 @@ If you have your own MongoDB server, ensure it's:
 ## Rollback
 
 If deployment fails:
+
 1. Netlify automatically keeps previous deployments
 2. Go to **Deploys** tab in Netlify Dashboard
 3. Select a previous successful deploy

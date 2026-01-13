@@ -13,6 +13,7 @@ Follow these steps to deploy your POS system to Netlify:
 ## 2. Generate JWT Secret
 
 Run this command and save the output:
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
@@ -30,6 +31,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 In Netlify Dashboard → Site Settings → Build & deploy → Environment:
 
 Add these variables:
+
 ```
 MONGODB_URL=<your-mongodb-connection-string>
 JWT_SECRET=<your-generated-jwt-secret>
@@ -69,16 +71,19 @@ After Netlify deploys (usually 2-5 minutes):
 If deployment fails:
 
 **Check Netlify Deploy Logs:**
+
 1. Go to Deploys tab
 2. Click on failed deploy
 3. Expand "Build log" to see errors
 
 **Common Issues:**
+
 - `Function execution timeout`: Check MongoDB connection
 - `MONGODB_URL not found`: Verify environment variables are set
 - `Build failed`: Run `npm run build` locally to see the error
 
 **Roll Back:**
+
 1. Go to Deploys tab
 2. Select a previous successful deploy
 3. Click "Publish deploy"
@@ -86,6 +91,7 @@ If deployment fails:
 ## 9. Monitoring
 
 After deployment:
+
 - [ ] Check Netlify Function logs regularly
 - [ ] Monitor MongoDB Atlas for connection issues
 - [ ] Set up alerts in MongoDB Atlas for unusual activity
