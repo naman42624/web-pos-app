@@ -40,6 +40,7 @@ heroku config:set NODE_ENV="production"
 ```
 
 Or use Heroku Dashboard:
+
 1. Go to your app on https://dashboard.heroku.com/
 2. Go to Settings → Config Vars
 3. Add the variables listed above
@@ -87,6 +88,7 @@ git push heroku your-branch:main
 ```
 
 Heroku will:
+
 1. Detect Node.js environment
 2. Run `npm install` (or `pnpm install`)
 3. Run `npm run build`
@@ -99,6 +101,7 @@ heroku logs --tail
 ```
 
 You should see:
+
 ```
 🚀 Fusion Starter server running on port <PORT>
 ```
@@ -154,6 +157,7 @@ heroku open
 ## Troubleshooting
 
 ### "Cannot find module" errors
+
 ```bash
 # Clear Heroku cache and rebuild
 heroku builds:cancel
@@ -163,22 +167,26 @@ git push heroku main
 ```
 
 ### MongoDB Connection Failed
+
 - Check MONGODB_URL is set: `heroku config | grep MONGODB_URL`
 - Verify MongoDB Atlas IP whitelist includes Heroku
 - Test connection string locally
 
 ### Build fails
+
 - Check build logs: `heroku logs --tail`
 - Run `npm run build` locally to see the exact error
 - Ensure all dependencies are in package.json (not devDependencies)
 
 ### "Port already in use" or "Cannot GET /"
+
 - App is running but frontend not loading
 - Check `dist/spa` directory was built
 - Verify server/node-build.ts is compiled
 - Restart: `heroku restart`
 
 ### App crashes after deployment
+
 - Check logs: `heroku logs --tail`
 - Verify environment variables are set
 - Ensure MongoDB connection is working
@@ -192,6 +200,7 @@ git push heroku main
 2. **Scale Up (if needed)**
    - Default: Eco Dyno (shared, always free)
    - For better performance: Standard-1x ($7/month)
+
    ```bash
    heroku dyno:type standard-1x --app your-app-name
    ```
@@ -207,25 +216,30 @@ git push heroku main
 ## Monitoring & Maintenance
 
 ### Set Up Alerts
+
 - MongoDB Atlas: Database monitoring and alerts
 - Heroku: Uptime monitoring
 
 ### Regular Maintenance
+
 - Check logs weekly for errors
 - Monitor MongoDB storage usage
 - Update dependencies monthly
 
 ### Backups
+
 - MongoDB Atlas: Enable automatic backups (included)
 - Code: Git commits serve as version control
 
 ## Costs
 
 **Heroku:**
+
 - Eco dyno (shared): Free for first 1000 hours/month (~1 app)
 - Standard-1x: $7/month (recommended for production)
 
 **MongoDB Atlas:**
+
 - Free tier: 512MB storage, shared cluster
 - Paid: $57+/month for dedicated clusters
 

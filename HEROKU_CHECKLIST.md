@@ -11,12 +11,15 @@
 ## Step-by-Step Deployment
 
 ### 1. Generate JWT Secret
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
+
 Save this value.
 
 ### 2. Set Up MongoDB Atlas
+
 - [ ] Create MongoDB Atlas account (free tier)
 - [ ] Create a cluster
 - [ ] Create database user
@@ -25,16 +28,19 @@ Save this value.
 - [ ] Add Heroku IP to whitelist (use `0.0.0.0/0` for now, restrict later)
 
 ### 3. Install Heroku CLI
+
 ```bash
 npm install -g heroku
 ```
 
 ### 4. Login to Heroku
+
 ```bash
 heroku login
 ```
 
 ### 5. Create Heroku App
+
 ```bash
 heroku create your-app-name
 ```
@@ -42,6 +48,7 @@ heroku create your-app-name
 Replace `your-app-name` with your desired app name (e.g., `pos-system-prod`).
 
 ### 6. Set Environment Variables
+
 ```bash
 heroku config:set MONGODB_URL="mongodb+srv://user:pass@cluster.mongodb.net/pos-system?retryWrites=true&w=majority"
 heroku config:set JWT_SECRET="your-generated-jwt-secret-here"
@@ -49,26 +56,31 @@ heroku config:set NODE_ENV="production"
 ```
 
 ### 7. Deploy
+
 ```bash
 git push heroku main
 ```
 
 If using a different branch:
+
 ```bash
 git push heroku your-branch:main
 ```
 
 ### 8. Watch Logs
+
 ```bash
 heroku logs --tail
 ```
 
 You should see:
+
 ```
 🚀 Fusion Starter server running on port <PORT>
 ```
 
 ### 9. Test Your App
+
 - [ ] Visit https://your-app-name.herokuapp.com
 - [ ] Login with admin credentials
 - [ ] Test adding an item
@@ -94,22 +106,26 @@ heroku open
 ## Troubleshooting
 
 **App won't start:**
+
 - Check logs: `heroku logs --tail`
 - Ensure MONGODB_URL is set: `heroku config`
 - Verify MongoDB connection string is correct
 - Check MongoDB Atlas IP whitelist
 
 **Cannot connect to database:**
+
 - Verify MongoDB credentials in MONGODB_URL
 - Check MongoDB Atlas Network Access includes Heroku IPs (use 0.0.0.0/0)
 - Test connection string in MongoDB Compass
 
 **Build failed:**
+
 - Check build logs: `heroku logs --tail`
 - Run `npm run build` locally to debug
 - Clear cache: `heroku builds:cancel`
 
 **"Cannot GET /":**
+
 - Frontend not loading properly
 - Check if dist/spa was built
 - Restart: `heroku restart`
