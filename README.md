@@ -68,17 +68,19 @@ A modern, full-stack Point of Sale (POS) system built with React, Express, and M
 
 ## Deployment
 
-### Deploy to Netlify
+### Deploy to Heroku
 
-The project is configured for Netlify serverless deployment. See [NETLIFY_DEPLOYMENT.md](./NETLIFY_DEPLOYMENT.md) for detailed instructions.
+The project is configured for Heroku deployment. See [HEROKU_DEPLOYMENT.md](./HEROKU_DEPLOYMENT.md) for detailed instructions.
 
 **Quick Start:**
 
-1. Connect your GitHub repository to Netlify
-2. Set environment variables in Netlify dashboard
-3. Deploy (automatic on push to main)
+1. Install Heroku CLI: `npm install -g heroku`
+2. Create app: `heroku create your-app-name`
+3. Set environment variables: `heroku config:set MONGODB_URL="..." JWT_SECRET="..."`
+4. Deploy: `git push heroku main`
+5. View logs: `heroku logs --tail`
 
-See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for step-by-step guidance.
+See [HEROKU_DEPLOYMENT.md](./HEROKU_DEPLOYMENT.md) for complete step-by-step guidance.
 
 ## Project Structure
 
