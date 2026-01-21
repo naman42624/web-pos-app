@@ -67,10 +67,8 @@ export function createServer() {
     },
   );
 
-  // 404 handler - for non-API routes, let the SPA handle routing
-  app.use((_req: express.Request, res: express.Response) => {
-    res.status(404).json({ error: "Not found" });
-  });
+  // NOTE: 404 handler is handled in node-build.ts for SPA routing
+  // This allows the SPA to handle unknown routes via React Router
 
   return app;
 }
