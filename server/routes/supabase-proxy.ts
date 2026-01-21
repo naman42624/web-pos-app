@@ -8,8 +8,8 @@ const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 // Note: Supabase proxy is not actively used in current deployment
 // The application uses MongoDB for data storage instead
 
-// Proxy all requests to Supabase through the server
-router.use(async (req: Request, res: Response) => {
+// Proxy all requests to Supabase through the server (wildcard route)
+router.all("*", async (req: Request, res: Response) => {
   try {
     const path = req.path.replace(/^\//, "");
     let url = "";
