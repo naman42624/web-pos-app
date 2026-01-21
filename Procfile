@@ -1,1 +1,1 @@
-web: npm run build:client && node --loader tsx/esm dist/server/node-build.mjs
+web: npm run build:client && npx tsx server/node-build.ts
