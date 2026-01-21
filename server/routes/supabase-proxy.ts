@@ -5,15 +5,18 @@ const router = Router();
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  throw new Error(
-    "Missing Supabase environment variables on server. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY",
-  );
-}
+// Note: Supabase proxy is not actively used in current deployment
+// The application uses MongoDB for data storage instead
 
-// Proxy all requests to Supabase through the server
-router.all(/.*/, async (req: Request, res: Response) => {
+// Proxy all requests to Supabase through the server (wildcard route)
+router.all("*", async (req: Request, res: Response) => {
   try {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      return res
+        .status(503)
+        .json({ error: "Supabase proxy not configured" });
+    }
+
     const path = req.path.replace(/^\//, "");
     let url = "";
 
