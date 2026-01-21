@@ -11,6 +11,12 @@ const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 // Proxy all requests to Supabase through the server (wildcard route)
 router.all("*", async (req: Request, res: Response) => {
   try {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      return res
+        .status(503)
+        .json({ error: "Supabase proxy not configured" });
+    }
+
     const path = req.path.replace(/^\//, "");
     let url = "";
 
