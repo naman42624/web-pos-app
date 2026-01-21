@@ -12,7 +12,7 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 }
 
 // Proxy all requests to Supabase through the server
-router.all(/.*/, async (req: Request, res: Response) => {
+router.use(async (req: Request, res: Response) => {
   try {
     const path = req.path.replace(/^\//, "");
     let url = "";
