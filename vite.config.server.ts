@@ -15,7 +15,7 @@ export default defineConfig({
     ssr: true,
     rollupOptions: {
       external: [
-        // Node.js built-ins only
+        // Node.js built-ins
         "fs",
         "path",
         "url",
@@ -29,6 +29,16 @@ export default defineConfig({
         "buffer",
         "querystring",
         "child_process",
+        // Production dependencies - load from node_modules
+        "express",
+        "cors",
+        "dotenv",
+        "mongoose",
+        "jsonwebtoken",
+        "bcryptjs",
+        "html5-qrcode",
+        "qrcode",
+        "zod",
       ],
       output: {
         format: "es",
