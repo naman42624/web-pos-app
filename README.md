@@ -17,7 +17,7 @@ A modern, full-stack Point of Sale (POS) system built with React, Express, and M
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS, Vite
 - **Backend**: Express, Node.js, MongoDB
-- **Deployment**: Netlify (serverless)
+- **Deployment**: Heroku (traditional dyno)
 - **Database**: MongoDB Atlas
 - **Authentication**: JWT tokens
 
