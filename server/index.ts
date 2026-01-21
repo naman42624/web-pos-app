@@ -41,16 +41,16 @@ export function createServer() {
   app.get("/demo", handleDemo);
 
   // Authentication routes
-  app.use("/auth", authRoutes);
+  app.use("/api/auth", authRoutes);
 
   // User management routes
-  app.use("/users", usersRoutes);
+  app.use("/api/users", usersRoutes);
 
   // Role management routes
-  app.use("/roles", rolesRoutes);
+  app.use("/api/roles", rolesRoutes);
 
   // POS data routes
-  app.use("/data", dataRoutes);
+  app.use("/api/data", dataRoutes);
 
   // Global error handler
   app.use(
