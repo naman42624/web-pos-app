@@ -23,6 +23,8 @@ export function createServer() {
     next();
   });
 
+  // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
+
   // Initialize database connection
   connectDB()
     .then(() => {
