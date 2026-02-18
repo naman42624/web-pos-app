@@ -23,8 +23,6 @@ export function createServer() {
     next();
   });
 
-  // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
-
   // Initialize database connection
   connectDB()
     .then(() => {
@@ -42,17 +40,21 @@ export function createServer() {
 
   app.get("/demo", handleDemo);
 
+  // Routes are mounted WITHOUT /api prefix here because:
+  // - In Vite dev: express app is mounted at /api, so paths don't include it
+  // - In production: node-build.ts mounts this app at /api
+
   // Authentication routes
-  app.use("/api/auth", authRoutes);
+  app.use("/auth", authRoutes);
 
   // User management routes
-  app.use("/api/users", usersRoutes);
+  app.use("/users", usersRoutes);
 
   // Role management routes
-  app.use("/api/roles", rolesRoutes);
+  app.use("/roles", rolesRoutes);
 
   // POS data routes
-  app.use("/api/data", dataRoutes);
+  app.use("/data", dataRoutes);
 
   // Global error handler
   app.use(

@@ -1,6 +1,6 @@
 import path from "path";
 import { createServer } from "./index";
-import * as express from "express";
+import express from "express";
 
 const app = createServer();
 const port = process.env.PORT || 3000;
@@ -9,12 +9,18 @@ const port = process.env.PORT || 3000;
 const __dirname = import.meta.dirname;
 const distPath = path.join(__dirname, "../dist/spa");
 
+// Create the main Express app for production
+const mainApp = express();
+
 // Serve static files
-app.use(express.static(distPath));
+mainApp.use(express.static(distPath));
+
+// Mount the API app at /api prefix
+// (routes inside createServer() don't have /api prefix)
+mainApp.use("/api", app);
 
 // Handle React Router - serve index.html for all non-API routes
-// Using regex pattern to match all routes after static files
-app.use((req, res) => {
+mainApp.use((req, res) => {
   // Don't serve index.html for API routes
   if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
     return res.status(404).json({ error: "API endpoint not found" });
@@ -30,7 +36,7 @@ app.use((req, res) => {
   });
 });
 
-app.listen(port, () => {
+mainApp.listen(port, () => {
   console.log(`🚀 Fusion Starter server running on port ${port}`);
   console.log(`📱 Frontend: http://localhost:${port}`);
   console.log(`🔧 API: http://localhost:${port}/api`);
