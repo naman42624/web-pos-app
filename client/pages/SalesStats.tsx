@@ -465,6 +465,161 @@ export default function SalesStats() {
             </table>
           </div>
         </div>
+
+        {/* Latest Transactions */}
+        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900 mb-6">
+            Latest Transactions
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                    Order #
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                    Date & Time
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                    Payment Mode
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                    Order Type
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                    Payment Status
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">
+                    Order Status
+                  </th>
+                  <th className="px-4 py-3 text-right text-sm font-semibold text-slate-700">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sales.length > 0 ? (
+                  sales
+                    .sort(
+                      (a, b) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime(),
+                    )
+                    .slice(0, 20)
+                    .map((sale) => {
+                      const getPaymentModeColor = (mode: string) => {
+                        switch (mode) {
+                          case "cash":
+                            return "bg-green-50 text-green-700";
+                          case "upi":
+                            return "bg-blue-50 text-blue-700";
+                          case "credit":
+                            return "bg-orange-50 text-orange-700";
+                          case "cod":
+                            return "bg-purple-50 text-purple-700";
+                          default:
+                            return "bg-slate-50 text-slate-700";
+                        }
+                      };
+
+                      const getStatusColor = (status: string) => {
+                        switch (status) {
+                          case "paid":
+                            return "bg-green-50 text-green-700";
+                          case "pending":
+                            return "bg-amber-50 text-amber-700";
+                          default:
+                            return "bg-slate-50 text-slate-700";
+                        }
+                      };
+
+                      const getOrderStatusColor = (status: string) => {
+                        switch (status) {
+                          case "pending":
+                            return "bg-amber-50 text-amber-700";
+                          case "pick_up_ready":
+                            return "bg-blue-50 text-blue-700";
+                          case "in_transit":
+                            return "bg-purple-50 text-purple-700";
+                          case "delivered":
+                          case "picked_up":
+                            return "bg-green-50 text-green-700";
+                          case "cancelled":
+                            return "bg-red-50 text-red-700";
+                          default:
+                            return "bg-slate-50 text-slate-700";
+                        }
+                      };
+
+                      return (
+                        <tr
+                          key={sale.id}
+                          className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                        >
+                          <td className="px-4 py-3 text-sm font-semibold text-slate-900">
+                            #{sale.id.slice(-6).toUpperCase()}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-slate-600">
+                            {new Date(sale.date).toLocaleDateString("en-IN", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize ${getPaymentModeColor(
+                                sale.paymentMode || "cash",
+                              )}`}
+                            >
+                              {sale.paymentMode || "Cash"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-slate-600 capitalize">
+                            {sale.orderType.replace(/_/g, " ")}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusColor(
+                                sale.paymentStatus || "pending",
+                              )}`}
+                            >
+                              {sale.paymentStatus || "Pending"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize ${getOrderStatusColor(
+                                sale.status || "pending",
+                              )}`}
+                            >
+                              {(sale.status || "pending").replace(/_/g, " ")}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
+                            {formatCurrency(sale.total)}
+                          </td>
+                        </tr>
+                      );
+                    })
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-4 py-8 text-center text-slate-500"
+                    >
+                      No transactions available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-slate-500 mt-4 text-center">
+            Showing latest 20 transactions
+          </p>
+        </div>
       </div>
     </SharedLayout>
   );
