@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
+import { ReceiptModal } from "@/components/ReceiptModal";
+import { Sale } from "@/hooks/usePOS";
 import {
   BarChart3,
   TrendingUp,
@@ -8,13 +10,20 @@ import {
   ShoppingCart,
   CreditCard,
   Loader,
+  Eye,
+  Download,
+  Printer,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function SalesStats() {
-  const { sales, loading } = usePOSContext();
+  const { sales, loading, customers } = usePOSContext();
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7),
   );
+  const [viewMode, setViewMode] = useState<"stats" | "all-sales">("stats");
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
 
   const stats = useMemo(() => {
     // Filter sales by month
@@ -210,6 +219,35 @@ export default function SalesStats() {
             />
           </div>
         </div>
+
+        {/* View Mode Tabs */}
+        <div className="flex gap-2 border-b border-slate-200">
+          <button
+            onClick={() => setViewMode("stats")}
+            className={cn(
+              "px-4 py-3 font-medium transition-colors border-b-2",
+              viewMode === "stats"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-slate-600 hover:text-slate-900",
+            )}
+          >
+            Monthly Analytics
+          </button>
+          <button
+            onClick={() => setViewMode("all-sales")}
+            className={cn(
+              "px-4 py-3 font-medium transition-colors border-b-2",
+              viewMode === "all-sales"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-slate-600 hover:text-slate-900",
+            )}
+          >
+            All Sales & Invoices
+          </button>
+        </div>
+
+        {viewMode === "stats" && (
+        <>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -620,7 +658,158 @@ export default function SalesStats() {
             Showing latest 20 transactions
           </p>
         </div>
+        </>
+        )}
+
+        {viewMode === "all-sales" && (
+        <div className="space-y-6">
+          {/* All Sales Table */}
+          <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">
+              All Sales & Invoices
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">Order #</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">Date</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">Customer</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">Payment</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-700">Status</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-slate-700">Amount</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-slate-700">Invoice</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {sales.length > 0 ? (
+                    sales
+                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                      .map((sale) => {
+                        const customer = customers.find((c) => c.id === sale.customerId);
+                        const saleDate = new Date(sale.date);
+                        const formattedDate = saleDate.toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        });
+                        const formattedTime = saleDate.toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+
+                        const getPaymentModeColor = (mode: string) => {
+                          switch (mode) {
+                            case "cash":
+                              return "bg-green-100 text-green-800";
+                            case "upi":
+                              return "bg-blue-100 text-blue-800";
+                            case "credit":
+                              return "bg-purple-100 text-purple-800";
+                            case "cod":
+                              return "bg-orange-100 text-orange-800";
+                            default:
+                              return "bg-slate-100 text-slate-800";
+                          }
+                        };
+
+                        const getStatusColor = (status: string) => {
+                          switch (status) {
+                            case "paid":
+                              return "bg-green-100 text-green-800";
+                            case "pending":
+                              return "bg-yellow-100 text-yellow-800";
+                            case "failed":
+                              return "bg-red-100 text-red-800";
+                            default:
+                              return "bg-slate-100 text-slate-800";
+                          }
+                        };
+
+                        return (
+                          <tr key={sale.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-4 py-3 text-sm font-medium text-slate-900">
+                              #{sale.id.slice(-6).toUpperCase()}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-slate-600">
+                              <div>{formattedDate}</div>
+                              <div className="text-xs text-slate-500">{formattedTime}</div>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-slate-900">
+                              {customer?.name || "Unknown"}
+                            </td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                                  Array.isArray(sale.paymentModes)
+                                    ? getPaymentModeColor(sale.paymentModes[0] || sale.paymentMode || "cash")
+                                    : getPaymentModeColor(sale.paymentMode || "cash")
+                                }`}
+                              >
+                                {Array.isArray(sale.paymentModes)
+                                  ? (sale.paymentModes[0] || sale.paymentMode || "Cash").toUpperCase()
+                                  : (sale.paymentMode || "Cash").toUpperCase()}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                                  getStatusColor(sale.paymentStatus || "pending")
+                                }`}
+                              >
+                                {sale.paymentStatus || "Pending"}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-right text-sm font-bold text-slate-900">
+                              {formatCurrency(sale.total)}
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <button
+                                onClick={() => {
+                                  setSelectedSale(sale);
+                                  setShowReceiptModal(true);
+                                }}
+                                className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-sm font-medium"
+                              >
+                                <Eye className="w-4 h-4" />
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-8 text-center text-slate-500"
+                      >
+                        No sales found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-slate-500 mt-4 text-center">
+              Showing all {sales.length} sales
+            </p>
+          </div>
+        </div>
+        )}
       </div>
+
+      {/* Receipt Modal */}
+      {selectedSale && (
+        <ReceiptModal
+          sale={selectedSale}
+          isOpen={showReceiptModal}
+          onClose={() => {
+            setShowReceiptModal(false);
+            setSelectedSale(null);
+          }}
+        />
+      )}
     </SharedLayout>
   );
 }
