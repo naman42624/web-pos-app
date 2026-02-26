@@ -9,12 +9,14 @@ interface ProtectedRouteProps {
     action: string;
   };
   adminOnly?: boolean;
+  managerOrAdmin?: boolean;
 }
 
 export function ProtectedRoute({
   children,
   requiredPermission,
   adminOnly,
+  managerOrAdmin,
 }: ProtectedRouteProps) {
   const { user, loading, hasPermission } = useAuth();
 
@@ -35,6 +37,13 @@ export function ProtectedRoute({
 
   if (adminOnly && !user.isAdmin) {
     return <Navigate to="/" replace />;
+  }
+
+  if (managerOrAdmin) {
+    const isManager = user.role?.name === "Manager";
+    if (!user.isAdmin && !isManager) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   if (

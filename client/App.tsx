@@ -22,6 +22,7 @@ import CustomerDetail from "./pages/CustomerDetail";
 import Deliveries from "./pages/Deliveries";
 import Pickups from "./pages/Pickups";
 import CreditRecords from "./pages/CreditRecords";
+import SalesStats from "./pages/SalesStats";
 import DeliveryBoys from "./pages/admin/DeliveryBoys";
 import Users from "./pages/admin/Users";
 import Roles from "./pages/admin/Roles";
@@ -187,6 +188,14 @@ function AppContent() {
                   }}
                 >
                   <CreditRecords />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sales-stats"
+              element={
+                <ProtectedRoute managerOrAdmin>
+                  <SalesStats />
                 </ProtectedRoute>
               }
             />

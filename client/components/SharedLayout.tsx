@@ -66,6 +66,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
     { path: "/deliveries", label: "Deliveries", icon: Truck },
     { path: "/pickups", label: "Pickups", icon: Box },
     { path: "/credit-records", label: "Credit Records", icon: CreditCard },
+    { path: "/sales-stats", label: "Sales Stats", icon: BarChart3, managerOnly: true },
     { path: "/admin/delivery-boys", label: "Delivery Boys", icon: Users },
     { path: "/admin/users", label: "Users", icon: Users, adminOnly: true },
     { path: "/admin/roles", label: "Roles", icon: FileText, adminOnly: true },
@@ -73,6 +74,12 @@ export function SharedLayout({ children }: SharedLayoutProps) {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const isAdminOrManager = () => {
+    if (user?.isAdmin) return true;
+    if (user?.role?.name === "Manager") return true;
+    return false;
+  };
 
   const getRequiredPermission = (
     path: string,
@@ -110,6 +117,9 @@ export function SharedLayout({ children }: SharedLayoutProps) {
         .filter((item: any) => {
           if (item.adminOnly) {
             return user?.isAdmin;
+          }
+          if (item.managerOnly) {
+            return isAdminOrManager();
           }
           const requiredPerm = getRequiredPermission(item.path);
           if (!requiredPerm) {
