@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 const __dirname = import.meta.dirname;
 const distPath = path.join(__dirname, "../dist/spa");
 
-// Create the main Express app for production
+// Create wrapper app that mounts API at /api prefix
 const mainApp = express();
 
 // Serve static files

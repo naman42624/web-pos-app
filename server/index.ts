@@ -23,6 +23,8 @@ export function createServer() {
     next();
   });
 
+  // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
+
   // Initialize database connection
   connectDB()
     .then(() => {
@@ -56,6 +58,13 @@ export function createServer() {
   // POS data routes
   app.use("/data", dataRoutes);
 
+  // API 404 handler - returns JSON for unmatched API routes
+  // This prevents falling through to Vite's SPA fallback middleware in dev
+  app.use((req: express.Request, res: express.Response) => {
+    console.log(`API route not found: ${req.method} ${req.path}`);
+    res.status(404).json({ error: `API endpoint not found: ${req.method} ${req.path}` });
+  });
+
   // Global error handler
   app.use(
     (
@@ -68,9 +77,6 @@ export function createServer() {
       res.status(500).json({ error: "Internal server error" });
     },
   );
-
-  // NOTE: 404 handler is handled in node-build.ts for SPA routing
-  // This allows the SPA to handle unknown routes via React Router
 
   return app;
 }
