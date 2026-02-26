@@ -62,6 +62,7 @@ export function convertQRDataToSaleItem(data: QRCodeData): SaleItem {
     quantity: 1,
     price: data.price,
     image: data.image,
+    productId: data.id,
     composition: data.items,
   };
 }

@@ -604,17 +604,34 @@ export default function AddSale() {
 
   const handleAddScannedProduct = () => {
     if (scannedProduct) {
+      console.log("handleAddScannedProduct called with:", scannedProduct);
       const baseItem = convertQRDataToSaleItem(scannedProduct);
+      console.log("baseItem from convertQRDataToSaleItem:", baseItem);
       const quantity = parseInt(productQuantity) || 1;
+      console.log("quantity:", quantity);
       const saleItem: SaleItem = {
         ...baseItem,
         quantity,
       };
+      console.log("final saleItem:", saleItem);
+      console.log("current saleItems:", saleItems);
       const newSaleItems = [...saleItems, saleItem];
+      console.log("newSaleItems before update:", newSaleItems);
       setSaleItems(newSaleItems);
+      console.log("setSaleItems called");
+
+      // Reset states
       setScannedProduct(null);
       setShowScannedConfirm(false);
       setProductQuantity("1");
+
+      // Show success message
+      toast.success("✓ Product added to sale!", {
+        description: `${saleItem.name} × ${quantity}`,
+      });
+    } else {
+      console.warn("handleAddScannedProduct called but scannedProduct is null or undefined");
+      toast.error("Error: No product to add");
     }
   };
 
@@ -1240,11 +1257,144 @@ export default function AddSale() {
               </div>
             </div>
 
-            {/* Items List, Order Type, Payment Mode, Discount sections would go here but are truncated for brevity */}
-            {/* The full code continues with all original sections... */}
+            {/* Sale Items List */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">
+                Sale Items ({saleItems.length})
+              </h2>
+
+              {saleItems.length > 0 ? (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {saleItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border border-slate-200 rounded-lg overflow-hidden"
+                    >
+                      <div className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs text-slate-500">
+                                No img
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-slate-900">
+                              {item.name}
+                            </p>
+                            <p className="text-sm text-slate-500 mt-1">
+                              {item.quantity} × ₹{item.price.toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              updateItemQuantity(
+                                item.id,
+                                parseInt(e.target.value) || 1,
+                              )
+                            }
+                            min="1"
+                            className="w-16 px-2 py-1 border border-slate-300 rounded text-center text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                          />
+                          <p className="font-bold text-slate-900 w-20 text-right">
+                            ₹{(item.quantity * item.price).toFixed(2)}
+                          </p>
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="text-red-600 hover:text-red-700 transition-colors"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Product Composition */}
+                      {item.composition && item.composition.length > 0 && (
+                        <div className="border-t border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs font-semibold text-slate-700 mb-2">
+                            Composition:
+                          </p>
+                          <div className="space-y-1 text-xs text-slate-600">
+                            {item.composition.map((comp, idx) => (
+                              <div key={idx}>
+                                • {comp.itemId ? getItemName(comp.itemId) : comp.customName} ×{comp.quantity}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-slate-500 py-8">
+                  No items added yet. Add items using the form above.
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Summary Section would be here */}
+          {/* Summary Section */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl shadow-sm border border-blue-200 p-4 sm:p-6 space-y-4 sm:space-y-6">
+              <h2 className="text-lg font-bold text-slate-900">Summary</h2>
+
+              <div className="space-y-3 border-b border-blue-200 pb-6 max-h-64 overflow-y-auto">
+                {saleItems.map((item) => (
+                  <div key={item.id} className="flex justify-between text-sm">
+                    <span className="text-slate-600">
+                      {item.name} × {item.quantity}
+                    </span>
+                    <span className="font-medium text-slate-900">
+                      ₹{(item.quantity * item.price).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Subtotal</span>
+                  <span className="font-medium text-slate-900">
+                    ₹{subtotal.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between text-lg font-bold pt-2 border-t border-cyan-200">
+                  <span className="text-slate-900">Total</span>
+                  <span className="text-cyan-600">₹{total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={handleSaveSale}
+                disabled={
+                  isLoading ||
+                  saleItems.length === 0 ||
+                  !selectedCustomerId
+                }
+                className={cn(
+                  "w-full font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-white",
+                  isLoading ||
+                    saleItems.length === 0 ||
+                    !selectedCustomerId
+                    ? "bg-slate-300 cursor-not-allowed"
+                    : "bg-gradient-to-r from-lime-500 to-green-600 hover:from-lime-600 hover:to-green-700 shadow-md hover:shadow-lg",
+                )}
+              >
+                {isLoading ? "Processing..." : "Save Sale"}
+              </button>
+            </div>
         </div>
       </div>
 
