@@ -173,50 +173,6 @@ export function usePOS() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initial load of all data
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        // Load categories and items first (foundational data)
-        await loadCategories().catch((e) =>
-          console.error("Error loading categories:", e),
-        );
-        await loadItems().catch((e) =>
-          console.error("Error loading items:", e),
-        );
-
-        // Then load other data in parallel (excluding products for now)
-        await Promise.all([
-          loadCustomers().catch((e) =>
-            console.error("Error loading customers:", e),
-          ),
-          loadSales().catch((e) => console.error("Error loading sales:", e)),
-          loadCreditRecords().catch((e) =>
-            console.error("Error loading credit records:", e),
-          ),
-          loadDeliveryBoys().catch((e) =>
-            console.error("Error loading delivery boys:", e),
-          ),
-          loadSettings().catch((e) =>
-            console.error("Error loading settings:", e),
-          ),
-        ]);
-
-        // Load products last to avoid database overload
-        await loadProducts().catch((e) =>
-          console.error("Error loading products:", e),
-        );
-      } catch (error) {
-        console.error("Error loading data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
   // Load Items
   const loadItems = async () => {
     try {
@@ -304,16 +260,20 @@ export function usePOS() {
   const loadCategories = async () => {
     try {
       const data = await api.fetchCategories();
-      setCategories(
-        data.map((category: any) => ({
-          id: category._id,
-          name: category.name,
-          description: category.description,
-          createdAt: category.createdAt,
-        })),
-      );
+      if (Array.isArray(data)) {
+        setCategories(
+          data.map((category: any) => ({
+            id: category._id,
+            name: category.name,
+            description: category.description,
+            createdAt: category.createdAt,
+          })),
+        );
+      }
     } catch (error) {
-      console.error("Error loading categories:", error);
+      // Silently fail if endpoint doesn't exist yet - app can work without categories
+      console.debug("Categories endpoint not available yet");
+      setCategories([]);
     }
   };
 
@@ -335,6 +295,13 @@ export function usePOS() {
       return newCategory;
     } catch (error) {
       console.error("Error adding category:", error);
+      // For now, add category to local state even if API fails
+      const tempCategory: Category = {
+        id: `temp-${Date.now()}`,
+        name: category.name,
+        description: category.description,
+      };
+      setCategories([...categories, tempCategory]);
       throw error;
     }
   };
@@ -345,6 +312,8 @@ export function usePOS() {
       setCategories(categories.filter((c) => c.id !== id));
     } catch (error) {
       console.error("Error deleting category:", error);
+      // For now, delete from local state even if API fails
+      setCategories(categories.filter((c) => c.id !== id));
       throw error;
     }
   };
@@ -1009,6 +978,50 @@ export function usePOS() {
       return [];
     }
   };
+
+  // Initial load of all data
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        // Load categories and items first (foundational data)
+        await loadCategories().catch((e) =>
+          console.error("Error loading categories:", e),
+        );
+        await loadItems().catch((e) =>
+          console.error("Error loading items:", e),
+        );
+
+        // Then load other data in parallel (excluding products for now)
+        await Promise.all([
+          loadCustomers().catch((e) =>
+            console.error("Error loading customers:", e),
+          ),
+          loadSales().catch((e) => console.error("Error loading sales:", e)),
+          loadCreditRecords().catch((e) =>
+            console.error("Error loading credit records:", e),
+          ),
+          loadDeliveryBoys().catch((e) =>
+            console.error("Error loading delivery boys:", e),
+          ),
+          loadSettings().catch((e) =>
+            console.error("Error loading settings:", e),
+          ),
+        ]);
+
+        // Load products last to avoid database overload
+        await loadProducts().catch((e) =>
+          console.error("Error loading products:", e),
+        );
+      } catch (error) {
+        console.error("Error loading data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   return {
     sales,

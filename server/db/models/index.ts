@@ -7,6 +7,7 @@ export { Sale } from "./Sale";
 export { CreditRecord } from "./CreditRecord";
 export { DeliveryBoy } from "./DeliveryBoy";
 export { DeliveryAssignment } from "./DeliveryAssignment";
+export { Category } from "./Category";
 export { Settings } from "./Settings";
 
 export type { IUser } from "./User";
@@ -18,4 +19,5 @@ export type { ISale, ISaleItem, IDeliveryDetails } from "./Sale";
 export type { ICreditRecord } from "./CreditRecord";
 export type { IDeliveryBoy } from "./DeliveryBoy";
 export type { IDeliveryAssignment } from "./DeliveryAssignment";
+export type { ICategory } from "./Category";
 export type { ISettings } from "./Settings";

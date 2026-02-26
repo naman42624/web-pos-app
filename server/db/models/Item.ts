@@ -5,6 +5,8 @@ export interface IItem extends Document {
   price: number;
   stock: number;
   image?: string;
+  category?: string;
+  gstRate?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +32,16 @@ const ItemSchema = new Schema<IItem>(
     image: {
       type: String,
       default: null,
+    },
+    category: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    gstRate: {
+      type: Number,
+      default: null,
+      min: 0,
     },
   },
   {

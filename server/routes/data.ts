@@ -6,6 +6,7 @@ import {
   Sale,
   CreditRecord,
   DeliveryBoy,
+  Category,
   Settings,
 } from "../db/models/index.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
@@ -43,7 +44,7 @@ router.post(
   checkPermission("items", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { name, price, stock, image } = req.body;
+      const { name, price, stock, image, category, gstRate } = req.body;
 
       // Validate image size (limit to 5MB)
       if (image && image.length > 5 * 1024 * 1024) {
@@ -52,7 +53,7 @@ router.post(
           .json({ error: "Image size must be less than 5MB" });
       }
 
-      const item = new Item({ name, price, stock, image });
+      const item = new Item({ name, price, stock, image, category, gstRate });
       await item.save();
       res.status(201).json(item);
     } catch (error: any) {
@@ -92,6 +93,51 @@ router.delete(
     try {
       await Item.findByIdAndDelete(req.params.id);
       res.json({ message: "Item deleted" });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
+// Category endpoints
+router.get(
+  "/categories",
+  authMiddleware,
+  checkPermission("items", "view"),
+  async (_req: AuthRequest, res: Response) => {
+    try {
+      const categories = await Category.find().lean();
+      res.json(categories);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
+router.post(
+  "/categories",
+  authMiddleware,
+  checkPermission("items", "add"),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { name, description } = req.body;
+      const category = new Category({ name, description });
+      await category.save();
+      res.status(201).json(category);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+);
+
+router.delete(
+  "/categories/:id",
+  authMiddleware,
+  checkPermission("items", "delete"),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      await Category.findByIdAndDelete(req.params.id);
+      res.json({ message: "Category deleted" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
