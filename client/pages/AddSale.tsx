@@ -1257,6 +1257,276 @@ export default function AddSale() {
               </div>
             </div>
 
+            {/* Order Type Selection */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">
+                Order Type
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                {[
+                  { value: "pickup" as const, label: "Pickup" },
+                  { value: "pickup_later" as const, label: "Pickup Later" },
+                  { value: "delivery" as const, label: "Delivery" },
+                ].map((type) => (
+                  <button
+                    key={type.value}
+                    onClick={() => setOrderType(type.value)}
+                    className={cn(
+                      "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
+                      orderType === type.value
+                        ? "border-cyan-600 bg-cyan-50 text-cyan-700"
+                        : "border-slate-300 bg-white text-slate-700 hover:border-slate-400",
+                    )}
+                  >
+                    {orderType === type.value && (
+                      <Check className="w-5 h-5 absolute top-2 right-2" />
+                    )}
+                    <span className="block">{type.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Pickup Date/Time (for pickup_later or delivery) */}
+            {(orderType === "pickup_later" || orderType === "delivery") && (
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 space-y-4">
+                <h2 className="text-lg font-bold text-slate-900">
+                  {orderType === "pickup_later" ? "Pickup" : "Delivery"} Date & Time
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={pickupDate}
+                      onChange={(e) => setPickupDate(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Time <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="time"
+                      value={pickupTime}
+                      onChange={(e) => setPickupTime(e.target.value)}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Delivery Details */}
+            {orderType === "delivery" && (
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+                <h2 className="text-lg font-bold text-slate-900 mb-6">
+                  Delivery Details
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Receiver Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={deliveryDetails.receiverName}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          receiverName: e.target.value,
+                        })
+                      }
+                      placeholder="Recipient's name"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Receiver Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={deliveryDetails.receiverPhone}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          receiverPhone: e.target.value,
+                        })
+                      }
+                      placeholder="Phone number"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Delivery Address <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      value={deliveryDetails.receiverAddress}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          receiverAddress: e.target.value,
+                        })
+                      }
+                      placeholder="Full delivery address"
+                      rows={3}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Sender Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={deliveryDetails.senderName}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          senderName: e.target.value,
+                        })
+                      }
+                      placeholder="Your name"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Sender Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={deliveryDetails.senderPhone}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          senderPhone: e.target.value,
+                        })
+                      }
+                      placeholder="Your phone number"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Special Message
+                    </label>
+                    <input
+                      type="text"
+                      value={deliveryDetails.message || ""}
+                      onChange={(e) =>
+                        setDeliveryDetails({
+                          ...deliveryDetails,
+                          message: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., Handle with care"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Payment Mode Selection */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">
+                Payment Method
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                {(["cash", "upi", "credit", "cod"] as PaymentMode[]).map(
+                  (mode) => (
+                    <button
+                      key={mode}
+                      onClick={() => togglePaymentMode(mode)}
+                      className={cn(
+                        "relative p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200",
+                        selectedPaymentModes.has(mode)
+                          ? "border-cyan-600 bg-cyan-50 text-cyan-700"
+                          : "border-slate-300 bg-white text-slate-700 hover:border-slate-400",
+                      )}
+                    >
+                      {selectedPaymentModes.has(mode) && (
+                        <Check className="w-5 h-5 absolute top-2 right-2" />
+                      )}
+                      <span className="capitalize block">{mode}</span>
+                    </button>
+                  ),
+                )}
+              </div>
+            </div>
+
+            {/* Discount Section */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">
+                Discount
+              </h2>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Discount Type
+                    </label>
+                    <select
+                      value={discountType}
+                      onChange={(e) =>
+                        setDiscountType(e.target.value as "percentage" | "fixed")
+                      }
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    >
+                      <option value="percentage">Percentage (%)</option>
+                      <option value="fixed">Fixed Amount (₹)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Discount Value
+                    </label>
+                    <input
+                      type="number"
+                      value={discountValue}
+                      onChange={(e) => setDiscountValue(e.target.value)}
+                      placeholder="0"
+                      step="0.01"
+                      min="0"
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+                {discountValue && (
+                  <p className="text-sm text-slate-600 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    Discount:{" "}
+                    <span className="font-semibold">
+                      ₹{discountAmount.toFixed(2)}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Delivery Charges */}
+            {orderType === "delivery" && (
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+                <h2 className="text-lg font-bold text-slate-900 mb-6">
+                  Delivery Charges
+                </h2>
+                <input
+                  type="number"
+                  value={deliveryCharges}
+                  onChange={(e) => setDeliveryCharges(e.target.value)}
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                />
+              </div>
+            )}
+
             {/* Sale Items List */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-4">
