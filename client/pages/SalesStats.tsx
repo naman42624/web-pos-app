@@ -654,9 +654,17 @@ export default function SalesStats() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-slate-500 mt-4 text-center">
-            Showing latest 20 transactions
-          </p>
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-xs text-slate-500">
+              Showing latest 20 transactions
+            </p>
+            <button
+              onClick={() => setViewMode("all-sales")}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              View All Transactions
+            </button>
+          </div>
         </div>
         </>
         )}
