@@ -696,7 +696,7 @@ export default function AddSale() {
               </h2>
 
               <div className="space-y-4">
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Customer Phone Number
                   </label>
@@ -714,8 +714,8 @@ export default function AddSale() {
                         // Search for customers with this phone number in real-time
                         const matching = customers.filter(
                           (customer) =>
-                            customer.phone === phone ||
-                            customer.altPhone === phone,
+                            customer.phone?.includes(phone) ||
+                            customer.altPhone?.includes(phone),
                         );
 
                         setMatchingCustomers(matching);
@@ -737,37 +737,53 @@ export default function AddSale() {
                       matchingCustomers.length === 1 &&
                       handleSelectExistingCustomer(matchingCustomers[0].id)
                     }
-                    placeholder="Enter customer phone number"
+                    onFocus={() => {
+                      if (phoneLookupInput.trim() && matchingCustomers.length > 0) {
+                        // Show dropdown when focusing on input if there are matches
+                      }
+                    }}
+                    placeholder="Enter or search customer phone number"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
-                </div>
 
-                {matchingCustomers.length > 0 && (
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Select Matching Customer
-                    </label>
-                    <div className="space-y-2">
+                  {/* Matching Customers Dropdown */}
+                  {matchingCustomers.length > 0 && phoneLookupInput.trim() && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto">
                       {matchingCustomers.map((customer) => (
                         <button
                           key={customer.id}
+                          type="button"
                           onClick={() =>
                             handleSelectExistingCustomer(customer.id)
                           }
-                          className="w-full text-left p-3 border border-slate-300 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-colors"
+                          className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
                         >
-                          <p className="font-medium text-slate-900">
-                            {customer.name}
-                          </p>
-                          <p className="text-sm text-slate-600">
-                            {customer.phone}
-                            {customer.altPhone && ` / ${customer.altPhone}`}
-                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <p className="font-medium text-slate-900">
+                                {customer.name}
+                              </p>
+                              <p className="text-sm text-slate-600 mt-1">
+                                {customer.phone}
+                                {customer.altPhone && ` / ${customer.altPhone}`}
+                              </p>
+                            </div>
+                            <Check className="w-5 h-5 text-green-600 flex-shrink-0 ml-2" />
+                          </div>
                         </button>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
+
+                  {/* No matching customers message */}
+                  {phoneLookupInput.trim() && matchingCustomers.length === 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-amber-200 rounded-lg shadow-lg z-20 p-3">
+                      <p className="text-sm text-amber-800">
+                        No customer found with this phone number. You can create a new customer below.
+                      </p>
+                    </div>
+                  )}
+                </div>
 
                 {showNewCustomerForm && !selectedPaymentModes.has("credit") && (
                   <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
