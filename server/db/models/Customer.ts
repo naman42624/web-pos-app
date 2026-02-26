@@ -11,7 +11,7 @@ export interface IAddress {
 
 export interface ICustomer extends Document {
   name: string;
-  phone: string;
+  phone?: string;
   altPhone?: string;
   email?: string;
   organization?: string;
@@ -60,7 +60,6 @@ const CustomerSchema = new Schema<ICustomer>(
     },
     phone: {
       type: String,
-      required: true,
       trim: true,
     },
     altPhone: {

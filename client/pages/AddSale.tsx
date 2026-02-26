@@ -472,7 +472,7 @@ export default function AddSale() {
       return;
     }
 
-    const newCustomer = addCustomer({
+    const newCustomer = await addCustomer({
       name: newCustomerName.trim(),
       phone: newCustomerPhone.trim(),
       email: newCustomerEmail.trim() || undefined,

@@ -386,9 +386,9 @@ export default function QuickSale() {
         !selectedCustomerId &&
         creditCustomerSearch.trim()
       ) {
-        const newCustomer = addCustomer({
+        const newCustomer = await addCustomer({
           name: creditCustomerSearch.trim(),
-          phone: "",
+          phone: undefined,
           email: undefined,
           altPhone: undefined,
           organization: undefined,

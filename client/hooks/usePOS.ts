@@ -91,7 +91,7 @@ export interface Address {
 export interface Customer {
   id: string;
   name: string;
-  phone: string;
+  phone?: string;
   altPhone?: string;
   email?: string;
   organization?: string;
@@ -405,9 +405,6 @@ export function usePOS() {
       // Validate required fields
       if (!customer.name || !customer.name.trim()) {
         throw new Error("Customer name is required");
-      }
-      if (!customer.phone || !customer.phone.trim()) {
-        throw new Error("Phone number is required");
       }
 
       const data = await api.createCustomer({
