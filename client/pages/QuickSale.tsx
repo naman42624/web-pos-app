@@ -82,6 +82,23 @@ export default function QuickSale() {
     0,
   );
 
+  const calculateGST = () => {
+    let totalGST = 0;
+    saleItems.forEach((item) => {
+      const itemAmount = item.quantity * item.price;
+      const itemData = inventoryItems.find((i) => i.id === item.id);
+      const gstRate = itemData?.gstRate || 0;
+
+      if (gstRate > 0) {
+        const baseAmount = itemAmount / (1 + gstRate / 100);
+        const gstAmount = itemAmount - baseAmount;
+        totalGST += gstAmount;
+      }
+    });
+    return totalGST;
+  };
+
+  const gstAmount = calculateGST();
   const total = subtotal;
 
   const handleProductNameChange = (value: string) => {
@@ -391,6 +408,8 @@ export default function QuickSale() {
         paymentModes: [primaryMode],
         paymentAmounts: { [primaryMode]: total },
         total,
+        subtotal,
+        gstAmount,
         customerId,
         orderType: "pickup",
         isQuickSale: true,
@@ -1123,12 +1142,19 @@ export default function QuickSale() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Subtotal</span>
                   <span className="font-medium text-slate-900">
                     ₹{subtotal.toFixed(2)}
                   </span>
                 </div>
+
+                {gstAmount > 0 && (
+                  <div className="flex justify-between text-sm text-amber-700 bg-amber-50 p-2 rounded">
+                    <span>GST (Tax)</span>
+                    <span className="font-medium">₹{gstAmount.toFixed(2)}</span>
+                  </div>
+                )}
 
                 <div className="flex justify-between text-lg font-bold pt-2 border-t border-cyan-200">
                   <span className="text-slate-900">Total</span>

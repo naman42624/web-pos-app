@@ -206,6 +206,8 @@ export async function createItem(item: {
   price: number;
   stock: number;
   image?: string;
+  category?: string;
+  gstRate?: number;
 }) {
   const response = await fetch(`${DATA_BASE}/items`, {
     method: "POST",
@@ -222,6 +224,8 @@ export async function updateItem(
     price: number;
     stock: number;
     image: string;
+    category: string;
+    gstRate: number;
   }>,
 ) {
   const response = await fetch(`${DATA_BASE}/items/${id}`, {

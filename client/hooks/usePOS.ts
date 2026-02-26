@@ -23,6 +23,8 @@ export interface Item {
   price: number;
   stock: number;
   image?: string;
+  category?: string;
+  gstRate?: number;
 }
 
 export interface SaleItem {
@@ -66,6 +68,8 @@ export interface Sale {
   discountValue?: number;
   discountAmount?: number;
   deliveryCharges?: number;
+  subtotal?: number;
+  gstAmount?: number;
   status?:
     | "pending"
     | "pick_up_ready"
@@ -213,6 +217,8 @@ export function usePOS() {
           price: parseFloat(item.price),
           stock: item.stock,
           image: item.image,
+          category: item.category,
+          gstRate: item.gstRate,
         })),
       );
     } catch (error) {
@@ -227,6 +233,8 @@ export function usePOS() {
         price: item.price,
         stock: item.stock,
         image: item.image,
+        category: item.category,
+        gstRate: item.gstRate,
       });
 
       const newItem = {
@@ -235,6 +243,8 @@ export function usePOS() {
         price: parseFloat(data.price),
         stock: data.stock,
         image: data.image,
+        category: data.category,
+        gstRate: data.gstRate,
       };
 
       setItems([...items, newItem]);
@@ -456,6 +466,8 @@ export function usePOS() {
         paymentAmounts: sale.paymentAmounts,
         customerId: sale.customerId,
         total: parseFloat(sale.total),
+        subtotal: sale.subtotal ? parseFloat(sale.subtotal) : undefined,
+        gstAmount: sale.gstAmount ? parseFloat(sale.gstAmount) : undefined,
         date: sale.date,
         orderType: sale.orderType,
         pickupDate: sale.pickupDate,
@@ -569,6 +581,8 @@ export function usePOS() {
         paymentAmounts: sale.paymentAmounts,
         customerId: sale.customerId,
         total: sale.total,
+        subtotal: sale.subtotal,
+        gstAmount: sale.gstAmount,
         date: new Date().toISOString(),
         orderType: sale.orderType,
         pickupDate: sale.pickupDate,

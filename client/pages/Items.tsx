@@ -24,6 +24,8 @@ export default function Items() {
     price: "",
     stock: "",
     image: "",
+    category: "",
+    gstRate: "",
   });
 
   const filteredItems = items.filter((item) =>
@@ -80,6 +82,8 @@ export default function Items() {
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock),
           image: formData.image || undefined,
+          category: formData.category || undefined,
+          gstRate: formData.gstRate ? parseFloat(formData.gstRate) : undefined,
         });
         setEditingId(null);
       } else {
@@ -88,10 +92,12 @@ export default function Items() {
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock),
           image: formData.image || undefined,
+          category: formData.category || undefined,
+          gstRate: formData.gstRate ? parseFloat(formData.gstRate) : undefined,
         });
       }
 
-      setFormData({ name: "", price: "", stock: "", image: "" });
+      setFormData({ name: "", price: "", stock: "", image: "", category: "", gstRate: "" });
       setShowAddItemModal(false);
     } catch (error: any) {
       const errorMsg =
@@ -110,6 +116,8 @@ export default function Items() {
       price: item.price.toString(),
       stock: item.stock.toString(),
       image: item.image || "",
+      category: item.category || "",
+      gstRate: item.gstRate ? item.gstRate.toString() : "",
     });
     setShowAddItemModal(true);
   };
@@ -117,7 +125,7 @@ export default function Items() {
   const closeModal = () => {
     setShowAddItemModal(false);
     setEditingId(null);
-    setFormData({ name: "", price: "", stock: "", image: "" });
+    setFormData({ name: "", price: "", stock: "", image: "", category: "", gstRate: "" });
     setErrorMessage(null);
   };
 
@@ -138,7 +146,7 @@ export default function Items() {
             <button
               onClick={() => {
                 setEditingId(null);
-                setFormData({ name: "", price: "", stock: "", image: "" });
+                setFormData({ name: "", price: "", stock: "", image: "", category: "", gstRate: "" });
                 setShowAddItemModal(true);
               }}
               className="inline-flex items-center justify-center sm:justify-start gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg w-full sm:w-auto"
@@ -196,8 +204,18 @@ export default function Items() {
                         <p className="font-semibold text-slate-900 text-sm truncate">
                           {item.name}
                         </p>
+                        {item.category && (
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {item.category}
+                          </p>
+                        )}
                         <p className="text-sm text-slate-600 mt-1">
                           ₹{item.price.toFixed(2)}
+                          {item.gstRate && (
+                            <span className="text-xs text-slate-500 ml-1">
+                              (incl. {item.gstRate}% GST)
+                            </span>
+                          )}
                         </p>
                         <span
                           className={cn(
@@ -253,7 +271,13 @@ export default function Items() {
                         Item Name
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                        Category
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
                         Price (₹)
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
+                        GST (%)
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-slate-900">
                         Stock
@@ -288,8 +312,18 @@ export default function Items() {
                           </p>
                         </td>
                         <td className="px-6 py-4">
+                          <p className="text-sm text-slate-600">
+                            {item.category || "-"}
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
                           <p className="font-semibold text-slate-900">
                             ₹{item.price.toFixed(2)}
+                          </p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-sm text-slate-600">
+                            {item.gstRate ? `${item.gstRate}%` : "-"}
                           </p>
                         </td>
                         <td className="px-6 py-4">
@@ -430,6 +464,41 @@ export default function Items() {
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Category (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) =>
+                      handleInputChange("category", e.target.value)
+                    }
+                    placeholder="e.g., Flowers, Chocolates, Balloons"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    GST Rate (%) (Optional)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.gstRate}
+                    onChange={(e) =>
+                      handleInputChange("gstRate", e.target.value)
+                    }
+                    placeholder="e.g., 5, 12, 18"
+                    step="0.01"
+                    min="0"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    The price above already includes this GST rate
+                  </p>
                 </div>
 
                 <div>

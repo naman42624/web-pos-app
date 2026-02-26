@@ -130,11 +130,31 @@ export default function AddSale() {
     }
   };
 
+  const calculateGST = () => {
+    // GST is calculated as: For a price P that includes GST at rate R,
+    // GST Amount = P - (P / (1 + R/100))
+    let totalGST = 0;
+    saleItems.forEach((item) => {
+      const itemAmount = item.quantity * item.price;
+      // Find the GST rate for this item
+      const itemData = inventoryItems.find((i) => i.id === item.id);
+      const gstRate = itemData?.gstRate || 0;
+
+      if (gstRate > 0) {
+        const baseAmount = itemAmount / (1 + gstRate / 100);
+        const gstAmount = itemAmount - baseAmount;
+        totalGST += gstAmount;
+      }
+    });
+    return totalGST;
+  };
+
   const discountAmount = calculateDiscount();
   const deliveryChargeAmount =
     orderType === "delivery" && deliveryCharges
       ? parseFloat(deliveryCharges)
       : 0;
+  const gstAmount = calculateGST();
   const total = Math.max(0, subtotal - discountAmount + deliveryChargeAmount);
 
   const handleProductNameChange = (value: string) => {
@@ -517,6 +537,8 @@ export default function AddSale() {
         paymentAmounts: paymentAmountsRecord,
         customerId: customerId,
         total,
+        subtotal,
+        gstAmount,
         orderType,
         pickupDate:
           orderType === "pickup_later" || orderType === "delivery"
@@ -1649,12 +1671,40 @@ export default function AddSale() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Subtotal</span>
                   <span className="font-medium text-slate-900">
                     ₹{subtotal.toFixed(2)}
                   </span>
                 </div>
+
+                {gstAmount > 0 && (
+                  <div className="flex justify-between text-sm text-amber-700 bg-amber-50 p-2 rounded">
+                    <span>GST (Tax)</span>
+                    <span className="font-medium">₹{gstAmount.toFixed(2)}</span>
+                  </div>
+                )}
+
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-sm text-green-700">
+                    <span>
+                      Discount
+                      {discountType === "percentage"
+                        ? ` (${discountValue}%)`
+                        : ""}
+                    </span>
+                    <span className="font-medium">-₹{discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+
+                {deliveryChargeAmount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-600">Delivery Charges</span>
+                    <span className="font-medium text-slate-900">
+                      +₹{deliveryChargeAmount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
 
                 <div className="flex justify-between text-lg font-bold pt-2 border-t border-cyan-200">
                   <span className="text-slate-900">Total</span>

@@ -131,11 +131,22 @@ export function Receipt({ sale }: ReceiptProps) {
           <span>Subtotal:</span>
           <span className="font-semibold">
             ₹
-            {sale.items
-              .reduce((sum, item) => sum + item.quantity * item.price, 0)
-              .toFixed(2)}
+            {sale.subtotal
+              ? sale.subtotal.toFixed(2)
+              : sale.items
+                  .reduce((sum, item) => sum + item.quantity * item.price, 0)
+                  .toFixed(2)}
           </span>
         </div>
+
+        {sale.gstAmount && sale.gstAmount > 0 && (
+          <div className="flex justify-between text-xs leading-tight">
+            <span>GST (Tax):</span>
+            <span className="font-semibold">
+              ₹{sale.gstAmount.toFixed(2)}
+            </span>
+          </div>
+        )}
 
         {sale.discountAmount && sale.discountAmount > 0 && (
           <div className="flex justify-between text-xs text-green-600 leading-tight">
