@@ -96,30 +96,6 @@ export function Receipt({ sale }: ReceiptProps) {
               <div className="text-xs text-slate-600 flex justify-end pr-1 leading-tight">
                 @ ₹{item.price.toFixed(2)}
               </div>
-
-              {/* Composition if present */}
-              {item.composition && item.composition.length > 0 && (
-                <div className="ml-2 mt-0.5 text-xs text-slate-600 border-l border-slate-300 pl-1">
-                  {item.composition.map((comp, compIdx) => (
-                    <div
-                      key={compIdx}
-                      className="flex justify-between text-xs leading-tight"
-                    >
-                      <span className="truncate">
-                        {getItemName(comp.itemId, comp.customName)} ×
-                        {comp.quantity}
-                      </span>
-                      <span className="ml-1 text-right whitespace-nowrap">
-                        ₹
-                        {(
-                          getItemPrice(comp.itemId, comp.customPrice) *
-                          comp.quantity
-                        ).toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -139,14 +115,12 @@ export function Receipt({ sale }: ReceiptProps) {
           </span>
         </div>
 
-        {sale.gstAmount && sale.gstAmount > 0 && (
-          <div className="flex justify-between text-xs leading-tight">
-            <span>GST (Tax):</span>
-            <span className="font-semibold">
-              ₹{sale.gstAmount.toFixed(2)}
-            </span>
-          </div>
-        )}
+        <div className="flex justify-between text-xs leading-tight">
+          <span>GST (Tax):</span>
+          <span className="font-semibold">
+            ₹{(sale.gstAmount || 0).toFixed(2)}
+          </span>
+        </div>
 
         {sale.discountAmount && sale.discountAmount > 0 && (
           <div className="flex justify-between text-xs text-green-600 leading-tight">
