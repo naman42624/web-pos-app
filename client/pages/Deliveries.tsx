@@ -26,7 +26,16 @@ export default function Deliveries() {
   } = usePOSContext();
   const [searchParams] = useSearchParams();
 
-  const today = new Date().toISOString().split("T")[0];
+  // Get today's date in local timezone (YYYY-MM-DD format)
+  const getTodayDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getTodayDate();
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [showDeliveryBoyModal, setShowDeliveryBoyModal] = useState(false);
@@ -45,6 +54,15 @@ export default function Deliveries() {
     }
   }, [searchParams]);
 
+  // Helper to get local date string from a date
+  const getLocalDateString = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const deliveryOrders = useMemo(() => {
     const allDeliveries = sales.filter((sale) => sale.orderType === "delivery");
 
@@ -52,9 +70,7 @@ export default function Deliveries() {
 
     return allDeliveries.filter((sale) => {
       if (!sale.pickupDate) return false;
-      const deliveryDate = new Date(sale.pickupDate)
-        .toISOString()
-        .split("T")[0];
+      const deliveryDate = getLocalDateString(sale.pickupDate);
       return deliveryDate === selectedDate;
     });
   }, [sales, selectedDate]);

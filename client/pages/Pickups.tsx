@@ -22,7 +22,16 @@ export default function Pickups() {
   } = usePOSContext();
   const [searchParams] = useSearchParams();
 
-  const today = new Date().toISOString().split("T")[0];
+  // Get today's date in local timezone (YYYY-MM-DD format)
+  const getTodayDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getTodayDate();
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
@@ -33,6 +42,15 @@ export default function Pickups() {
     }
   }, [searchParams]);
 
+  // Helper to get local date string from a date
+  const getLocalDateString = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const pickupOrders = useMemo(() => {
     const allPickups = sales.filter(
       (sale) => sale.orderType === "pickup_later",
@@ -42,7 +60,7 @@ export default function Pickups() {
 
     return allPickups.filter((sale) => {
       if (!sale.pickupDate) return false;
-      const pickupDate = new Date(sale.pickupDate).toISOString().split("T")[0];
+      const pickupDate = getLocalDateString(sale.pickupDate);
       return pickupDate === selectedDate;
     });
   }, [sales, selectedDate]);
