@@ -1326,6 +1326,91 @@ export default function AddSale() {
         </div>
       )}
 
+      {/* QR Scanner Modal */}
+      {showQRScanner && (
+        <QRScannerModal
+          onScan={handleQRScanned}
+          onClose={() => setShowQRScanner(false)}
+        />
+      )}
+
+      {/* Scanned Product Confirmation */}
+      {showScannedConfirm && scannedProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-slate-900">
+                Add Scanned Product?
+              </h2>
+              <button
+                onClick={() => setShowScannedConfirm(false)}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Product Image */}
+            {scannedProduct.image && (
+              <div className="mb-6 rounded-lg overflow-hidden bg-slate-100">
+                <img
+                  src={scannedProduct.image}
+                  alt={scannedProduct.name}
+                  className="w-full h-auto max-h-64 object-contain"
+                  loading="eager"
+                />
+              </div>
+            )}
+
+            {/* Product Details */}
+            <div className="space-y-3 mb-6">
+              <div>
+                <p className="text-sm text-slate-500">Product Name</p>
+                <p className="text-lg font-semibold text-slate-900">
+                  {scannedProduct.name}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-500">Price</p>
+                <p className="text-lg font-semibold text-slate-900">
+                  ₹{scannedProduct.price.toFixed(2)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-500">Quantity</p>
+                <input
+                  type="number"
+                  min="1"
+                  value={productQuantity}
+                  onChange={(e) => setProductQuantity(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowScannedConfirm(false)}
+                className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleAddReadyProduct();
+                  setShowScannedConfirm(false);
+                  setScannedProduct(null);
+                }}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all"
+              >
+                Add to Sale
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Other modals would continue here */}
     </SharedLayout>
   );
