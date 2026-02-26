@@ -604,11 +604,17 @@ export default function AddSale() {
 
   const handleAddScannedProduct = () => {
     if (scannedProduct) {
-      const saleItem = convertQRDataToSaleItem(scannedProduct);
+      const baseItem = convertQRDataToSaleItem(scannedProduct);
+      const quantity = parseInt(productQuantity) || 1;
+      const saleItem: SaleItem = {
+        ...baseItem,
+        quantity,
+      };
       const newSaleItems = [...saleItems, saleItem];
       setSaleItems(newSaleItems);
       setScannedProduct(null);
       setShowScannedConfirm(false);
+      setProductQuantity("1");
     }
   };
 
@@ -1397,11 +1403,7 @@ export default function AddSale() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  handleAddReadyProduct();
-                  setShowScannedConfirm(false);
-                  setScannedProduct(null);
-                }}
+                onClick={handleAddScannedProduct}
                 className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all"
               >
                 Add to Sale
