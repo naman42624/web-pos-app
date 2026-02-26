@@ -789,7 +789,7 @@ export function usePOS() {
   };
 
   // Load Settings
-  async function loadSettings() {
+  const loadSettings = async () => {
     try {
       const data = await api.fetchSettings();
       // If no settings exist, initialize with defaults
@@ -850,10 +850,10 @@ export function usePOS() {
     } catch (error) {
       console.error("Error loading settings:", error);
     }
-  }
+  };
 
   // Update Settings
-  async function updateSettings(updatedSettings: Partial<Settings>) {
+  const updateSettings = async (updatedSettings: Partial<Settings>) => {
     try {
       const data = await api.updateSettings(updatedSettings);
 
@@ -869,7 +869,7 @@ export function usePOS() {
       console.error("Error updating settings:", error);
       throw error;
     }
-  }
+  };
 
   const addDeliveryBoy = async (
     boy: Omit<DeliveryBoy, "id" | "createdAt">,
