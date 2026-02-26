@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import {
@@ -19,6 +20,7 @@ export default function Customers() {
   const { customers, addCustomer } = usePOSContext();
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -79,36 +81,64 @@ export default function Customers() {
     });
   };
 
-  const handleAddCustomer = () => {
+  const handleAddCustomer = async () => {
+    // Validation
     if (!formData.name.trim()) {
-      alert("Please enter customer name");
+      toast.error("Please enter customer name");
       return;
     }
 
     if (!formData.phone.trim()) {
-      alert("Please enter phone number");
+      toast.error("Please enter phone number");
       return;
     }
 
-    addCustomer({
-      name: formData.name.trim(),
-      phone: formData.phone.trim(),
-      altPhone: formData.altPhone.trim() || undefined,
-      email: formData.email.trim() || undefined,
-      organization: formData.organization.trim() || undefined,
-      addresses: formData.addresses,
-      totalCredit: 0,
-    });
+    // Validate phone is numeric
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone.trim())) {
+      toast.error("Phone number must be 10 digits");
+      return;
+    }
 
-    setFormData({
-      name: "",
-      phone: "",
-      altPhone: "",
-      email: "",
-      organization: "",
-      addresses: [],
-    });
-    setShowAddCustomerModal(false);
+    // Validate email if provided
+    if (formData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      await addCustomer({
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        altPhone: formData.altPhone.trim() || undefined,
+        email: formData.email.trim() || undefined,
+        organization: formData.organization.trim() || undefined,
+        addresses: formData.addresses,
+        totalCredit: 0,
+      });
+
+      toast.success("Customer added successfully!");
+
+      setFormData({
+        name: "",
+        phone: "",
+        altPhone: "",
+        email: "",
+        organization: "",
+        addresses: [],
+      });
+      setShowAddCustomerModal(false);
+    } catch (error: any) {
+      console.error("Error adding customer:", error);
+      toast.error(error.message || "Failed to add customer");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -460,16 +490,27 @@ export default function Customers() {
               <div className="flex gap-3 mt-8 sticky bottom-0 bg-white pt-4 border-t border-slate-200">
                 <button
                   onClick={() => setShowAddCustomerModal(false)}
-                  className="flex-1 px-6 py-3 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors text-base"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-3 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddCustomer}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-base"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Plus className="w-5 h-5" />
-                  Add Customer
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-5 h-5" />
+                      Add Customer
+                    </>
+                  )}
                 </button>
               </div>
             </div>

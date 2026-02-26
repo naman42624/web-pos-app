@@ -328,10 +328,38 @@ export async function createCustomer(customer: {
   }>;
   totalCredit?: number;
 }) {
+  // Validate required fields
+  if (!customer.name || !customer.name.trim()) {
+    throw new Error("Customer name is required");
+  }
+  if (!customer.phone || !customer.phone.trim()) {
+    throw new Error("Phone number is required");
+  }
+
+  // Build payload with only provided fields
+  const payload: any = {
+    name: customer.name.trim(),
+    phone: customer.phone.trim(),
+  };
+
+  // Only include optional fields if they have values
+  if (customer.altPhone && customer.altPhone.trim()) {
+    payload.altPhone = customer.altPhone.trim();
+  }
+  if (customer.email && customer.email.trim()) {
+    payload.email = customer.email.trim();
+  }
+  if (customer.organization && customer.organization.trim()) {
+    payload.organization = customer.organization.trim();
+  }
+  if (customer.addresses && customer.addresses.length > 0) {
+    payload.addresses = customer.addresses;
+  }
+
   const response = await fetch(`${DATA_BASE}/customers`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify(customer),
+    body: JSON.stringify(payload),
   });
   return handleResponse(response);
 }

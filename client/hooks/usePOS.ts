@@ -402,6 +402,14 @@ export function usePOS() {
 
   const addCustomer = async (customer: Omit<Customer, "id">) => {
     try {
+      // Validate required fields
+      if (!customer.name || !customer.name.trim()) {
+        throw new Error("Customer name is required");
+      }
+      if (!customer.phone || !customer.phone.trim()) {
+        throw new Error("Phone number is required");
+      }
+
       const data = await api.createCustomer({
         name: customer.name,
         phone: customer.phone,
