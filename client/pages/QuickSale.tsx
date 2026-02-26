@@ -263,6 +263,12 @@ export default function QuickSale() {
       }
       newModes.delete(mode);
       setPaymentAmounts({ ...paymentAmounts, [mode]: "" });
+
+      // Clear customer selection when credit is deselected
+      if (mode === "credit") {
+        setSelectedCustomerId(null);
+        setCreditCustomerSearch("");
+      }
     } else {
       newModes.add(mode);
     }
@@ -367,36 +373,17 @@ export default function QuickSale() {
 
     const primaryMode = Array.from(selectedPaymentModes)[0];
 
-    if (
-      primaryMode === "credit" &&
-      !selectedCustomerId &&
-      !creditCustomerSearch.trim()
-    ) {
-      alert("Please select or enter customer name for credit sale");
+    // Require customer selection for credit payments
+    if (primaryMode === "credit" && !selectedCustomerId) {
+      alert(
+        "Credit payment requires selecting an existing customer. Please search and select a customer from the database."
+      );
       return;
     }
 
     setIsLoading(true);
     try {
-      let customerId: string | undefined = selectedCustomerId || undefined;
-
-      // Create customer for credit sales if not selected from existing
-      if (
-        primaryMode === "credit" &&
-        !selectedCustomerId &&
-        creditCustomerSearch.trim()
-      ) {
-        const newCustomer = await addCustomer({
-          name: creditCustomerSearch.trim(),
-          phone: undefined,
-          email: undefined,
-          altPhone: undefined,
-          organization: undefined,
-          addresses: [],
-          totalCredit: 0,
-        });
-        customerId = newCustomer.id;
-      }
+      const customerId = selectedCustomerId || undefined;
 
       const sale = await addSale({
         items: saleItems,
@@ -990,9 +977,15 @@ export default function QuickSale() {
               </div>
 
               {selectedPaymentModes.has("credit") && (
-                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-sm font-medium text-amber-900 mb-3">
+                    ⚠️ Credit Payment Selected
+                  </p>
+                  <p className="text-sm text-amber-800 mb-4">
+                    For credit payments, you must select an existing customer from the database.
+                  </p>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Customer Name <span className="text-red-500">*</span>
+                    Select Customer <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -1012,7 +1005,7 @@ export default function QuickSale() {
                           setShowCustomerDropdown(true);
                         }
                       }}
-                      placeholder="Search or enter customer name"
+                      placeholder="Search customer by name"
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none"
                     />
                     {showCustomerDropdown && filteredCustomers.length > 0 && (
@@ -1041,10 +1034,16 @@ export default function QuickSale() {
                         ))}
                       </div>
                     )}
+                    {creditCustomerSearch.trim() &&
+                     filteredCustomers.length === 0 && (
+                      <div className="text-sm text-red-600 mt-2 p-2 bg-red-50 rounded border border-red-200">
+                        No customers found matching "{creditCustomerSearch}". Please check the spelling or select from the list above.
+                      </div>
+                    )}
                   </div>
                   {selectedCustomerId && (
                     <p className="text-sm text-green-700 mt-2">
-                      ✓ Customer selected
+                      ✓ Customer selected: {customers.find(c => c.id === selectedCustomerId)?.name}
                     </p>
                   )}
                 </div>

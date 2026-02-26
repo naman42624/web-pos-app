@@ -362,9 +362,8 @@ export default function AddSale() {
       setNewCustomerName("");
       setNewCustomerEmail("");
       setNewCustomerPhone("");
-    }
-
-    if (mode !== "credit" && !newModes.has("credit")) {
+    } else {
+      // Clear customer selection when credit is deselected
       setSelectedCustomerId("");
     }
   };
