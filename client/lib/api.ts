@@ -244,6 +244,33 @@ export async function deleteItem(id: string) {
   return handleResponse(response);
 }
 
+export async function fetchCategories() {
+  const response = await fetch(`${DATA_BASE}/categories`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
+
+export async function createCategory(category: {
+  name: string;
+  description?: string;
+}) {
+  const response = await fetch(`${DATA_BASE}/categories`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(category),
+  });
+  return handleResponse(response);
+}
+
+export async function deleteCategory(id: string) {
+  const response = await fetch(`${DATA_BASE}/categories/${id}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
+
 export async function fetchProducts() {
   const response = await fetch(`${DATA_BASE}/products`, {
     headers: getHeaders(),

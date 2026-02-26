@@ -13,12 +13,16 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
 export default function Items() {
-  const { items, addItem, updateItem, deleteItem } = usePOSContext();
+  const { items, addItem, updateItem, deleteItem, categories, addCategory, deleteCategory } = usePOSContext();
   const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryDesc, setNewCategoryDesc] = useState("");
+  const [categoryError, setCategoryError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -129,6 +133,36 @@ export default function Items() {
     setErrorMessage(null);
   };
 
+  const handleAddCategory = async () => {
+    setCategoryError(null);
+
+    if (!newCategoryName.trim()) {
+      setCategoryError("Please enter category name");
+      return;
+    }
+
+    try {
+      await addCategory({
+        name: newCategoryName.trim(),
+        description: newCategoryDesc.trim() || undefined,
+      });
+      setNewCategoryName("");
+      setNewCategoryDesc("");
+      setShowAddCategoryModal(false);
+    } catch (error: any) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to add category";
+      setCategoryError(errorMsg);
+    }
+  };
+
+  const closeCategoryModal = () => {
+    setShowAddCategoryModal(false);
+    setNewCategoryName("");
+    setNewCategoryDesc("");
+    setCategoryError(null);
+  };
+
   return (
     <SharedLayout>
       <div className="space-y-6 sm:space-y-8">
@@ -173,6 +207,70 @@ export default function Items() {
               >
                 <X className="w-5 h-5" />
               </button>
+            )}
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-slate-900">
+                Item Categories
+              </h2>
+              <button
+                onClick={() => setShowAddCategoryModal(true)}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 hover:shadow-lg"
+              >
+                <Plus className="w-4 h-4" />
+                Add Category
+              </button>
+            </div>
+
+            {categories.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {categories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <p className="font-medium text-slate-900">
+                        {category.name}
+                      </p>
+                      {category.description && (
+                        <p className="text-sm text-slate-600 mt-1">
+                          {category.description}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        if (
+                          confirm(
+                            `Are you sure you want to delete "${category.name}"?`,
+                          )
+                        ) {
+                          deleteCategory(category.id);
+                        }
+                      }}
+                      className="text-red-600 hover:text-red-700 transition-colors p-2 hover:bg-red-50 rounded-lg ml-2 flex-shrink-0"
+                      title="Delete category"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-slate-500 font-medium">
+                  No categories yet
+                </p>
+                <p className="text-slate-400 text-sm mt-1">
+                  Add your first category to get started
+                </p>
+              </div>
             )}
           </div>
         </div>
@@ -467,18 +565,32 @@ export default function Items() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Category (Optional)
-                  </label>
-                  <input
-                    type="text"
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-semibold text-slate-700">
+                      Category (Optional)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddCategoryModal(true)}
+                      className="text-xs text-purple-600 hover:text-purple-700 font-medium"
+                    >
+                      + Add Category
+                    </button>
+                  </div>
+                  <select
                     value={formData.category}
                     onChange={(e) =>
                       handleInputChange("category", e.target.value)
                     }
-                    placeholder="e.g., Flowers, Chocolates, Balloons"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                  />
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+                  >
+                    <option value="">Select a category...</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
@@ -557,6 +669,75 @@ export default function Items() {
                       {editingId ? "Update" : "Add"} Item
                     </>
                   )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Category Modal */}
+        {showAddCategoryModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Add New Category
+                </h2>
+                <button
+                  onClick={closeCategoryModal}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {categoryError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-700">{categoryError}</p>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Category Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="e.g., Flowers, Chocolates, Balloons"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Description (Optional)
+                  </label>
+                  <textarea
+                    value={newCategoryDesc}
+                    onChange={(e) => setNewCategoryDesc(e.target.value)}
+                    placeholder="Brief description of this category..."
+                    rows={3}
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={closeCategoryModal}
+                  className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddCategory}
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Category
                 </button>
               </div>
             </div>

@@ -129,6 +129,13 @@ export interface DeliveryAssignment {
   status: "assigned" | "in_transit" | "delivered" | "cancelled";
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt?: string;
+}
+
 export interface Settings {
   id: string;
   businessName: string;
@@ -162,6 +169,7 @@ export function usePOS() {
   const [creditRecords, setCreditRecords] = useState<CreditRecord[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [deliveryBoys, setDeliveryBoys] = useState<DeliveryBoy[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -170,7 +178,10 @@ export function usePOS() {
     const loadData = async () => {
       try {
         setLoading(true);
-        // Load items first (foundational data)
+        // Load categories and items first (foundational data)
+        await loadCategories().catch((e) =>
+          console.error("Error loading categories:", e),
+        );
         await loadItems().catch((e) =>
           console.error("Error loading items:", e),
         );
@@ -287,6 +298,55 @@ export function usePOS() {
 
     const newStock = Math.max(0, item.stock - quantity);
     await updateItem(itemId, { stock: newStock });
+  };
+
+  // Load Categories
+  const loadCategories = async () => {
+    try {
+      const data = await api.fetchCategories();
+      setCategories(
+        data.map((category: any) => ({
+          id: category._id,
+          name: category.name,
+          description: category.description,
+          createdAt: category.createdAt,
+        })),
+      );
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  };
+
+  const addCategory = async (category: Omit<Category, "id" | "createdAt">) => {
+    try {
+      const data = await api.createCategory({
+        name: category.name,
+        description: category.description,
+      });
+
+      const newCategory = {
+        id: data._id,
+        name: data.name,
+        description: data.description,
+        createdAt: data.createdAt,
+      };
+
+      setCategories([...categories, newCategory]);
+      return newCategory;
+    } catch (error) {
+      console.error("Error adding category:", error);
+      throw error;
+    }
+  };
+
+  const deleteCategory = async (id: string) => {
+    try {
+      await api.deleteCategory(id);
+      setCategories(categories.filter((c) => c.id !== id));
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      throw error;
+    }
   };
 
   // Load Products
@@ -957,6 +1017,7 @@ export function usePOS() {
     creditRecords,
     products,
     deliveryBoys,
+    categories,
     settings,
     loading,
     addSale,
@@ -968,6 +1029,8 @@ export function usePOS() {
     updateItem,
     deleteItem,
     updateItemStock,
+    addCategory,
+    deleteCategory,
     addCustomer,
     getCustomerByIds,
     getCreditRecordsByCustomer,
