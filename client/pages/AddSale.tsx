@@ -136,14 +136,31 @@ export default function AddSale() {
     let totalGST = 0;
     saleItems.forEach((item) => {
       const itemAmount = item.quantity * item.price;
-      // Find the GST rate for this item
-      const itemData = inventoryItems.find((i) => i.id === item.id);
-      const gstRate = itemData?.gstRate || 0;
 
-      if (gstRate > 0) {
-        const baseAmount = itemAmount / (1 + gstRate / 100);
-        const gstAmount = itemAmount - baseAmount;
-        totalGST += gstAmount;
+      // For items with composition (ready or custom products made from items)
+      if (item.composition && item.composition.length > 0) {
+        // Calculate GST from the composition items
+        let compositionGST = 0;
+        item.composition.forEach((comp) => {
+          if (comp.itemId) {
+            const compItem = inventoryItems.find((i) => i.id === comp.itemId);
+            if (compItem?.gstRate) {
+              // Calculate GST proportional to the item's quantity
+              const compAmount = comp.quantity * (compItem.price || 0);
+              const baseAmount = compAmount / (1 + compItem.gstRate / 100);
+              compositionGST += compAmount - baseAmount;
+            }
+          }
+        });
+        totalGST += compositionGST;
+      } else {
+        // For standalone items without composition, try to find the item by searching
+        // This shouldn't normally happen, but included as fallback
+        const itemData = inventoryItems.find((i) => i.name === item.name);
+        if (itemData?.gstRate && itemData.gstRate > 0) {
+          const baseAmount = itemAmount / (1 + itemData.gstRate / 100);
+          totalGST += itemAmount - baseAmount;
+        }
       }
     });
     return totalGST;
@@ -1015,6 +1032,21 @@ export default function AddSale() {
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       />
                     </div>
+
+                    {readyProducts.length === 0 && (
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          No ready products available yet. Switch to{" "}
+                          <button
+                            onClick={() => setAddMode("custom")}
+                            className="font-semibold text-blue-600 hover:text-blue-700 underline"
+                          >
+                            Create Product from Items
+                          </button>{" "}
+                          to create a product from inventory items.
+                        </p>
+                      </div>
+                    )}
 
                     <button
                       onClick={handleAddReadyProduct}
