@@ -22,17 +22,37 @@ function getHeaders(): HeadersInit {
 async function handleResponse(response: Response) {
   if (!response.ok) {
     try {
-      const error = await response.json();
-      throw new Error(error.error || `API request failed: ${response.status}`);
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const error = await response.json();
+        throw new Error(error.error || `API request failed: ${response.status}`);
+      } else {
+        // If response is not JSON, try to get text
+        const text = await response.text();
+        console.error("Error response text:", text);
+        throw new Error(
+          text || `API request failed: ${response.status} ${response.statusText}`,
+        );
+      }
     } catch (parseError) {
+      if (parseError instanceof Error) {
+        throw parseError;
+      }
       throw new Error(
         `API request failed: ${response.status} ${response.statusText}`,
       );
     }
   }
   try {
-    return await response.json();
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    }
   } catch (parseError) {
+    console.error("Failed to parse API response:", parseError);
     throw new Error("Failed to parse API response");
   }
 }
@@ -59,10 +79,24 @@ export async function createUser(user: {
   roleId?: string;
   isActive?: boolean;
 }) {
+  const payload: any = {
+    email: user.email,
+    password: user.password,
+    name: user.name,
+  };
+
+  // Only include optional fields if they're provided
+  if (user.roleId) {
+    payload.roleId = user.roleId;
+  }
+  if (user.isActive !== undefined) {
+    payload.isActive = user.isActive;
+  }
+
   const response = await fetch(`${API_BASE}/users`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify(user),
+    body: JSON.stringify(payload),
   });
   return handleResponse(response);
 }

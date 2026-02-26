@@ -87,13 +87,26 @@ export default function Users() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validation
     if (!formData.email || !formData.name) {
       toast.error("Email and name are required");
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     if (!editingUser && !formData.password) {
       toast.error("Password is required for new users");
+      return;
+    }
+
+    if (!editingUser && formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
       return;
     }
 
@@ -121,6 +134,7 @@ export default function Users() {
       setShowDialog(false);
       await loadData();
     } catch (error: any) {
+      console.error("Error saving user:", error);
       toast.error(error.message || "Failed to save user");
     } finally {
       setLoading(false);
@@ -296,7 +310,21 @@ export default function Users() {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   placeholder="At least 6 characters"
+                  className={formData.password && formData.password.length < 6 ? "border-red-300" : ""}
                 />
+                <p className={`text-xs mt-1 ${
+                  !formData.password
+                    ? "text-slate-500"
+                    : formData.password.length < 6
+                    ? "text-red-600"
+                    : "text-green-600"
+                }`}>
+                  {!formData.password
+                    ? "Minimum 6 characters"
+                    : formData.password.length < 6
+                    ? `${6 - formData.password.length} more characters needed`
+                    : "✓ Password is strong enough"}
+                </p>
               </div>
             )}
 
