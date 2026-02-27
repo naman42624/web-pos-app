@@ -10,31 +10,38 @@ export async function connectDB() {
   try {
     // Return cached connection if available
     if (cachedConnection && mongoose.connection.readyState === 1) {
-      console.log("Using cached MongoDB connection");
+      console.log("[DB] Using cached MongoDB connection");
       return cachedConnection;
     }
 
     // Check current connection state
     if (mongoose.connection.readyState === 1) {
-      console.log("MongoDB already connected");
+      console.log("[DB] MongoDB already connected");
       return mongoose;
     }
 
-    console.log("Connecting to MongoDB...");
+    console.log("[DB] Connecting to MongoDB...");
+    console.log("[DB] MONGODB_URL:", MONGODB_URL.substring(0, 50) + "...");
+
     await mongoose.connect(MONGODB_URL, {
       maxPoolSize: 10,
       minPoolSize: 2,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       retryWrites: true,
       w: "majority",
     });
 
     cachedConnection = mongoose;
-    console.log("MongoDB connected successfully");
+    console.log("[DB] MongoDB connected successfully");
     return mongoose;
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
+  } catch (error: any) {
+    console.error("[DB] MongoDB connection error:", {
+      code: error.code,
+      message: error.message,
+      name: error.name,
+    });
+    console.error("[DB] Full error:", error);
     throw error;
   }
 }
