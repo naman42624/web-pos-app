@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePOSContext } from "@/contexts/usePOSContext";
 import * as api from "@/lib/api";
 import { Sale } from "@/hooks/usePOS";
 import {
@@ -25,7 +24,6 @@ interface DeliveryBoySession {
 
 export default function DeliveryBoyAllOrders() {
   const navigate = useNavigate();
-  const { updateSaleStatus } = usePOSContext();
 
   const [session, setSession] = useState<DeliveryBoySession | null>(null);
   const [myDeliveries, setMyDeliveries] = useState<Sale[]>([]);

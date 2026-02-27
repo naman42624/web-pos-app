@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePOSContext } from "@/contexts/usePOSContext";
 import * as api from "@/lib/api";
 import {
   LogOut,
@@ -26,11 +25,6 @@ interface DeliveryBoySession {
 
 export default function DeliveryBoyDashboard() {
   const navigate = useNavigate();
-  const {
-    updateSaleStatus,
-    updateDeliveryBoy,
-    markCashOnDeliveryReceived,
-  } = usePOSContext();
 
   const [session, setSession] = useState<DeliveryBoySession | null>(null);
   const [myDeliveries, setMyDeliveries] = useState<Sale[]>([]);
@@ -110,7 +104,7 @@ export default function DeliveryBoyDashboard() {
     const newStatus = session.status === "available" ? "busy" : "available";
 
     try {
-      await updateDeliveryBoy(session.id, { status: newStatus });
+      await api.updateDeliveryBoy(session.id, { status: newStatus });
 
       const updatedSession = { ...session, status: newStatus };
       setSession(updatedSession);
@@ -126,7 +120,20 @@ export default function DeliveryBoyDashboard() {
 
   const handleMarkDelivered = async (saleId: string) => {
     try {
-      await updateSaleStatus(saleId, "delivered");
+      await api.updateSale(saleId, { status: "delivered" });
+
+      // Update local state
+      setMyDeliveries(
+        myDeliveries.map((sale) =>
+          sale.id === saleId ? { ...sale, status: "delivered" } : sale,
+        ),
+      );
+
+      const completedDeliveries = myDeliveries.filter(
+        (s) => s.id === saleId || s.status === "delivered",
+      ).length;
+      setCompletedCount(completedDeliveries);
+
       alert("Order marked as delivered!");
     } catch (error) {
       console.error("Error marking as delivered:", error);
@@ -136,7 +143,15 @@ export default function DeliveryBoyDashboard() {
 
   const handleMarkCashReceived = async (saleId: string) => {
     try {
-      await markCashOnDeliveryReceived(saleId);
+      await api.updateSale(saleId, { paymentStatus: "paid" });
+
+      // Update local state
+      setMyDeliveries(
+        myDeliveries.map((sale) =>
+          sale.id === saleId ? { ...sale, paymentStatus: "paid" } : sale,
+        ),
+      );
+
       alert("Cash payment marked as received!");
     } catch (error) {
       console.error("Error marking cash as received:", error);
