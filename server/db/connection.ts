@@ -18,7 +18,8 @@ export async function connectDB() {
     if (mongoose.connection.readyState === 1) {
       console.log("[DB] MongoDB already connected");
       return mongoose;
-        
+    }
+    
     console.log("[DB] Connecting to MongoDB...");
     console.log("[DB] MONGODB_URL:", MONGODB_URL.substring(0, 50) + "...");
 
