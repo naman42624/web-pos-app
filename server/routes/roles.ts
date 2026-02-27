@@ -1,22 +1,25 @@
 import { Router, Response } from "express";
 import { Role, User } from "../db/models/index.js";
 import { authMiddleware, AuthRequest } from "../middleware/authMiddleware.js";
-import { connectDB } from "../db/connection.js";
+import { getCache, setCache, clearCache } from "../utils/cache.js";
 
 const router = Router();
 
-router.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    return res.status(500).json({ error: "Database connection failed" });
-  }
-});
+// DB connection is now established at server startup
+// This middleware is removed to improve performance
 
 router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    // Check cache first
+    const cached = getCache<typeof Role>("roles:all");
+    if (cached) {
+      return res.json(cached);
+    }
+
     const roles = await Role.find().lean();
+
+    // Cache for 5 minutes
+    setCache("roles:all", roles, 300);
     res.json(roles);
   } catch (error: any) {
     console.error("Error fetching roles:", error);
@@ -64,6 +67,10 @@ router.post("/", authMiddleware, async (req: AuthRequest, res: Response) => {
     });
 
     await role.save();
+
+    // Invalidate cache when new role is created
+    clearCache("roles");
+
     res.status(201).json(role);
   } catch (error: any) {
     console.error("Error creating role:", error);
@@ -90,6 +97,10 @@ router.put("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
     if (permissions) role.permissions = permissions;
 
     await role.save();
+
+    // Invalidate cache when role is updated
+    clearCache("roles");
+
     res.json(role);
   } catch (error: any) {
     console.error("Error updating role:", error);
@@ -118,6 +129,9 @@ router.delete(
       if (!role) {
         return res.status(404).json({ error: "Role not found" });
       }
+
+      // Invalidate cache when role is deleted
+      clearCache("roles");
 
       res.json({ message: "Role deleted successfully" });
     } catch (error: any) {

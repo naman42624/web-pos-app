@@ -1,6 +1,9 @@
 import path from "path";
-import { createServer } from "./index";
+import { createServer, initializeDB } from "./index";
 import express from "express";
+
+// Initialize database before creating and starting the server
+await initializeDB();
 
 const app = createServer();
 const port = process.env.PORT || 3000;
