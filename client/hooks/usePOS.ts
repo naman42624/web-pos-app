@@ -177,6 +177,10 @@ export function usePOS() {
   const loadItems = async () => {
     try {
       const data = await api.fetchItems();
+      if (!data) {
+        setItems([]);
+        return;
+      }
       setItems(
         data.map((item: any) => ({
           id: item._id,
@@ -423,6 +427,10 @@ export function usePOS() {
   const loadCustomers = async () => {
     try {
       const data = await api.fetchCustomers();
+      if (!data) {
+        setCustomers([]);
+        return;
+      }
       const customersData = data.map((customer: any) => ({
         id: customer._id,
         name: customer.name,
@@ -487,6 +495,10 @@ export function usePOS() {
   const loadSales = async () => {
     try {
       const data = await api.fetchSales();
+      if (!data) {
+        setSales([]);
+        return;
+      }
       const sales = data.map((sale: any) => ({
         id: sale._id,
         items: sale.items || [],
@@ -739,6 +751,10 @@ export function usePOS() {
   const loadCreditRecords = async () => {
     try {
       const data = await api.fetchCreditRecords();
+      if (!data) {
+        setCreditRecords([]);
+        return;
+      }
       setCreditRecords(
         data.map((record: any) => ({
           id: record._id,

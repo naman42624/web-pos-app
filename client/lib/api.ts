@@ -21,12 +21,15 @@ function getHeaders(): HeadersInit {
 
 async function handleResponse(response: Response) {
   if (!response.ok) {
-    // Handle 401 Unauthorized - clear token and reload
+    // Handle 401 Unauthorized - clear token and redirect without throwing
     if (response.status === 401) {
       localStorage.removeItem("token");
-      // Optionally redirect to login or trigger a full page reload
-      window.location.href = "/login";
-      throw new Error("Unauthorized: Session expired");
+      // Use a small delay to ensure storage is cleared before redirect
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 100);
+      // Return empty data instead of throwing to prevent error logs
+      return null;
     }
 
     try {
