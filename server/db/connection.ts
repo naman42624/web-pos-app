@@ -12,46 +12,23 @@ export async function connectDB() {
   try {
     // If already connected, return immediately (no checks needed)
     if (cachedConnection && mongoose.connection.readyState === 1) {
-      return mongoose;
-    }
-
-    // If currently connecting, wait for it to finish
-    if (isConnecting) {
-      // Poll for connection to complete (max 10 seconds)
-      let attempts = 0;
-      while (isConnecting && attempts < 100) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        attempts++;
-      }
-
-      if (connectionError) {
-        throw connectionError;
-      }
-
-      if (mongoose.connection.readyState === 1) {
-        return mongoose;
-      }
+      console.log("[DB] Using cached MongoDB connection");
+      return cachedConnection;
     }
 
     // Check current connection state
     if (mongoose.connection.readyState === 1) {
-      cachedConnection = mongoose;
+      console.log("[DB] MongoDB already connected");
       return mongoose;
     }
+    
+    console.log("[DB] Connecting to MongoDB...");
+    console.log("[DB] MONGODB_URL:", MONGODB_URL.substring(0, 50) + "...");
 
-    isConnecting = true;
-    connectionError = null;
-
-    console.log("[DB] Connecting to MongoDB with optimized pool settings...");
     await mongoose.connect(MONGODB_URL, {
-      // Optimized pool settings for production
-      maxPoolSize: 20,
-      minPoolSize: 5,
-      maxIdleTimeMS: 45000,
-      waitQueueTimeoutMS: 10000,
-
-      // Connection timeout settings
-      serverSelectionTimeoutMS: 5000,
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       connectTimeoutMS: 10000,
 
@@ -64,13 +41,15 @@ export async function connectDB() {
     });
 
     cachedConnection = mongoose;
-    isConnecting = false;
-    console.log("[DB] MongoDB connected successfully with optimized pool");
+    console.log("[DB] MongoDB connected successfully");
     return mongoose;
   } catch (error: any) {
-    isConnecting = false;
-    connectionError = error;
-    console.error("[DB] MongoDB connection error:", error.message);
+    console.error("[DB] MongoDB connection error:", {
+      code: error.code,
+      message: error.message,
+      name: error.name,
+    });
+    console.error("[DB] Full error:", error);
     throw error;
   }
 }

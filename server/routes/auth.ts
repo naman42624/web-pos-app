@@ -19,7 +19,7 @@ router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+      if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
@@ -65,7 +65,7 @@ router.post(
   "/change-password",
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
-    try {
+      try {
       const { currentPassword, newPassword } = req.body;
 
       if (!currentPassword || !newPassword) {
