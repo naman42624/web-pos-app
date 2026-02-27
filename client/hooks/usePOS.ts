@@ -982,6 +982,14 @@ export function usePOS() {
   // Initial load of all data
   useEffect(() => {
     const loadData = async () => {
+      // Check if we have a valid token before loading data
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.warn("No authentication token found. Skipping data load.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         // Load categories and items first (foundational data)

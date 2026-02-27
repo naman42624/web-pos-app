@@ -21,6 +21,14 @@ function getHeaders(): HeadersInit {
 
 async function handleResponse(response: Response) {
   if (!response.ok) {
+    // Handle 401 Unauthorized - clear token and reload
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      // Optionally redirect to login or trigger a full page reload
+      window.location.href = "/login";
+      throw new Error("Unauthorized: Session expired");
+    }
+
     try {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
