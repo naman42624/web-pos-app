@@ -233,12 +233,14 @@ function HomePage() {
     );
   }
 
-  // If user is authenticated, show Dashboard
+  // If user is authenticated, show Dashboard wrapped in POSProvider
   if (user) {
     return (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
+      <POSProvider>
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      </POSProvider>
     );
   }
 
