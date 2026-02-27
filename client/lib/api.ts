@@ -492,9 +492,12 @@ export async function fetchSale(id: string) {
 }
 
 export async function fetchDeliveryBoySales(deliveryBoyId: string) {
-  const response = await fetch(`${DATA_BASE}/sales/delivery-boy/${deliveryBoyId}`, {
+  const url = `${DATA_BASE}/sales/delivery-boy/${deliveryBoyId}`;
+  console.log("[API] Fetching delivery boy sales from:", url);
+  const response = await fetchWithTimeout(url, {
     headers: getHeaders(),
   });
+  console.log("[API] Delivery boy sales response status:", response.status);
   return handleResponse(response);
 }
 

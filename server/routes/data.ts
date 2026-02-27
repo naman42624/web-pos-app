@@ -299,13 +299,16 @@ router.get(
   async (req: AuthRequest, res: Response) => {
     try {
       const { deliveryBoyId } = req.params;
+      console.log("[API] /sales/delivery-boy/:deliveryBoyId called with ID:", deliveryBoyId);
       const sales = await Sale.find({
         assignedDeliveryBoyId: deliveryBoyId,
         orderType: "delivery",
         status: { $ne: "cancelled" },
       }).lean();
+      console.log(`[API] Found ${sales.length} sales for delivery boy ${deliveryBoyId}`);
       res.json(sales);
     } catch (error: any) {
+      console.error("[API] Error fetching sales for delivery boy:", error);
       res.status(500).json({ error: error.message });
     }
   },
