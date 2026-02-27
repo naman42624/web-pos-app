@@ -101,12 +101,12 @@ export default function DeliveryBoyDashboard() {
   const handleToggleStatus = async () => {
     if (!session) return;
 
-    const newStatus = session.status === "available" ? "busy" : "available";
+    const newStatus: "available" | "busy" = session.status === "available" ? "busy" : "available";
 
     try {
       await api.updateDeliveryBoy(session.id, { status: newStatus });
 
-      const updatedSession = { ...session, status: newStatus };
+      const updatedSession: DeliveryBoySession = { ...session, status: newStatus };
       setSession(updatedSession);
       localStorage.setItem(
         "deliveryBoySession",
@@ -161,7 +161,7 @@ export default function DeliveryBoyDashboard() {
 
   const isCODOrder = (delivery: Sale) => {
     return (
-      delivery.paymentModes?.includes("cod") || delivery.paymentMode === "cod"
+      delivery.paymentModes?.includes("cod" as any) || (delivery.paymentMode as any) === "cod"
     );
   };
 
