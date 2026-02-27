@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -11,8 +11,17 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // When login succeeds and user state is updated, navigate to dashboard
+  useEffect(() => {
+    if (loginSuccess && user) {
+      console.log("[Login] User authenticated, navigating to dashboard");
+      navigate("/", { replace: true });
+    }
+  }, [loginSuccess, user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,11 +35,11 @@ export default function Login() {
       setLoading(true);
       await login(email, password);
       toast.success("Login successful!");
-      navigate("/");
+      // Mark login as successful - the useEffect will handle navigation
+      setLoginSuccess(true);
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error(error.message || "Login failed");
-    } finally {
       setLoading(false);
     }
   };
