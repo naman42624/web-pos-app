@@ -68,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const userData = await response.json();
+        // Clear delivery boy session when restoring admin session
+        localStorage.removeItem("deliveryBoySession");
         setUser({
           id: userData.id,
           email: userData.email,
@@ -105,6 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { token, user: userData } = await response.json();
       localStorage.setItem("token", token);
 
+      // Clear delivery boy session when admin logs in
+      localStorage.removeItem("deliveryBoySession");
+
       setUser({
         id: userData.id,
         email: userData.email,
@@ -134,6 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("deliveryBoySession");
       setUser(null);
     }
   };

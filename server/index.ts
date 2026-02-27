@@ -58,20 +58,18 @@ export function createServer() {
     next();
   });
 
-  // DB health check endpoint
-  app.get("/health", (_req: Request, res: Response) => {
-    const status = getDBConnectionStatus();
-    if (!status.connected) {
-      return res.status(503).json({
-        status: "unhealthy",
-        database: "disconnected",
-        error: "Database connection failed"
-      });
-    }
-    res.json({
-      status: "healthy",
-      database: "connected",
-      timestamp: new Date().toISOString()
+  // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
+
+  // Initialize database connection (non-blocking)
+  console.log("[Server] Starting MongoDB connection...");
+  connectDB()
+    .then(() => {
+      console.log("[Server] MongoDB connected successfully");
+      ensureSuperAdminExists();
+    })
+    .catch((error) => {
+      console.error("[Server] Failed to connect to MongoDB:", error.message);
+      console.error("[Server] API will still serve requests, but database operations will fail");
     });
   });
 

@@ -2,10 +2,6 @@ import path from "path";
 import { createServer, initializeDB } from "./index";
 import express from "express";
 
-// Initialize database before creating and starting the server
-await initializeDB();
-
-const app = createServer();
 const port = process.env.PORT || 3000;
 
 // In production, serve the built SPA files
@@ -17,6 +13,14 @@ const mainApp = express();
 
 // Serve static files
 mainApp.use(express.static(distPath));
+
+// Health check endpoint (doesn't require DB)
+mainApp.get("/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Create the API server
+const app = createServer();
 
 // Mount the API app at /api prefix
 // (routes inside createServer() don't have /api prefix)
@@ -39,19 +43,38 @@ mainApp.use((req, res) => {
   });
 });
 
-mainApp.listen(port, () => {
+// Start server
+const server = mainApp.listen(port, () => {
   console.log(`🚀 Fusion Starter server running on port ${port}`);
   console.log(`📱 Frontend: http://localhost:${port}`);
   console.log(`🔧 API: http://localhost:${port}/api`);
+  console.log(`💚 Health: http://localhost:${port}/health`);
 });
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
   console.log("🛑 Received SIGTERM, shutting down gracefully");
-  process.exit(0);
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
 });
 
 process.on("SIGINT", () => {
   console.log("🛑 Received SIGINT, shutting down gracefully");
-  process.exit(0);
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});
+
+// Handle uncaught errors
+process.on("uncaughtException", (error) => {
+  console.error("🔥 Uncaught Exception:", error);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("🔥 Unhandled Rejection at:", promise, "reason:", reason);
+  process.exit(1);
 });
