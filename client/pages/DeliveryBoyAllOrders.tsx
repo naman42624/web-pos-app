@@ -31,7 +31,7 @@ export default function DeliveryBoyAllOrders() {
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "in_transit" | "delivered"
+    "all" | "pending" | "pick_up_ready" | "in_transit" | "delivered" | "cancelled"
   >("all");
   const [sortBy, setSortBy] = useState<"recent" | "amount" | "status">(
     "recent",
@@ -52,7 +52,8 @@ export default function DeliveryBoyAllOrders() {
     const assigned = sales.filter(
       (sale) =>
         sale.assignedDeliveryBoyId === parsedSession.id &&
-        (sale.status === "in_transit" || sale.status === "delivered"),
+        sale.orderType === "delivery" &&
+        sale.status !== "cancelled",
     );
 
     setMyDeliveries(assigned);
@@ -192,14 +193,17 @@ export default function DeliveryBoyAllOrders() {
                   value={statusFilter}
                   onChange={(e) =>
                     setStatusFilter(
-                      e.target.value as "all" | "in_transit" | "delivered",
+                      e.target.value as "all" | "pending" | "pick_up_ready" | "in_transit" | "delivered" | "cancelled",
                     )
                   }
                   className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                 >
                   <option value="all">All Orders</option>
+                  <option value="pending">Pending</option>
+                  <option value="pick_up_ready">Ready for Pickup</option>
                   <option value="in_transit">In Transit</option>
                   <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
               </div>
 

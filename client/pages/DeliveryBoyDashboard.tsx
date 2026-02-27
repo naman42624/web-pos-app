@@ -45,11 +45,12 @@ export default function DeliveryBoyDashboard() {
     const parsedSession = JSON.parse(sessionData) as DeliveryBoySession;
     setSession(parsedSession);
 
-    // Filter sales assigned to this delivery boy that are in transit
+    // Filter sales assigned to this delivery boy (all statuses except cancelled)
     const assigned = sales.filter(
       (sale) =>
         sale.assignedDeliveryBoyId === parsedSession.id &&
-        (sale.status === "in_transit" || sale.status === "delivered"),
+        sale.orderType === "delivery" &&
+        sale.status !== "cancelled",
     );
 
     setMyDeliveries(assigned);
