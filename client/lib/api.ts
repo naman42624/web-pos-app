@@ -1,9 +1,40 @@
 import { toast } from "sonner";
 
 const API_BASE = "/api";
+const FETCH_TIMEOUT = 30000; // 30 seconds
 
 function getAuthToken(): string | null {
   return localStorage.getItem("token");
+}
+
+// Wrapper for fetch with timeout and better error handling
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit = {},
+  timeoutMs: number = FETCH_TIMEOUT
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      // Check if it's an abort (timeout)
+      if (controller.signal.aborted) {
+        throw new Error(`Request timeout after ${timeoutMs}ms`);
+      }
+      // Could be CORS, network error, or server unreachable
+      throw new Error("Failed to reach the server. Please check your connection.");
+    }
+    throw error;
+  }
 }
 
 function getHeaders(): HeadersInit {
@@ -53,6 +84,11 @@ async function handleResponse(response: Response) {
         `API request failed: ${response.status} ${response.statusText}`,
       );
     }
+  }
+
+  // Handle fetch success but empty response
+  if (!response.body) {
+    return null;
   }
   try {
     const contentType = response.headers.get("content-type");

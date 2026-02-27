@@ -15,7 +15,6 @@ import {
   DollarSign,
 } from "lucide-react";
 import { cn, getOrderNumber } from "@/lib/utils";
-import { useState, useEffect } from "react";
 
 interface DeliveryBoySession {
   id: string;
