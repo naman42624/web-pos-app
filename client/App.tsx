@@ -218,6 +218,36 @@ function AdminRoutes() {
   );
 }
 
+// Home page that checks auth state and routes accordingly
+function HomePage() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is authenticated, show Dashboard wrapped in POSProvider
+  if (user) {
+    return (
+      <POSProvider>
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      </POSProvider>
+    );
+  }
+
+  // Otherwise, show login landing page
+  return <LoginLanding />;
+}
+
 function AppContent() {
   const { user, loading } = useAuth();
 
@@ -248,15 +278,16 @@ function AppContent() {
         element={<DeliveryBoyAllOrders />}
       />
 
-      {/* Admin/User Routes - WITH POSProvider (Only if not in delivery boy mode) */}
-      {user && !isDeliveryBoyMode ? (
+      {/* Home page - checks auth state */}
+      <Route path="/" element={<HomePage />} />
+
+      {/* Admin/User Routes - WITH POSProvider (Only if authenticated and not in delivery boy mode) */}
+      {user && !isDeliveryBoyMode && (
         <Route path="/*" element={<AdminRoutes />} />
-      ) : (
-        <>
-          <Route path="/" element={<LoginLanding />} />
-          <Route path="/login" element={<Login />} />
-        </>
       )}
+
+      {/* Auth pages */}
+      <Route path="/login" element={<Login />} />
 
       {/* Fallback */}
       <Route path="*" element={<NotFound />} />

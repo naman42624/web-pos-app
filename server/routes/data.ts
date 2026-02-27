@@ -15,14 +15,9 @@ import { connectDB } from "../db/connection.js";
 
 const router = Router();
 
-router.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    return res.status(500).json({ error: "Database connection failed" });
-  }
-});
+// DB connection is now established at server startup
+// This middleware is removed to improve performance
+// Each request no longer checks connection on every route
 
 router.get(
   "/items",

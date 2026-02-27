@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Lock, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,7 +26,8 @@ export default function Login() {
       setLoading(true);
       await login(email, password);
       toast.success("Login successful!");
-      navigate("/");
+      // Navigate to home - HomePage component will check auth state and show Dashboard
+      navigate("/", { replace: true });
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error(error.message || "Login failed");

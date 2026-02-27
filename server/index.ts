@@ -6,8 +6,35 @@ import authRoutes from "./routes/auth.js";
 import dataRoutes from "./routes/data.js";
 import usersRoutes from "./routes/users.js";
 import rolesRoutes from "./routes/roles.js";
-import { connectDB } from "./db/connection.js";
+import { connectDB, getDBConnectionStatus, initializeIndexes } from "./db/connection.js";
 import { ensureSuperAdminExists } from "./scripts/createSuperAdmin.js";
+
+let dbConnected = false;
+
+// Call this function from node-build.ts BEFORE creating server
+export async function initializeDB() {
+  try {
+    console.log("[Server] Starting database initialization...");
+
+    // Connect to MongoDB with retries
+    await connectDB();
+    console.log("[Server] ✓ Connected to MongoDB");
+
+    // Create database indexes for performance
+    await initializeIndexes();
+    console.log("[Server] ✓ Database indexes created");
+
+    // Initialize admin user if not exists
+    await ensureSuperAdminExists();
+    console.log("[Server] ✓ Super admin initialized");
+
+    dbConnected = true;
+    console.log("[Server] ✅ Database initialization complete");
+  } catch (error: any) {
+    console.error("[Server] ❌ Failed to initialize database:", error.message);
+    throw error; // This will prevent the app from starting
+  }
+}
 
 export function createServer() {
   const app = express();
@@ -17,9 +44,17 @@ export function createServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-  // Request logging
+  // Response time monitoring middleware
   app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    const startTime = Date.now();
+    const requestId = Math.random().toString(36).substring(7);
+
+    res.on('finish', () => {
+      const duration = Date.now() - startTime;
+      const level = duration > 1000 ? 'SLOW' : duration > 500 ? 'WARN' : 'INFO';
+      console.log(`[${level}] [${requestId}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+    });
+
     next();
   });
 
@@ -36,6 +71,7 @@ export function createServer() {
       console.error("[Server] Failed to connect to MongoDB:", error.message);
       console.error("[Server] API will still serve requests, but database operations will fail");
     });
+  });
 
   // Example API routes
   app.get("/ping", (_req, res) => {

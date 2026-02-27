@@ -1,5 +1,5 @@
 import path from "path";
-import { createServer } from "./index";
+import { createServer, initializeDB } from "./index";
 import express from "express";
 
 const port = process.env.PORT || 3000;
