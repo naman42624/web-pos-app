@@ -603,6 +603,22 @@ export async function updateDeliveryBoyStatus(
   return handleResponse(response);
 }
 
+// Public endpoint for delivery boys to update order delivery status
+export async function updateDeliveryOrderStatus(
+  saleId: string,
+  status: "pending" | "in_transit" | "delivered" | "cancelled",
+  paymentStatus?: "pending" | "paid" | "failed",
+) {
+  const response = await fetch(`${DATA_BASE}/sales/${saleId}/delivery-status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status, paymentStatus }),
+  });
+  return handleResponse(response);
+}
+
 export async function fetchSettings() {
   const response = await fetch(`${DATA_BASE}/settings`, {
     headers: getHeaders(),

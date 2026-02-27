@@ -314,6 +314,44 @@ router.get(
   },
 );
 
+// Public endpoint for delivery boys to mark orders as delivered - MUST COME BEFORE /:id ROUTES
+router.put(
+  "/sales/:id/delivery-status",
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { status, paymentStatus } = req.body;
+
+      // Validate status
+      if (!status || !["in_transit", "delivered", "pending", "cancelled"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+      }
+
+      // Validate paymentStatus if provided
+      if (paymentStatus && !["pending", "paid", "failed"].includes(paymentStatus)) {
+        return res.status(400).json({ error: "Invalid payment status value" });
+      }
+
+      const updateData: any = { status };
+      if (paymentStatus) {
+        updateData.paymentStatus = paymentStatus;
+      }
+
+      const sale = await Sale.findByIdAndUpdate(id, updateData, { new: true });
+
+      if (!sale) {
+        return res.status(404).json({ error: "Sale not found" });
+      }
+
+      console.log(`[API] Delivery boy updated sale ${id} status to ${status}`);
+      res.json(sale);
+    } catch (error: any) {
+      console.error("[API] Error updating delivery boy sale status:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
 router.get(
   "/sales/:id",
   authMiddleware,

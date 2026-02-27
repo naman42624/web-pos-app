@@ -122,7 +122,8 @@ export default function DeliveryBoyDashboard() {
 
   const handleMarkDelivered = async (saleId: string) => {
     try {
-      await api.updateSale(saleId, { status: "delivered" });
+      console.log("[DeliveryBoyDashboard] Marking order as delivered:", saleId);
+      await api.updateDeliveryOrderStatus(saleId, "delivered");
 
       // Update local state
       setMyDeliveries(
@@ -136,16 +137,18 @@ export default function DeliveryBoyDashboard() {
       ).length;
       setCompletedCount(completedDeliveries);
 
+      console.log("[DeliveryBoyDashboard] Order marked as delivered successfully");
       alert("Order marked as delivered!");
     } catch (error) {
-      console.error("Error marking as delivered:", error);
+      console.error("[DeliveryBoyDashboard] Error marking as delivered:", error);
       alert("Failed to mark order as delivered");
     }
   };
 
   const handleMarkCashReceived = async (saleId: string) => {
     try {
-      await api.updateSale(saleId, { paymentStatus: "paid" });
+      console.log("[DeliveryBoyDashboard] Marking cash as received:", saleId);
+      await api.updateDeliveryOrderStatus(saleId, "in_transit", "paid");
 
       // Update local state
       setMyDeliveries(
@@ -154,9 +157,10 @@ export default function DeliveryBoyDashboard() {
         ),
       );
 
+      console.log("[DeliveryBoyDashboard] Cash marked as received successfully");
       alert("Cash payment marked as received!");
     } catch (error) {
-      console.error("Error marking cash as received:", error);
+      console.error("[DeliveryBoyDashboard] Error marking cash as received:", error);
       alert("Failed to mark cash as received");
     }
   };
