@@ -455,6 +455,13 @@ export async function fetchSale(id: string) {
   return handleResponse(response);
 }
 
+export async function fetchDeliveryBoySales(deliveryBoyId: string) {
+  const response = await fetch(`${DATA_BASE}/sales/delivery-boy/${deliveryBoyId}`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(response);
+}
+
 export async function createSale(sale: any) {
   const response = await fetch(`${DATA_BASE}/sales`, {
     method: "POST",

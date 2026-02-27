@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePOSContext } from "@/contexts/usePOSContext";
+import * as api from "@/lib/api";
 import {
   LogOut,
   Truck,
@@ -14,6 +15,8 @@ import {
   DollarSign,
 } from "lucide-react";
 import { cn, getOrderNumber } from "@/lib/utils";
+import { Sale } from "@/hooks/usePOS";
+import { useState, useEffect } from "react";
 
 interface DeliveryBoySession {
   id: string;
@@ -25,15 +28,15 @@ interface DeliveryBoySession {
 export default function DeliveryBoyDashboard() {
   const navigate = useNavigate();
   const {
-    sales,
     updateSaleStatus,
     updateDeliveryBoy,
     markCashOnDeliveryReceived,
   } = usePOSContext();
 
   const [session, setSession] = useState<DeliveryBoySession | null>(null);
-  const [myDeliveries, setMyDeliveries] = useState<(typeof sales)[]>([]);
+  const [myDeliveries, setMyDeliveries] = useState<Sale[]>([]);
   const [completedCount, setCompletedCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const sessionData = localStorage.getItem("deliveryBoySession");
@@ -45,17 +48,52 @@ export default function DeliveryBoyDashboard() {
     const parsedSession = JSON.parse(sessionData) as DeliveryBoySession;
     setSession(parsedSession);
 
-    // Filter sales assigned to this delivery boy (all statuses except cancelled)
-    const assigned = sales.filter(
-      (sale) =>
-        sale.assignedDeliveryBoyId === parsedSession.id &&
-        sale.orderType === "delivery" &&
-        sale.status !== "cancelled",
-    );
+    // Load delivery boy's assigned sales from API
+    const loadDeliveries = async () => {
+      try {
+        const data = await api.fetchDeliveryBoySales(parsedSession.id);
+        if (data && Array.isArray(data)) {
+          const deliveries = data.map((sale: any) => ({
+            id: sale._id,
+            items: sale.items || [],
+            paymentMode: sale.paymentMode,
+            paymentModes: sale.paymentModes,
+            paymentAmounts: sale.paymentAmounts,
+            customerId: sale.customerId,
+            total: parseFloat(sale.total),
+            subtotal: sale.subtotal ? parseFloat(sale.subtotal) : undefined,
+            gstAmount: sale.gstAmount ? parseFloat(sale.gstAmount) : undefined,
+            date: sale.date,
+            orderType: sale.orderType,
+            pickupDate: sale.pickupDate,
+            pickupTime: sale.pickupTime,
+            discountType: sale.discountType,
+            discountValue: sale.discountValue ? parseFloat(sale.discountValue) : undefined,
+            discountAmount: sale.discountAmount ? parseFloat(sale.discountAmount) : undefined,
+            deliveryCharges: sale.deliveryCharges ? parseFloat(sale.deliveryCharges) : undefined,
+            deliveryDetails: sale.deliveryDetails,
+            status: sale.status || "pending",
+            paymentStatus: sale.paymentStatus || "pending",
+            assignedDeliveryBoyId: sale.assignedDeliveryBoyId,
+            isQuickSale: sale.isQuickSale || false,
+          }));
+          setMyDeliveries(deliveries);
+          setCompletedCount(deliveries.filter((s) => s.status === "delivered").length);
+        } else {
+          setMyDeliveries([]);
+          setCompletedCount(0);
+        }
+      } catch (error) {
+        console.error("Error loading delivery boy sales:", error);
+        setMyDeliveries([]);
+        setCompletedCount(0);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setMyDeliveries(assigned);
-    setCompletedCount(assigned.filter((s) => s.status === "delivered").length);
-  }, [sales, navigate]);
+    loadDeliveries();
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("deliveryBoySession");
@@ -102,13 +140,13 @@ export default function DeliveryBoyDashboard() {
     }
   };
 
-  const isCODOrder = (delivery: (typeof sales)[0]) => {
+  const isCODOrder = (delivery: Sale) => {
     return (
       delivery.paymentModes?.includes("cod") || delivery.paymentMode === "cod"
     );
   };
 
-  const getCODAmount = (delivery: (typeof sales)[0]) => {
+  const getCODAmount = (delivery: Sale) => {
     if (delivery.paymentAmounts && delivery.paymentAmounts.cod) {
       return delivery.paymentAmounts.cod;
     }

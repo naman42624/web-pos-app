@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePOSContext } from "@/contexts/usePOSContext";
+import * as api from "@/lib/api";
+import { Sale } from "@/hooks/usePOS";
 import {
   ArrowLeft,
   Truck,
@@ -13,6 +15,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { cn, getOrderNumber } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 interface DeliveryBoySession {
   id: string;
@@ -23,10 +26,11 @@ interface DeliveryBoySession {
 
 export default function DeliveryBoyAllOrders() {
   const navigate = useNavigate();
-  const { sales } = usePOSContext();
+  const { updateSaleStatus } = usePOSContext();
 
   const [session, setSession] = useState<DeliveryBoySession | null>(null);
-  const [myDeliveries, setMyDeliveries] = useState<(typeof sales)[]>([]);
+  const [myDeliveries, setMyDeliveries] = useState<Sale[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,15 +53,49 @@ export default function DeliveryBoyAllOrders() {
     const parsedSession = JSON.parse(sessionData) as DeliveryBoySession;
     setSession(parsedSession);
 
-    const assigned = sales.filter(
-      (sale) =>
-        sale.assignedDeliveryBoyId === parsedSession.id &&
-        sale.orderType === "delivery" &&
-        sale.status !== "cancelled",
-    );
+    // Load delivery boy's assigned sales from API
+    const loadDeliveries = async () => {
+      try {
+        const data = await api.fetchDeliveryBoySales(parsedSession.id);
+        if (data && Array.isArray(data)) {
+          const deliveries = data.map((sale: any) => ({
+            id: sale._id,
+            items: sale.items || [],
+            paymentMode: sale.paymentMode,
+            paymentModes: sale.paymentModes,
+            paymentAmounts: sale.paymentAmounts,
+            customerId: sale.customerId,
+            total: parseFloat(sale.total),
+            subtotal: sale.subtotal ? parseFloat(sale.subtotal) : undefined,
+            gstAmount: sale.gstAmount ? parseFloat(sale.gstAmount) : undefined,
+            date: sale.date,
+            orderType: sale.orderType,
+            pickupDate: sale.pickupDate,
+            pickupTime: sale.pickupTime,
+            discountType: sale.discountType,
+            discountValue: sale.discountValue ? parseFloat(sale.discountValue) : undefined,
+            discountAmount: sale.discountAmount ? parseFloat(sale.discountAmount) : undefined,
+            deliveryCharges: sale.deliveryCharges ? parseFloat(sale.deliveryCharges) : undefined,
+            deliveryDetails: sale.deliveryDetails,
+            status: sale.status || "pending",
+            paymentStatus: sale.paymentStatus || "pending",
+            assignedDeliveryBoyId: sale.assignedDeliveryBoyId,
+            isQuickSale: sale.isQuickSale || false,
+          }));
+          setMyDeliveries(deliveries);
+        } else {
+          setMyDeliveries([]);
+        }
+      } catch (error) {
+        console.error("Error loading delivery boy sales:", error);
+        setMyDeliveries([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setMyDeliveries(assigned);
-  }, [sales, navigate]);
+    loadDeliveries();
+  }, [navigate]);
 
   // Filter and search logic
   const filteredDeliveries = myDeliveries.filter((delivery) => {
@@ -116,13 +154,13 @@ export default function DeliveryBoyAllOrders() {
     return 0;
   });
 
-  const isCODOrder = (delivery: (typeof sales)[0]) => {
+  const isCODOrder = (delivery: Sale) => {
     return (
       delivery.paymentModes?.includes("cod") || delivery.paymentMode === "cod"
     );
   };
 
-  const getCODAmount = (delivery: (typeof sales)[0]) => {
+  const getCODAmount = (delivery: Sale) => {
     if (delivery.paymentAmounts && delivery.paymentAmounts.cod) {
       return delivery.paymentAmounts.cod;
     }

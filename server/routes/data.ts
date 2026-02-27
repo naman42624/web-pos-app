@@ -293,6 +293,24 @@ router.get(
   },
 );
 
+// Get sales for a specific delivery boy (no auth required) - MUST COME BEFORE /:id ROUTES
+router.get(
+  "/sales/delivery-boy/:deliveryBoyId",
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { deliveryBoyId } = req.params;
+      const sales = await Sale.find({
+        assignedDeliveryBoyId: deliveryBoyId,
+        orderType: "delivery",
+        status: { $ne: "cancelled" },
+      }).lean();
+      res.json(sales);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
 router.get(
   "/sales/:id",
   authMiddleware,
