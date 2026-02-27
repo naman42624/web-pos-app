@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo.js";
 import authRoutes from "./routes/auth.js";
@@ -59,7 +59,7 @@ export function createServer() {
   });
 
   // DB health check endpoint
-  app.get("/health", (_req, res) => {
+  app.get("/health", (_req: Request, res: Response) => {
     const status = getDBConnectionStatus();
     if (!status.connected) {
       return res.status(503).json({
@@ -76,7 +76,7 @@ export function createServer() {
   });
 
   // Example API routes
-  app.get("/ping", (_req, res) => {
+  app.get("/ping", (_req: Request, res: Response) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
   });
@@ -101,7 +101,7 @@ export function createServer() {
 
   // API 404 handler - returns JSON for unmatched API routes
   // This prevents falling through to Vite's SPA fallback middleware in dev
-  app.use((req: express.Request, res: express.Response) => {
+  app.use((req: Request, res: Response) => {
     console.log(`API route not found: ${req.method} ${req.path}`);
     res.status(404).json({ error: `API endpoint not found: ${req.method} ${req.path}` });
   });
@@ -110,9 +110,9 @@ export function createServer() {
   app.use(
     (
       err: any,
-      _req: express.Request,
-      res: express.Response,
-      _next: express.NextFunction,
+      _req: Request,
+      res: Response,
+      _next: NextFunction,
     ) => {
       console.error("Unhandled error:", err);
       res.status(500).json({ error: "Internal server error" });
