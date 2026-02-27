@@ -314,16 +314,20 @@ router.get(
   },
 );
 
-// Public endpoint for delivery boys to mark orders as delivered - MUST COME BEFORE /:id ROUTES
-router.put(
-  "/sales/:id/delivery-status",
+// Public endpoint for delivery boys to update delivery status (no auth required)
+router.post(
+  "/delivery/update-status",
   async (req: AuthRequest, res: Response) => {
     try {
-      const { id } = req.params;
-      const { status, paymentStatus } = req.body;
+      const { saleId, status, paymentStatus } = req.body;
+
+      // Validate required fields
+      if (!saleId || !status) {
+        return res.status(400).json({ error: "saleId and status are required" });
+      }
 
       // Validate status
-      if (!status || !["in_transit", "delivered", "pending", "cancelled"].includes(status)) {
+      if (!["in_transit", "delivered", "pending", "cancelled"].includes(status)) {
         return res.status(400).json({ error: "Invalid status value" });
       }
 
@@ -337,13 +341,13 @@ router.put(
         updateData.paymentStatus = paymentStatus;
       }
 
-      const sale = await Sale.findByIdAndUpdate(id, updateData, { new: true });
+      const sale = await Sale.findByIdAndUpdate(saleId, updateData, { new: true });
 
       if (!sale) {
         return res.status(404).json({ error: "Sale not found" });
       }
 
-      console.log(`[API] Delivery boy updated sale ${id} status to ${status}`);
+      console.log(`[API] Delivery boy updated sale ${saleId} status to ${status}`);
       res.json(sale);
     } catch (error: any) {
       console.error("[API] Error updating delivery boy sale status:", error);

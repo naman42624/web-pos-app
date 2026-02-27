@@ -609,12 +609,12 @@ export async function updateDeliveryOrderStatus(
   status: "pending" | "in_transit" | "delivered" | "cancelled",
   paymentStatus?: "pending" | "paid" | "failed",
 ) {
-  const response = await fetch(`${DATA_BASE}/sales/${saleId}/delivery-status`, {
-    method: "PUT",
+  const response = await fetch(`${DATA_BASE}/delivery/update-status`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ status, paymentStatus }),
+    body: JSON.stringify({ saleId, status, paymentStatus }),
   });
   return handleResponse(response);
 }
