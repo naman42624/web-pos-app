@@ -285,9 +285,11 @@ export default function DeliveryBoyDashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-slate-900">
-                          ₹{delivery.total.toLocaleString("en-IN")}
-                        </p>
+                        {isCODOrder(delivery) && (
+                          <p className="text-2xl font-bold text-slate-900">
+                            ₹{delivery.total.toLocaleString("en-IN")}
+                          </p>
+                        )}
                         <p className="text-sm text-slate-600 capitalize">
                           {delivery.paymentMode}
                         </p>
@@ -463,9 +465,11 @@ export default function DeliveryBoyDashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-2xl font-bold text-slate-900">
-                            ₹{delivery.total.toLocaleString("en-IN")}
-                          </p>
+                          {isCODOrder(delivery) && (
+                            <p className="text-2xl font-bold text-slate-900">
+                              ₹{delivery.total.toLocaleString("en-IN")}
+                            </p>
+                          )}
                           <span className="inline-block mt-1 px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
                             Delivered
                           </span>
