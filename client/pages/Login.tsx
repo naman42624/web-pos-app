@@ -1,27 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Lock, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false);
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
-
-  // When login succeeds and user state is updated, navigate to dashboard
-  useEffect(() => {
-    if (loginSuccess && user) {
-      console.log("[Login] User authenticated, navigating to dashboard");
-      navigate("/", { replace: true });
-    }
-  }, [loginSuccess, user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,11 +26,12 @@ export default function Login() {
       setLoading(true);
       await login(email, password);
       toast.success("Login successful!");
-      // Mark login as successful - the useEffect will handle navigation
-      setLoginSuccess(true);
+      // Navigate to home - HomePage component will check auth state and show Dashboard
+      navigate("/", { replace: true });
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error(error.message || "Login failed");
+    } finally {
       setLoading(false);
     }
   };
