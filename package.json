@@ -16,7 +16,7 @@
     "build:client": "vite build",
     "build:server": "vite build --config vite.config.server.ts",
     "heroku-postbuild": "npm run build:client",
-    "start": "npx tsx server/node-build.ts",
+    "start": "node start-prod.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc"

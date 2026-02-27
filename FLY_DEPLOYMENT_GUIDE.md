@@ -1,6 +1,43 @@
 # Fly.dev Deployment Guide
 
-## Current Status: Debugging "Failed to fetch" errors
+## Current Status: Fixed server startup issues
+
+### ✅ Changes Made
+
+1. **Improved Server Startup** (`start-prod.mjs`)
+   - Now runs pre-built server bundles instead of building at runtime
+   - Better error diagnostics and logging
+   - Verifies build files exist before starting
+
+2. **Updated Package.json**
+   - Changed start script to use `node start-prod.mjs`
+   - This ensures production-built code is used (not TypeScript)
+
+3. **Enhanced Fly.toml**
+   - Added health check endpoint configuration
+   - Proper port and service configuration
+
+### Deployment Steps (For You to Execute)
+
+**These changes require a redeploy. Follow these steps:**
+
+1. **Verify all changes are pushed to GitHub**
+   ```bash
+   git status
+   git add .
+   git commit -m "Fix: Improve production server startup"
+   git push origin main
+   ```
+
+2. **In Fly.dev Dashboard:**
+   - Go to your app: `pos-app-fp-0e0cb361e675`
+   - Go to "Deploy" tab
+   - Click "Deploy Branch" to trigger a rebuild and restart
+   - Wait for deployment to complete (usually 2-5 minutes)
+
+3. **After Deployment:**
+   - Check the deployment status in the "Deployments" section
+   - Look for any errors in the logs
 
 ### Quick Fix Checklist
 

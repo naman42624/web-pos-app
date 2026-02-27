@@ -1,0 +1,35 @@
+# Fly.dev configuration
+app = "pos-app-fp-0e0cb361e675"
+
+[build]
+  builder = "heroku"
+
+[env]
+  PORT = "8080"
+
+[[services]]
+  processes = ["app"]
+  protocol = "tcp"
+  internal_port = 8080
+  
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[checks]
+  [checks.alive]
+    type = "http"
+    interval = 10000
+    timeout = 5000
+    grace_period = "30s"
+    method = "get"
+    path = "/health"
