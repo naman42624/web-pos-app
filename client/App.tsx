@@ -35,6 +35,189 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+function AdminRoutes() {
+  return (
+    <POSProvider>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-sale"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "sales", action: "view" }}
+            >
+              <AddSale />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/all-sales"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "sales", action: "view" }}
+            >
+              <AllSales />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quick-sale"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "sales", action: "view" }}
+            >
+              <QuickSale />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "settings", action: "view" }}
+            >
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/items"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "items", action: "view" }}
+            >
+              <Items />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ready-products"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "products", action: "view" }}
+            >
+              <ReadyProducts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-product"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "products", action: "view" }}
+            >
+              <CreateProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "customers", action: "view" }}
+            >
+              <Customers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/customer/:id"
+          element={
+            <ProtectedRoute
+              requiredPermission={{ entity: "customers", action: "view" }}
+            >
+              <CustomerDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/deliveries"
+          element={
+            <ProtectedRoute
+              requiredPermission={{
+                entity: "deliveryBoys",
+                action: "view",
+              }}
+            >
+              <Deliveries />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pickups"
+          element={
+            <ProtectedRoute
+              requiredPermission={{
+                entity: "deliveryBoys",
+                action: "view",
+              }}
+            >
+              <Pickups />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/credit-records"
+          element={
+            <ProtectedRoute
+              requiredPermission={{
+                entity: "creditRecords",
+                action: "view",
+              }}
+            >
+              <CreditRecords />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sales-stats"
+          element={
+            <ProtectedRoute managerOrAdmin>
+              <SalesStats />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/delivery-boys"
+          element={
+            <ProtectedRoute
+              requiredPermission={{
+                entity: "deliveryBoys",
+                action: "view",
+              }}
+            >
+              <DeliveryBoys />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute adminOnly>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/roles"
+          element={
+            <ProtectedRoute adminOnly>
+              <Roles />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </POSProvider>
+  );
+}
+
 function AppContent() {
   const { user, loading } = useAuth();
 
@@ -50,204 +233,31 @@ function AppContent() {
   }
 
   return (
-    <>
+    <Routes>
+      {/* Delivery Boy Routes - NO POSProvider */}
+      <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
+      <Route
+        path="/delivery-boy/dashboard"
+        element={<DeliveryBoyDashboard />}
+      />
+      <Route
+        path="/delivery-boy/all-orders"
+        element={<DeliveryBoyAllOrders />}
+      />
+
+      {/* Admin/User Routes - WITH POSProvider */}
       {user ? (
-        <POSProvider>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/add-sale"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "sales", action: "view" }}
-                >
-                  <AddSale />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/all-sales"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "sales", action: "view" }}
-                >
-                  <AllSales />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/quick-sale"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "sales", action: "view" }}
-                >
-                  <QuickSale />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "settings", action: "view" }}
-                >
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/items"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "items", action: "view" }}
-                >
-                  <Items />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ready-products"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "products", action: "view" }}
-                >
-                  <ReadyProducts />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/create-product"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "products", action: "view" }}
-                >
-                  <CreateProduct />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/customers"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "customers", action: "view" }}
-                >
-                  <Customers />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/customer/:id"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{ entity: "customers", action: "view" }}
-                >
-                  <CustomerDetail />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/deliveries"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{
-                    entity: "deliveryBoys",
-                    action: "view",
-                  }}
-                >
-                  <Deliveries />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/pickups"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{
-                    entity: "deliveryBoys",
-                    action: "view",
-                  }}
-                >
-                  <Pickups />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/credit-records"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{
-                    entity: "creditRecords",
-                    action: "view",
-                  }}
-                >
-                  <CreditRecords />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sales-stats"
-              element={
-                <ProtectedRoute managerOrAdmin>
-                  <SalesStats />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/delivery-boys"
-              element={
-                <ProtectedRoute
-                  requiredPermission={{
-                    entity: "deliveryBoys",
-                    action: "view",
-                  }}
-                >
-                  <DeliveryBoys />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/users"
-              element={
-                <ProtectedRoute adminOnly>
-                  <Users />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/roles"
-              element={
-                <ProtectedRoute adminOnly>
-                  <Roles />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </POSProvider>
+        <Route path="/*" element={<AdminRoutes />} />
       ) : (
-        <Routes>
+        <>
           <Route path="/" element={<LoginLanding />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/delivery-boy/login" element={<DeliveryBoyLogin />} />
-          <Route
-            path="/delivery-boy/dashboard"
-            element={<DeliveryBoyDashboard />}
-          />
-          <Route
-            path="/delivery-boy/all-orders"
-            element={<DeliveryBoyAllOrders />}
-          />
-          <Route path="*" element={<LoginLanding />} />
-        </Routes>
+        </>
       )}
-    </>
+
+      {/* Fallback */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
