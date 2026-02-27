@@ -25,13 +25,16 @@ export function createServer() {
 
   // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
 
-  // Initialize database connection
+  // Initialize database connection (non-blocking)
+  console.log("[Server] Starting MongoDB connection...");
   connectDB()
     .then(() => {
+      console.log("[Server] MongoDB connected successfully");
       ensureSuperAdminExists();
     })
     .catch((error) => {
-      console.error("Failed to connect to MongoDB:", error);
+      console.error("[Server] Failed to connect to MongoDB:", error.message);
+      console.error("[Server] API will still serve requests, but database operations will fail");
     });
 
   // Example API routes

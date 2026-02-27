@@ -17,21 +17,29 @@ async function fetchWithTimeout(
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
+    console.log(`[API] Fetching: ${url}`);
     const response = await fetch(url, {
       ...options,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
+    console.log(`[API] Response status: ${response.status} for ${url}`);
     return response;
   } catch (error) {
     clearTimeout(timeoutId);
+    console.error(`[API] Fetch error for ${url}:`, error);
+
     if (error instanceof TypeError && error.message === "Failed to fetch") {
       // Check if it's an abort (timeout)
       if (controller.signal.aborted) {
-        throw new Error(`Request timeout after ${timeoutMs}ms`);
+        const timeoutError = `Request timeout after ${timeoutMs}ms - Server took too long to respond`;
+        console.error(`[API] ${timeoutError}`);
+        throw new Error(timeoutError);
       }
       // Could be CORS, network error, or server unreachable
-      throw new Error("Failed to reach the server. Please check your connection.");
+      const networkError = "Failed to reach the server. Check your network connection or if the server is running.";
+      console.error(`[API] ${networkError}`);
+      throw new Error(networkError);
     }
     throw error;
   }
@@ -52,8 +60,11 @@ function getHeaders(): HeadersInit {
 
 async function handleResponse(response: Response) {
   if (!response.ok) {
+    console.error(`[API] Error response: ${response.status} ${response.statusText}`);
+
     // Handle 401 Unauthorized - clear token and redirect without throwing
     if (response.status === 401) {
+      console.log("[API] 401 Unauthorized - clearing token and redirecting");
       localStorage.removeItem("token");
       // Use a small delay to ensure storage is cleared before redirect
       setTimeout(() => {
@@ -67,11 +78,12 @@ async function handleResponse(response: Response) {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const error = await response.json();
+        console.error(`[API] JSON error response:`, error);
         throw new Error(error.error || `API request failed: ${response.status}`);
       } else {
         // If response is not JSON, try to get text
         const text = await response.text();
-        console.error("Error response text:", text);
+        console.error("[API] Error response text:", text);
         throw new Error(
           text || `API request failed: ${response.status} ${response.statusText}`,
         );
@@ -88,18 +100,21 @@ async function handleResponse(response: Response) {
 
   // Handle fetch success but empty response
   if (!response.body) {
+    console.log(`[API] Empty response body for: ${response.url}`);
     return null;
   }
   try {
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
-      return await response.json();
+      const data = await response.json();
+      console.log(`[API] Successfully parsed JSON response from: ${response.url}`);
+      return data;
     } else {
       const text = await response.text();
       return text ? JSON.parse(text) : {};
     }
   } catch (parseError) {
-    console.error("Failed to parse API response:", parseError);
+    console.error("[API] Failed to parse API response:", parseError);
     throw new Error("Failed to parse API response");
   }
 }
@@ -599,6 +614,22 @@ export async function updateDeliveryBoyStatus(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ status }),
+  });
+  return handleResponse(response);
+}
+
+// Public endpoint for delivery boys to update order delivery status
+export async function updateDeliveryOrderStatus(
+  saleId: string,
+  status: "pending" | "in_transit" | "delivered" | "cancelled",
+  paymentStatus?: "pending" | "paid" | "failed",
+) {
+  const response = await fetch(`${DATA_BASE}/sales/${saleId}/delivery-status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status, paymentStatus }),
   });
   return handleResponse(response);
 }
