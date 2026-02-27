@@ -55,8 +55,12 @@ export default function DeliveryBoyAllOrders() {
     // Load delivery boy's assigned sales from API
     const loadDeliveries = async () => {
       try {
+        console.log("[DeliveryBoyAllOrders] Loading deliveries for boy ID:", parsedSession.id);
         const data = await api.fetchDeliveryBoySales(parsedSession.id);
+        console.log("[DeliveryBoyAllOrders] API response received:", data);
+
         if (data && Array.isArray(data)) {
+          console.log(`[DeliveryBoyAllOrders] Found ${data.length} deliveries`);
           const deliveries = data.map((sale: any) => ({
             id: sale._id,
             items: sale.items || [],
@@ -83,10 +87,11 @@ export default function DeliveryBoyAllOrders() {
           }));
           setMyDeliveries(deliveries);
         } else {
+          console.log("[DeliveryBoyAllOrders] No data received or data is not an array. Data:", data);
           setMyDeliveries([]);
         }
       } catch (error) {
-        console.error("Error loading delivery boy sales:", error);
+        console.error("[DeliveryBoyAllOrders] Error loading delivery boy sales:", error);
         setMyDeliveries([]);
       } finally {
         setIsLoading(false);
