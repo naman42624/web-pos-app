@@ -431,6 +431,36 @@ router.post(
   },
 );
 
+// Public endpoint for delivery boys to update their own status - MUST COME BEFORE /:id ROUTES
+router.put(
+  "/delivery-boys/:id/status",
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      if (!status || !["available", "busy"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+      }
+
+      const boy = await DeliveryBoy.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true },
+      );
+
+      if (!boy) {
+        return res.status(404).json({ error: "Delivery boy not found" });
+      }
+
+      res.json(boy);
+    } catch (error: any) {
+      console.error("[API] Error updating delivery boy status:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
 router.put(
   "/delivery-boys/:id",
   authMiddleware,

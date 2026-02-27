@@ -104,7 +104,8 @@ export default function DeliveryBoyDashboard() {
     const newStatus: "available" | "busy" = session.status === "available" ? "busy" : "available";
 
     try {
-      await api.updateDeliveryBoy(session.id, { status: newStatus });
+      console.log("[DeliveryBoyDashboard] Updating status to:", newStatus);
+      await api.updateDeliveryBoyStatus(session.id, newStatus);
 
       const updatedSession: DeliveryBoySession = { ...session, status: newStatus };
       setSession(updatedSession);
@@ -112,8 +113,9 @@ export default function DeliveryBoyDashboard() {
         "deliveryBoySession",
         JSON.stringify(updatedSession),
       );
+      console.log("[DeliveryBoyDashboard] Status updated successfully");
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error("[DeliveryBoyDashboard] Error updating status:", error);
       alert("Failed to update status");
     }
   };

@@ -588,6 +588,21 @@ export async function updateDeliveryBoy(
   return handleResponse(response);
 }
 
+// Public endpoint for delivery boys to update their own status
+export async function updateDeliveryBoyStatus(
+  id: string,
+  status: "available" | "busy",
+) {
+  const response = await fetch(`${DATA_BASE}/delivery-boys/${id}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+  return handleResponse(response);
+}
+
 export async function fetchSettings() {
   const response = await fetch(`${DATA_BASE}/settings`, {
     headers: getHeaders(),
