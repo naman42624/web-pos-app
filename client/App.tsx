@@ -221,6 +221,9 @@ function AdminRoutes() {
 function AppContent() {
   const { user, loading } = useAuth();
 
+  // Guard: Check if delivery boy session exists
+  const isDeliveryBoyMode = !!localStorage.getItem("deliveryBoySession");
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -245,8 +248,8 @@ function AppContent() {
         element={<DeliveryBoyAllOrders />}
       />
 
-      {/* Admin/User Routes - WITH POSProvider */}
-      {user ? (
+      {/* Admin/User Routes - WITH POSProvider (Only if not in delivery boy mode) */}
+      {user && !isDeliveryBoyMode ? (
         <Route path="/*" element={<AdminRoutes />} />
       ) : (
         <>

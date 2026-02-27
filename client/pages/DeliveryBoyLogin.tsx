@@ -37,6 +37,9 @@ export default function DeliveryBoyLogin() {
         return;
       }
 
+      // Clear any admin token to prevent POSProvider from loading
+      localStorage.removeItem("token");
+
       // Store delivery boy session in localStorage
       localStorage.setItem(
         "deliveryBoySession",
