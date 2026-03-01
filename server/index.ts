@@ -71,7 +71,6 @@ export function createServer() {
       console.error("[Server] Failed to connect to MongoDB:", error.message);
       console.error("[Server] API will still serve requests, but database operations will fail");
     });
-  });
 
   // Example API routes
   app.get("/ping", (_req: Request, res: Response) => {
