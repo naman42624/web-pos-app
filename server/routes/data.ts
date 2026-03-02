@@ -11,7 +11,7 @@ import {
 } from "../db/models/index.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
 import { checkPermission } from "../middleware/permissionMiddleware.js";
-import { connectDB } from "../db/connection.js";
+import { handleDatabaseError, isConnectionError } from "../utils/errorHandler.js";
 
 const router = Router();
 
@@ -25,10 +25,13 @@ router.get(
   checkPermission("items", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
+      console.log("[API] Fetching items...");
       const items = await Item.find().lean();
+      console.log(`[API] Successfully fetched ${items.length} items`);
       res.json(items);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching items:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -50,15 +53,16 @@ router.post(
 
       const item = new Item({ name, price, stock, image, category, gstRate });
       await item.save();
+      console.log(`[API] Created new item: ${item._id}`);
       res.status(201).json(item);
     } catch (error: any) {
-      console.error("Error creating item:", error);
+      console.error("[API] Error creating item:", error);
       if (error.message.includes("document exceeds")) {
         res
           .status(400)
           .json({ error: "Document size too large. Image is too big." });
       } else {
-        res.status(400).json({ error: error.message });
+        handleDatabaseError(error, res);
       }
     }
   },
@@ -70,12 +74,18 @@ router.put(
   checkPermission("items", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
+      console.log(`[API] Updating item: ${req.params.id}`);
       const item = await Item.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
       });
+      if (!item) {
+        return res.status(404).json({ error: "Item not found" });
+      }
+      console.log(`[API] Updated item: ${item._id}`);
       res.json(item);
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      console.error("[API] Error updating item:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -86,10 +96,16 @@ router.delete(
   checkPermission("items", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
-      await Item.findByIdAndDelete(req.params.id);
+      console.log(`[API] Deleting item: ${req.params.id}`);
+      const result = await Item.findByIdAndDelete(req.params.id);
+      if (!result) {
+        return res.status(404).json({ error: "Item not found" });
+      }
+      console.log(`[API] Deleted item: ${req.params.id}`);
       res.json({ message: "Item deleted" });
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      console.error("[API] Error deleting item:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -101,10 +117,13 @@ router.get(
   checkPermission("items", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
+      console.log("[API] Fetching categories...");
       const categories = await Category.find().lean();
+      console.log(`[API] Successfully fetched ${categories.length} categories`);
       res.json(categories);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching categories:", error);
+      handleDatabaseError(error, res);
     }
   },
 );

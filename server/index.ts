@@ -8,6 +8,7 @@ import usersRoutes from "./routes/users.js";
 import rolesRoutes from "./routes/roles.js";
 import { connectDB, getDBConnectionStatus, initializeIndexes } from "./db/connection.js";
 import { ensureSuperAdminExists } from "./scripts/createSuperAdmin.js";
+import { dbHealthCheck } from "./middleware/dbHealthCheck.js";
 
 let dbConnected = false;
 
@@ -59,18 +60,7 @@ export function createServer() {
   });
 
   // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
-
-  // Initialize database connection (non-blocking)
-  console.log("[Server] Starting MongoDB connection...");
-  connectDB()
-    .then(() => {
-      console.log("[Server] MongoDB connected successfully");
-      ensureSuperAdminExists();
-    })
-    .catch((error) => {
-      console.error("[Server] Failed to connect to MongoDB:", error.message);
-      console.error("[Server] API will still serve requests, but database operations will fail");
-    });
+  // Note: Database is already initialized by initializeDB() in node-build.ts before this server is created
 
   // Example API routes
   app.get("/ping", (_req: Request, res: Response) => {
@@ -86,6 +76,9 @@ export function createServer() {
 
   // Authentication routes
   app.use("/auth", authRoutes);
+
+  // Database health check for all subsequent routes
+  app.use(dbHealthCheck);
 
   // User management routes
   app.use("/users", usersRoutes);

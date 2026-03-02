@@ -26,14 +26,18 @@ export async function connectDB() {
     console.log("[DB] MONGODB_URL:", MONGODB_URL.substring(0, 50) + "...");
 
     await mongoose.connect(MONGODB_URL, {
-      maxPoolSize: 10,
-      minPoolSize: 2,
-      serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 10000,
+      maxPoolSize: 20,
+      minPoolSize: 5,
+      maxIdleTimeMS: 45000,
+      waitQueueTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 15000,
+      socketTimeoutMS: 60000,
+      connectTimeoutMS: 15000,
+      heartbeatFrequencyMS: 10000,
 
-      // Write concerns
+      // Write concerns and retry logic
       retryWrites: true,
+      retryReads: true,
       w: "majority",
 
       // Disable buffering for better error handling

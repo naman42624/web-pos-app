@@ -19,6 +19,17 @@ mainApp.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Initialize database BEFORE creating the server
+try {
+  console.log("[Startup] Initializing database...");
+  await initializeDB();
+  console.log("[Startup] ✅ Database initialized successfully");
+} catch (error: any) {
+  console.error("[Startup] ❌ Failed to initialize database:", error.message);
+  console.error("[Startup] Cannot start server without database connection");
+  process.exit(1);
+}
+
 // Create the API server
 const app = createServer();
 
