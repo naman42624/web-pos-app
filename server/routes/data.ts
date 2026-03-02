@@ -12,6 +12,7 @@ import {
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
 import { checkPermission } from "../middleware/permissionMiddleware.js";
 import { connectDB } from "../db/connection.js";
+import { handleMongoError, logMongoError } from "../utils/errorHandler.js";
 
 const router = Router();
 
@@ -28,7 +29,9 @@ router.get(
       const items = await Item.find().lean();
       res.json(items);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      logMongoError("/items", error);
+      const { statusCode, message } = handleMongoError(error);
+      res.status(statusCode).json({ error: message });
     }
   },
 );
@@ -104,7 +107,9 @@ router.get(
       const categories = await Category.find().lean();
       res.json(categories);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      logMongoError("/categories", error);
+      const { statusCode, message } = handleMongoError(error);
+      res.status(statusCode).json({ error: message });
     }
   },
 );
