@@ -1,60 +1,62 @@
-import { Response } from "express";
-
-export function handleDatabaseError(error: any, res: Response) {
-  console.error("[DB Error]", {
-    name: error.name,
-    message: error.message,
-    code: error.code,
-  });
-
-  // Connection timeout
+/**
+ * Detects MongoDB connection errors and returns appropriate HTTP status and message
+ */
+export function handleMongoError(error: any) {
+  const errorMessage = error.message || String(error);
+  
+  // Timeout errors - service temporarily unavailable
   if (
-    error.message.includes("timed out") ||
-    error.message.includes("ECONNREFUSED") ||
-    error.name === "MongoServerError"
+    error.name === 'MongoNetworkTimeoutError' ||
+    errorMessage.includes('timed out') ||
+    errorMessage.includes('ECONNREFUSED') ||
+    errorMessage.includes('getaddrinfo')
   ) {
-    return res.status(503).json({
-      error: "Database connection error. The server is temporarily unavailable.",
-      details: "Please try again in a moment.",
-    });
+    return {
+      statusCode: 503,
+      message: 'Database temporarily unavailable. Please try again in a moment.',
+      isConnectionError: true,
+    };
   }
-
-  // Authentication error
-  if (error.message.includes("authentication failed")) {
-    return res.status(500).json({
-      error: "Database authentication error",
-      details: "Invalid database credentials",
-    });
+  
+  // Authentication errors
+  if (errorMessage.includes('authentication failed') || errorMessage.includes('auth')) {
+    return {
+      statusCode: 503,
+      message: 'Database authentication failed. Please check configuration.',
+      isConnectionError: true,
+    };
   }
-
-  // Document validation error
-  if (error.name === "ValidationError") {
-    return res.status(400).json({
-      error: "Validation error",
-      details: error.message,
-    });
+  
+  // Network/connectivity errors
+  if (
+    errorMessage.includes('EHOSTUNREACH') ||
+    errorMessage.includes('ENETUNREACH') ||
+    errorMessage.includes('socket hang up')
+  ) {
+    return {
+      statusCode: 503,
+      message: 'Cannot reach database server. Please check your connection.',
+      isConnectionError: true,
+    };
   }
-
-  // Cast error (invalid ObjectId)
-  if (error.name === "CastError") {
-    return res.status(400).json({
-      error: "Invalid ID format",
-      details: error.message,
-    });
-  }
-
-  // Default error
-  return res.status(500).json({
-    error: error.message || "An error occurred",
-  });
+  
+  // Generic server error
+  return {
+    statusCode: 500,
+    message: errorMessage,
+    isConnectionError: false,
+  };
 }
 
-export function isConnectionError(error: any): boolean {
-  return (
-    error.message?.includes("timed out") ||
-    error.message?.includes("ECONNREFUSED") ||
-    error.message?.includes("ENOTFOUND") ||
-    error.name === "MongoServerError" ||
-    error.code === "ECONNREFUSED"
-  );
+/**
+ * Logs MongoDB errors with diagnostic information
+ */
+export function logMongoError(endpoint: string, error: any) {
+  const { isConnectionError, message } = handleMongoError(error);
+  
+  if (isConnectionError) {
+    console.error(`[API] Database connection error at ${endpoint}:`, error.name, '-', message);
+  } else {
+    console.error(`[API] Error at ${endpoint}:`, error);
+  }
 }

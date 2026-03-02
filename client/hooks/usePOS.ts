@@ -172,6 +172,8 @@ export function usePOS() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
+  const [databaseError, setDatabaseError] = useState<string | null>(null);
 
   // Load Items
   const loadItems = async () => {
@@ -192,8 +194,25 @@ export function usePOS() {
           gstRate: item.gstRate,
         })),
       );
-    } catch (error) {
-      console.error("Error loading items:", error);
+      // Clear any previous database errors if successful
+      if (databaseUnavailable) {
+        setDatabaseUnavailable(false);
+        setDatabaseError(null);
+      }
+    } catch (error: any) {
+      // Check if this is a database connectivity issue
+      if (error instanceof Response && error.status === 503) {
+        const msg = await error.json().catch(() => ({})).then((e: any) => e.error);
+        setDatabaseUnavailable(true);
+        setDatabaseError(msg || "Database temporarily unavailable");
+        console.error("[usePOS] Database unavailable:", msg);
+      } else if (error.message?.includes("Failed to fetch")) {
+        setDatabaseUnavailable(true);
+        setDatabaseError("Cannot reach the database server");
+        console.error("[usePOS] Failed to fetch items:", error);
+      } else {
+        console.error("Error loading items:", error);
+      }
     }
   };
 
@@ -274,9 +293,26 @@ export function usePOS() {
           })),
         );
       }
-    } catch (error) {
-      // Silently fail if endpoint doesn't exist yet - app can work without categories
-      console.debug("Categories endpoint not available yet");
+      // Clear any previous database errors if successful
+      if (databaseUnavailable) {
+        setDatabaseUnavailable(false);
+        setDatabaseError(null);
+      }
+    } catch (error: any) {
+      // Check if this is a database connectivity issue
+      if (error instanceof Response && error.status === 503) {
+        const msg = await error.json().catch(() => ({})).then((e: any) => e.error);
+        setDatabaseUnavailable(true);
+        setDatabaseError(msg || "Database temporarily unavailable");
+        console.error("[usePOS] Database unavailable:", msg);
+      } else if (error.message?.includes("Failed to fetch")) {
+        setDatabaseUnavailable(true);
+        setDatabaseError("Cannot reach the database server");
+        console.error("[usePOS] Failed to fetch categories:", error);
+      } else {
+        // Silently fail if endpoint doesn't exist yet - app can work without categories
+        console.debug("Categories endpoint not available yet");
+      }
       setCategories([]);
     }
   };
@@ -1057,6 +1093,8 @@ export function usePOS() {
     categories,
     settings,
     loading,
+    databaseUnavailable,
+    databaseError,
     addSale,
     loadSaleDetails,
     updateSaleStatus,

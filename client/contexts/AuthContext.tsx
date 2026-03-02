@@ -78,6 +78,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           isActive: userData.isActive,
           role: userData.role,
         });
+      } else if (response.status === 503) {
+        // Database is temporarily unavailable
+        console.error("[AuthContext] Database unavailable (503)");
+        setLoading(false);
       } else {
         localStorage.removeItem("token");
       }
