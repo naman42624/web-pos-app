@@ -77,16 +77,13 @@ export function createServer() {
   // Authentication routes
   app.use("/auth", authRoutes);
 
-  // Database health check for all subsequent routes
-  app.use(dbHealthCheck);
-
   // User management routes
   app.use("/users", usersRoutes);
 
   // Role management routes
   app.use("/roles", rolesRoutes);
 
-  // POS data routes
+  // POS data routes (with built-in retry logic for database operations)
   app.use("/data", dataRoutes);
 
   // API 404 handler - returns JSON for unmatched API routes

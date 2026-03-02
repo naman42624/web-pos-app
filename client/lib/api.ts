@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 
 const API_BASE = "/api";
-const FETCH_TIMEOUT = 30000; // 30 seconds
+const FETCH_TIMEOUT = 60000; // 60 seconds - gives server time for retries
 
 function getAuthToken(): string | null {
   return localStorage.getItem("token");

@@ -1,5 +1,6 @@
 import path from "path";
 import { createServer, initializeDB } from "./index";
+import { warmUpConnectionPool } from "./db/connection.js";
 import express from "express";
 
 const port = process.env.PORT || 3000;
@@ -24,6 +25,10 @@ try {
   console.log("[Startup] Initializing database...");
   await initializeDB();
   console.log("[Startup] ✅ Database initialized successfully");
+
+  console.log("[Startup] Warming up connection pool...");
+  await warmUpConnectionPool();
+  console.log("[Startup] ✅ Connection pool warmed up");
 } catch (error: any) {
   console.error("[Startup] ❌ Failed to initialize database:", error.message);
   console.error("[Startup] Cannot start server without database connection");

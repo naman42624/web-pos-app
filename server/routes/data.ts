@@ -12,6 +12,7 @@ import {
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
 import { checkPermission } from "../middleware/permissionMiddleware.js";
 import { handleDatabaseError, isConnectionError } from "../utils/errorHandler.js";
+import { retryOperation } from "../utils/retry.js";
 
 const router = Router();
 
@@ -26,7 +27,12 @@ router.get(
   async (_req: AuthRequest, res: Response) => {
     try {
       console.log("[API] Fetching items...");
-      const items = await Item.find().lean();
+      const items = await retryOperation(
+        () => Item.find().lean(),
+        3,
+        100,
+        "fetch items"
+      );
       console.log(`[API] Successfully fetched ${items.length} items`);
       res.json(items);
     } catch (error: any) {
@@ -118,7 +124,12 @@ router.get(
   async (_req: AuthRequest, res: Response) => {
     try {
       console.log("[API] Fetching categories...");
-      const categories = await Category.find().lean();
+      const categories = await retryOperation(
+        () => Category.find().lean(),
+        3,
+        100,
+        "fetch categories"
+      );
       console.log(`[API] Successfully fetched ${categories.length} categories`);
       res.json(categories);
     } catch (error: any) {
@@ -164,10 +175,18 @@ router.get(
   checkPermission("products", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const products = await Product.find().lean();
+      console.log("[API] Fetching products...");
+      const products = await retryOperation(
+        () => Product.find().lean(),
+        3,
+        100,
+        "fetch products"
+      );
+      console.log(`[API] Successfully fetched ${products.length} products`);
       res.json(products);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching products:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -224,10 +243,18 @@ router.get(
   checkPermission("customers", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const customers = await Customer.find().lean();
+      console.log("[API] Fetching customers...");
+      const customers = await retryOperation(
+        () => Customer.find().lean(),
+        3,
+        100,
+        "fetch customers"
+      );
+      console.log(`[API] Successfully fetched ${customers.length} customers`);
       res.json(customers);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching customers:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -299,10 +326,18 @@ router.get(
   checkPermission("sales", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const sales = await Sale.find().lean();
+      console.log("[API] Fetching sales...");
+      const sales = await retryOperation(
+        () => Sale.find().lean(),
+        3,
+        100,
+        "fetch sales"
+      );
+      console.log(`[API] Successfully fetched ${sales.length} sales`);
       res.json(sales);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching sales:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -314,16 +349,22 @@ router.get(
     try {
       const { deliveryBoyId } = req.params;
       console.log("[API] /sales/delivery-boy/:deliveryBoyId called with ID:", deliveryBoyId);
-      const sales = await Sale.find({
-        assignedDeliveryBoyId: deliveryBoyId,
-        orderType: "delivery",
-        status: { $ne: "cancelled" },
-      }).lean();
+      const sales = await retryOperation(
+        () =>
+          Sale.find({
+            assignedDeliveryBoyId: deliveryBoyId,
+            orderType: "delivery",
+            status: { $ne: "cancelled" },
+          }).lean(),
+        3,
+        100,
+        "fetch delivery boy sales"
+      );
       console.log(`[API] Found ${sales.length} sales for delivery boy ${deliveryBoyId}`);
       res.json(sales);
     } catch (error: any) {
       console.error("[API] Error fetching sales for delivery boy:", error);
-      res.status(500).json({ error: error.message });
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -376,10 +417,20 @@ router.get(
   checkPermission("sales", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const sale = await Sale.findById(req.params.id).lean();
+      console.log(`[API] Fetching sale: ${req.params.id}`);
+      const sale = await retryOperation(
+        () => Sale.findById(req.params.id).lean(),
+        3,
+        100,
+        "fetch sale"
+      );
+      if (!sale) {
+        return res.status(404).json({ error: "Sale not found" });
+      }
       res.json(sale);
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      console.error("[API] Error fetching sale:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -435,10 +486,18 @@ router.get(
   checkPermission("creditRecords", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const records = await CreditRecord.find().lean();
+      console.log("[API] Fetching credit records...");
+      const records = await retryOperation(
+        () => CreditRecord.find().lean(),
+        3,
+        100,
+        "fetch credit records"
+      );
+      console.log(`[API] Successfully fetched ${records.length} credit records`);
       res.json(records);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching credit records:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -464,10 +523,18 @@ router.get(
   checkPermission("deliveryBoys", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const boys = await DeliveryBoy.find().lean();
+      console.log("[API] Fetching delivery boys...");
+      const boys = await retryOperation(
+        () => DeliveryBoy.find().lean(),
+        3,
+        100,
+        "fetch delivery boys"
+      );
+      console.log(`[API] Successfully fetched ${boys.length} delivery boys`);
       res.json(boys);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching delivery boys:", error);
+      handleDatabaseError(error, res);
     }
   },
 );
@@ -539,10 +606,18 @@ router.get(
   checkPermission("settings", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const settings = await Settings.findOne().lean();
+      console.log("[API] Fetching settings...");
+      const settings = await retryOperation(
+        () => Settings.findOne().lean(),
+        3,
+        100,
+        "fetch settings"
+      );
+      console.log("[API] Successfully fetched settings");
       res.json(settings);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error("[API] Error fetching settings:", error);
+      handleDatabaseError(error, res);
     }
   },
 );

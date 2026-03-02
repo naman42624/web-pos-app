@@ -26,22 +26,33 @@ export async function connectDB() {
     console.log("[DB] MONGODB_URL:", MONGODB_URL.substring(0, 50) + "...");
 
     await mongoose.connect(MONGODB_URL, {
-      maxPoolSize: 20,
-      minPoolSize: 5,
-      maxIdleTimeMS: 45000,
-      waitQueueTimeoutMS: 10000,
-      serverSelectionTimeoutMS: 15000,
-      socketTimeoutMS: 60000,
-      connectTimeoutMS: 15000,
-      heartbeatFrequencyMS: 10000,
+      // Connection pool settings - pre-establish connections
+      maxPoolSize: 30,
+      minPoolSize: 10,
 
-      // Write concerns and retry logic
+      // Timeout settings - give more time for operations
+      maxIdleTimeMS: 60000,
+      waitQueueTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 120000,
+      connectTimeoutMS: 30000,
+      heartbeatFrequencyMS: 5000,
+
+      // Retry logic - automatically retry failed operations
       retryWrites: true,
       retryReads: true,
+
+      // Write concerns
       w: "majority",
+
+      // Connection monitoring
+      monitorCommands: false,
 
       // Disable buffering for better error handling
       bufferCommands: false,
+
+      // Family - prefer IPv4
+      family: 4,
     });
 
     cachedConnection = mongoose;
@@ -85,6 +96,29 @@ export async function initializeIndexes() {
     await createIndexes();
   } catch (error: any) {
     console.warn("[DB] Could not create indexes:", error.message);
+  }
+}
+
+// Warm up the connection pool by making test queries
+export async function warmUpConnectionPool() {
+  try {
+    console.log("[DB] Warming up connection pool...");
+    const { Role } = await import("../db/models/index.js");
+
+    // Make multiple concurrent queries to pre-establish connections
+    const warmupQueries = [
+      Role.countDocuments().lean(),
+      Role.countDocuments().lean(),
+      Role.countDocuments().lean(),
+      Role.countDocuments().lean(),
+      Role.countDocuments().lean(),
+    ];
+
+    await Promise.all(warmupQueries);
+    console.log("[DB] ✓ Connection pool warmed up");
+  } catch (error: any) {
+    console.warn("[DB] Warning: Could not warm up connection pool:", error.message);
+    // Don't fail the startup, but warn
   }
 }
 
