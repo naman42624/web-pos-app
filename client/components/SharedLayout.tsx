@@ -164,7 +164,7 @@ export function SharedLayout({ children }: SharedLayoutProps) {
             </h1>
           </div>
           <div className="flex items-center gap-4">
-            <p className="text-xs sm:text-sm text-slate-500 whitespace-nowrap">
+            <p className="hidden sm:block text-xs sm:text-sm text-slate-500 whitespace-nowrap">
               {currentTime.toLocaleDateString("en-IN", {
                 weekday: "short",
                 month: "short",

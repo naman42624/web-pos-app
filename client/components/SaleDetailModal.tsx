@@ -254,11 +254,11 @@ export function SaleDetailModal({
                         {item.name}
                       </span>
                       <span className="text-sm font-semibold text-blue-600">
-                        ₹{(item.quantity * item.price).toFixed(2)}
+                        ₹{((Number(item.quantity) || 0) * (Number(item.price) || 0)).toFixed(2)}
                       </span>
                     </div>
                     <p className="text-sm text-slate-600 mb-2">
-                      {item.quantity} × ₹{item.price.toFixed(2)}
+                      {item.quantity} × ₹{(Number(item.price) || 0).toFixed(2)}
                     </p>
 
                     {/* Composition */}
@@ -276,8 +276,8 @@ export function SaleDetailModal({
                             <span className="text-slate-700 font-medium">
                               ₹
                               {(
-                                getItemPrice(comp.itemId, comp.customPrice) *
-                                comp.quantity
+                                (Number(getItemPrice(comp.itemId, comp.customPrice)) || 0) *
+                                (Number(comp.quantity) || 0)
                               ).toFixed(2)}
                             </span>
                           </div>
@@ -301,7 +301,7 @@ export function SaleDetailModal({
                     ₹
                     {sale.items
                       .reduce(
-                        (sum, item) => sum + item.quantity * item.price,
+                        (sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.price) || 0),
                         0,
                       )
                       .toFixed(2)}
@@ -318,7 +318,7 @@ export function SaleDetailModal({
                       ):
                     </span>
                     <span className="font-medium">
-                      -₹{sale.discountAmount.toFixed(2)}
+                      -₹{(Number(sale.discountAmount) || 0).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -327,7 +327,7 @@ export function SaleDetailModal({
                   <div className="flex justify-between">
                     <span className="text-slate-600">Delivery Charges:</span>
                     <span className="text-slate-900 font-medium">
-                      +₹{sale.deliveryCharges.toFixed(2)}
+                      +₹{(Number(sale.deliveryCharges) || 0).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -335,7 +335,7 @@ export function SaleDetailModal({
                 <div className="flex justify-between border-t border-slate-200 pt-2 mt-2">
                   <span className="font-semibold text-slate-900">Total:</span>
                   <span className="font-bold text-lg text-slate-900">
-                    ₹{sale.total.toFixed(2)}
+                    ₹{(Number(sale.total) || 0).toFixed(2)}
                   </span>
                 </div>
 
@@ -352,7 +352,7 @@ export function SaleDetailModal({
                             {mode}:
                           </span>
                           <span className="font-medium text-slate-900">
-                            ₹{(sale.paymentAmounts?.[mode] || 0).toFixed(2)}
+                            ₹{(Number(sale.paymentAmounts?.[mode]) || 0).toFixed(2)}
                           </span>
                         </div>
                       ))}

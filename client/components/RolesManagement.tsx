@@ -5,7 +5,7 @@ import { Trash2, Edit2 } from "lucide-react";
 import { PermissionsMatrix, Permissions } from "./PermissionsMatrix";
 
 interface Role {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   permissions: Permissions;
@@ -106,7 +106,7 @@ export function RolesManagement() {
     }
 
     try {
-      await api.updateRole(editingRole._id, {
+      await api.updateRole(editingRole.id, {
         name: newRole.name,
         description: newRole.description,
       });
@@ -139,7 +139,7 @@ export function RolesManagement() {
     if (!selectedRoleForPermissions) return;
 
     try {
-      await api.updateRole(selectedRoleForPermissions._id, { permissions });
+      await api.updateRole(selectedRoleForPermissions.id, { permissions });
       toast.success("Role permissions updated successfully!");
       setSelectedRoleForPermissions(null);
       await loadRoles();
@@ -235,7 +235,7 @@ export function RolesManagement() {
               <tbody>
                 {roles.map((role) => (
                   <tr
-                    key={role._id}
+                    key={role.id}
                     className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm text-slate-900">
@@ -260,7 +260,7 @@ export function RolesManagement() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDeleteRole(role._id)}
+                          onClick={() => handleDeleteRole(role.id)}
                           className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm font-medium transition-colors flex items-center gap-1"
                         >
                           <Trash2 className="w-4 h-4" />

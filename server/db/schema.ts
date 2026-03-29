@@ -138,6 +138,7 @@ export const sales = pgTable("sales", {
   pickupTime: varchar("pickup_time", { length: 50 }),
   deliveryDetails: jsonb("delivery_details"), // Keep as JSONB for receiver details
   paymentAmounts: jsonb("payment_amounts"), // Mixed payment modes
+  isQuickSale: boolean("is_quick_sale").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

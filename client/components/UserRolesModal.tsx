@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import * as api from "@/lib/api";
 
 interface Role {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
 }
@@ -99,13 +99,13 @@ export function UserRolesModal({
               <div className="space-y-3">
                 {roles.map((role) => (
                   <label
-                    key={role._id}
+                    key={role.id}
                     className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors"
                   >
                     <input
                       type="checkbox"
-                      checked={selectedRoleIds.includes(role._id)}
-                      onChange={() => handleToggleRole(role._id)}
+                      checked={selectedRoleIds.includes(role.id)}
+                      onChange={() => handleToggleRole(role.id)}
                       disabled={isLoading}
                       className="mt-1 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                     />

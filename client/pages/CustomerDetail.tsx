@@ -40,6 +40,11 @@ export default function CustomerDetail() {
 
   const customer = customers.find((c) => c.id === id);
   const creditRecords = customer ? getCreditRecordsByCustomer(customer.id) : [];
+  
+  // Dynamically calculate actual pending credit instead of trusting the cached DB value
+  const actualTotalCredit = sales
+    .filter((s) => s.customerId === id && s.paymentMode === "credit" && s.paymentStatus !== "paid")
+    .reduce((sum, s) => sum + s.total, 0);
 
   const openPaymentDialog = (saleId: string, amount: number) => {
     setPaymentDialogData({ saleId, totalAmount: amount });
@@ -180,10 +185,10 @@ export default function CustomerDetail() {
               <div className="pt-4 border-t border-slate-200">
                 <p className="text-sm text-slate-500 font-medium flex items-center gap-2">
                   <CreditCard className="w-4 h-4" />
-                  Total Credit
+                  Total Pending Credit
                 </p>
                 <p className="text-3xl font-bold text-orange-600 mt-2">
-                  ₹{customer.totalCredit.toLocaleString("en-IN")}
+                  ₹{actualTotalCredit.toLocaleString("en-IN")}
                 </p>
               </div>
             </div>

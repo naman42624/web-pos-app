@@ -14,16 +14,16 @@ import {
 import { Trash2, Edit2, Plus } from "lucide-react";
 
 interface User {
-  _id: string;
+  id: string;
   email: string;
   name: string;
   isAdmin: boolean;
   isActive: boolean;
-  role: { _id: string; name: string } | null;
+  role: { id: string; name: string } | null;
 }
 
 interface Role {
-  _id: string;
+  id: string;
   name: string;
 }
 
@@ -68,7 +68,7 @@ export default function Users() {
         email: user.email,
         password: "",
         name: user.name,
-        roleId: user.role?._id || "",
+        roleId: user.role?.id || "",
         isActive: user.isActive,
       });
     } else {
@@ -114,7 +114,7 @@ export default function Users() {
       setLoading(true);
 
       if (editingUser) {
-        await api.updateUser(editingUser._id, {
+        await api.updateUser(editingUser.id, {
           name: formData.name,
           roleId: formData.roleId || undefined,
           isActive: formData.isActive,
@@ -178,7 +178,7 @@ export default function Users() {
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
@@ -202,7 +202,7 @@ export default function Users() {
             <tbody>
               {users.map((user) => (
                 <tr
-                  key={user._id}
+                  key={user.id}
                   className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
                 >
                   <td className="px-6 py-4 font-medium text-slate-900">
@@ -240,7 +240,7 @@ export default function Users() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDelete(user._id)}
+                        onClick={() => handleDelete(user.id)}
                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -341,7 +341,7 @@ export default function Users() {
               >
                 <option value="">Select a role</option>
                 {roles.map((role) => (
-                  <option key={role._id} value={role._id}>
+                  <option key={role.id} value={role.id}>
                     {role.name}
                   </option>
                 ))}

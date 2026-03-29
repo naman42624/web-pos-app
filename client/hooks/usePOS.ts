@@ -75,6 +75,7 @@ export interface Sale {
     | "pick_up_ready"
     | "in_transit"
     | "delivered"
+    | "picked_up"
     | "cancelled"
     | "delivery_attempted_once"
     | "delivery_attempted_twice";
@@ -537,7 +538,14 @@ export function usePOS() {
       }
       const sales = data.map((sale: any) => ({
         id: sale.id || sale._id,
-        items: sale.items || [],
+        items: (sale.items || []).map((item: any) => ({
+          ...item,
+          price: parseFloat(item.price || "0"),
+          composition: (item.composition || []).map((comp: any) => ({
+            ...comp,
+            customPrice: comp.customPrice ? parseFloat(comp.customPrice) : undefined,
+          })),
+        })),
         paymentMode: sale.paymentMode,
         paymentModes: sale.paymentModes,
         paymentAmounts: sale.paymentAmounts,
@@ -575,7 +583,14 @@ export function usePOS() {
   const loadSaleDetails = async (saleId: string) => {
     try {
       const saleData = await api.fetchSale(saleId);
-      const saleItems = saleData.items || [];
+      const saleItems = (saleData.items || []).map((item: any) => ({
+        ...item,
+        price: parseFloat(item.price || "0"),
+        composition: (item.composition || []).map((comp: any) => ({
+          ...comp,
+          customPrice: comp.customPrice ? parseFloat(comp.customPrice) : undefined,
+        })),
+      }));
 
       setSales((prevSales) =>
         prevSales.map((s) =>
@@ -608,8 +623,8 @@ export function usePOS() {
         deliveryDetails: sale.deliveryDetails,
         date: new Date().toISOString(),
         total: sale.total,
-        status: "pending",
-        paymentStatus: "pending",
+        status: sale.isQuickSale ? "delivered" : "pending",
+        paymentStatus: sale.paymentMode === "credit" ? "pending" : "completed",
         isQuickSale: sale.isQuickSale || false,
       });
 
@@ -691,6 +706,7 @@ export function usePOS() {
       | "pick_up_ready"
       | "in_transit"
       | "delivered"
+      | "picked_up"
       | "cancelled"
       | "delivery_attempted_once"
       | "delivery_attempted_twice",
@@ -825,7 +841,7 @@ export function usePOS() {
       if (data && data.length > 0) {
         setDeliveryBoys(
           data.map((boy: any) => ({
-            id: boy._id,
+            id: boy.id || boy._id,
             name: boy.name,
             phone: boy.phone,
             pin: boy.pin,
@@ -847,7 +863,7 @@ export function usePOS() {
       // If no settings exist, initialize with defaults
       if (data) {
         setSettings({
-          id: data._id,
+          id: data.id || data._id,
           businessName: data.businessName,
           businessEmail: data.businessEmail,
           businessPhone: data.businessPhone,
@@ -937,7 +953,7 @@ export function usePOS() {
       });
 
       const newBoy: DeliveryBoy = {
-        id: data._id,
+        id: data.id || data._id,
         name: data.name,
         phone: data.phone,
         pin: data.pin,

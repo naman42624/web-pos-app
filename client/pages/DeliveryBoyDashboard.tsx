@@ -51,7 +51,7 @@ export default function DeliveryBoyDashboard() {
         if (data && Array.isArray(data)) {
           console.log(`[DeliveryBoyDashboard] Found ${data.length} deliveries`);
           const deliveries = data.map((sale: any) => ({
-            id: sale._id,
+            id: sale.id,
             items: sale.items || [],
             paymentMode: sale.paymentMode,
             paymentModes: sale.paymentModes,

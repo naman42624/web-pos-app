@@ -7,7 +7,7 @@ import {
 } from "react";
 
 export interface Role {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   permissions: {

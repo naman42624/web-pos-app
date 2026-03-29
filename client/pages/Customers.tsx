@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { Address } from "@/hooks/usePOS";
 
 export default function Customers() {
-  const { customers, addCustomer } = usePOSContext();
+  const { customers, sales, addCustomer } = usePOSContext();
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -204,11 +204,16 @@ export default function Customers() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
-                      {filteredCustomers.map((customer) => (
-                        <tr
-                          key={customer.id}
-                          className="hover:bg-slate-50 transition-colors"
-                        >
+                      {filteredCustomers.map((customer) => {
+                        const actualTotalCredit = sales
+                          .filter((s) => s.customerId === customer.id && s.paymentMode === "credit" && s.paymentStatus !== "paid")
+                          .reduce((sum, s) => sum + s.total, 0);
+
+                        return (
+                          <tr
+                            key={customer.id}
+                            className="hover:bg-slate-50 transition-colors"
+                          >
                           <td className="px-6 py-4">
                             <p className="font-medium text-slate-900">
                               {customer.name}
@@ -230,7 +235,7 @@ export default function Customers() {
                             <div className="flex items-center gap-2">
                               <CreditCard className="w-4 h-4 text-orange-600" />
                               <span className="font-semibold text-slate-900">
-                                ₹{customer.totalCredit.toLocaleString("en-IN")}
+                                ₹{actualTotalCredit.toLocaleString("en-IN")}
                               </span>
                             </div>
                           </td>
@@ -243,7 +248,8 @@ export default function Customers() {
                             </Link>
                           </td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

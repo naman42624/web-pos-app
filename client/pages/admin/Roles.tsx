@@ -14,7 +14,7 @@ import {
 import { Trash2, Edit2, Plus } from "lucide-react";
 
 interface Role {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   permissions: {
@@ -124,7 +124,7 @@ export default function Roles() {
       setLoading(true);
 
       if (editingRole) {
-        await api.updateRole(editingRole._id, {
+        await api.updateRole(editingRole.id, {
           name: formData.name,
           description: formData.description,
           permissions: formData.permissions,
@@ -185,7 +185,7 @@ export default function Roles() {
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
@@ -203,7 +203,7 @@ export default function Roles() {
             <tbody>
               {roles.map((role) => (
                 <tr
-                  key={role._id}
+                  key={role.id}
                   className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
                 >
                   <td className="px-6 py-4 font-medium text-slate-900">
@@ -224,7 +224,7 @@ export default function Roles() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDelete(role._id)}
+                        onClick={() => handleDelete(role.id)}
                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4" />

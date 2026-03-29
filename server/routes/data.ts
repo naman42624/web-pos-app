@@ -385,13 +385,14 @@ router.put(
   checkPermission("customers", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { name, phone, altPhone, email, organization, addresses } = req.body;
+      const { name, phone, altPhone, email, organization, addresses, totalCredit } = req.body;
       const [updatedCustomer] = await db.update(customers).set({
         name,
         phone,
         altPhone,
         email,
         organization,
+        totalCredit: totalCredit !== undefined ? totalCredit.toString() : undefined,
         updatedAt: new Date(),
       })
       .where(eq(customers.id, req.params.id))
@@ -553,7 +554,7 @@ router.post(
   checkPermission("sales", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { items: saleItems, customerId, total, subtotal, gstAmount, orderType, paymentMode, paymentStatus, status, deliveryDetails, paymentAmounts, discountAmount, deliveryCharges } = req.body;
+      const { items: saleItems, customerId, total, subtotal, gstAmount, orderType, paymentMode, paymentStatus, status, deliveryDetails, paymentAmounts, discountAmount, deliveryCharges, pickupDate, pickupTime, isQuickSale } = req.body;
       
       const [newSale] = await db.insert(sales).values({
         customerId: customerId || null,
@@ -568,6 +569,9 @@ router.post(
         orderType,
         deliveryDetails,
         paymentAmounts,
+        pickupDate,
+        pickupTime,
+        isQuickSale: isQuickSale || false,
       }).returning();
 
       if (saleItems && saleItems.length > 0) {
