@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { SharedLayout } from "@/components/SharedLayout";
 import { usePOSContext } from "@/contexts/usePOSContext";
 import { SaleItem, Sale } from "@/hooks/usePOS";
-import { Trash2, Plus, Check, X, QrCode } from "lucide-react";
+import { Trash2, Plus, Check, X, QrCode, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QRScannerModal } from "@/components/QRScannerModal";
 import { ReceiptModal } from "@/components/ReceiptModal";
@@ -62,6 +62,7 @@ export default function QuickSale() {
     upi: "",
     credit: "",
   });
+  const [orderType, setOrderType] = useState<"pickup" | "delivery" | "pickup_later">("pickup");
   const [isLoading, setIsLoading] = useState(false);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [scannedProduct, setScannedProduct] = useState<QRCodeData | null>(null);
@@ -274,12 +275,20 @@ export default function QuickSale() {
 
   const togglePaymentMode = (mode: PaymentMode) => {
     const newModes = new Set(selectedPaymentModes);
+    const newAmounts = { ...paymentAmounts };
+
     if (newModes.has(mode)) {
       if (newModes.size === 1) {
         return;
       }
       newModes.delete(mode);
-      setPaymentAmounts({ ...paymentAmounts, [mode]: "" });
+      newAmounts[mode] = "";
+      
+      // If only one mode left, auto-fill it
+      if (newModes.size === 1) {
+        const remainingMode = Array.from(newModes)[0];
+        newAmounts[remainingMode] = total.toString();
+      }
 
       // Clear customer selection when credit is deselected
       if (mode === "credit") {
@@ -288,8 +297,13 @@ export default function QuickSale() {
       }
     } else {
       newModes.add(mode);
+      // Auto-fill if it's the only one, or clear others if needed
+      if (newModes.size === 1) {
+        newAmounts[mode] = total.toString();
+      }
     }
     setSelectedPaymentModes(newModes);
+    setPaymentAmounts(newAmounts);
   };
 
   const updatePaymentAmount = (mode: PaymentMode, amount: string) => {
@@ -409,7 +423,7 @@ export default function QuickSale() {
         subtotal,
         gstAmount,
         customerId,
-        orderType: "pickup",
+        orderType,
         isQuickSale: true,
       });
 
@@ -965,6 +979,31 @@ export default function QuickSale() {
                   No items added yet
                 </p>
               )}
+            </div>
+
+            {/* Order Type Selection */}
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-4">
+              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-cyan-600" />
+                Order Type
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                {(["pickup", "delivery", "pickup_later"] as const).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setOrderType(type)}
+                    className={cn(
+                      "p-4 rounded-lg border-2 font-semibold text-center transition-all duration-200 capitalize",
+                      orderType === type
+                        ? "border-cyan-600 bg-cyan-50 text-cyan-700 shadow-sm"
+                        : "border-slate-300 bg-white text-slate-700 hover:border-slate-400",
+                    )}
+                  >
+                    {type.replace("_", " ")}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Payment Mode Selection */}

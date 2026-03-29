@@ -72,6 +72,7 @@ export interface Sale {
   gstAmount?: number;
   status?:
     | "pending"
+    | "completed"
     | "pick_up_ready"
     | "in_transit"
     | "delivered"
@@ -623,7 +624,9 @@ export function usePOS() {
         deliveryDetails: sale.deliveryDetails,
         date: new Date().toISOString(),
         total: sale.total,
-        status: sale.status || (sale.orderType === "pickup" || sale.isQuickSale ? "delivered" : "pending"),
+        status: sale.status || 
+                (sale.isQuickSale || sale.orderType === "pickup" ? "completed" : 
+                 sale.orderType === "delivery" ? "delivered" : "pending"),
         paymentStatus: sale.paymentMode === "credit" ? "pending" : "completed",
         isQuickSale: sale.isQuickSale || false,
       });

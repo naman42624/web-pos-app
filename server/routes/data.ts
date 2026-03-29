@@ -590,7 +590,9 @@ router.post(
         orderType,
         paymentMode,
         paymentStatus: paymentStatus || (paymentMode === "credit" ? "pending" : "completed"),
-        status: status && status !== "pending" ? status : (orderType === "pickup" ? "delivered" : "pending"),
+        status: status && status !== "pending" ? status : 
+                (isQuickSale === true || isQuickSale === "true" || orderType === "pickup" ? "completed" : 
+                 orderType === "delivery" ? "delivered" : "pending"),
         deliveryDetails,
         pickupDate,
         pickupTime,
