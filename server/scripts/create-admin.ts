@@ -1,22 +1,20 @@
 import "dotenv/config";
-import mongoose from "mongoose";
-import { User } from "../db/models/index.js";
+import { db } from "../db/index.js";
+import { users } from "../db/schema.js";
+import bcryptjs from "bcryptjs";
+import { eq } from "drizzle-orm";
 
 async function createAdmin() {
-  const email = process.argv[2] || "admin@example.com";
+  const email = (process.argv[2] || "admin@example.com").toLowerCase().trim();
   const password = process.argv[3] || "password123";
   const name = process.argv[4] || "Admin";
 
   try {
-    const mongoUrl =
-      process.env.MONGODB_URL || "mongodb://localhost:27017/pos-system";
+    console.log("Checking if user already exists...");
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.email, email),
+    });
 
-    console.log("Connecting to MongoDB...");
-    await mongoose.connect(mongoUrl);
-    console.log("✓ Connected to MongoDB");
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
     if (existingUser) {
       console.log(`✗ User with email "${email}" already exists`);
       process.exit(1);
@@ -24,13 +22,17 @@ async function createAdmin() {
 
     // Create admin user
     console.log(`Creating admin user: ${email}`);
-    const user = new User({
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
+    await db.insert(users).values({
       email,
-      password,
+      password: hashedPassword,
       name,
+      isAdmin: true,
+      isActive: true,
     });
 
-    await user.save();
     console.log(`✓ Admin user created successfully`);
     console.log(`\nLogin Credentials:`);
     console.log(`  Email: ${email}`);

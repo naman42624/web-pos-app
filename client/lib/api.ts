@@ -346,7 +346,7 @@ export async function createProduct(product: {
   stock: number;
   image?: string;
   items?: Array<{
-    itemId: string;
+    itemId?: string;
     customName?: string;
     customPrice?: number;
     quantity: number;
@@ -368,7 +368,7 @@ export async function updateProduct(
     stock: number;
     image: string;
     items: Array<{
-      itemId: string;
+      itemId?: string;
       customName?: string;
       customPrice?: number;
       quantity: number;

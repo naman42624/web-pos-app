@@ -6,9 +6,8 @@ import authRoutes from "./routes/auth.js";
 import dataRoutes from "./routes/data.js";
 import usersRoutes from "./routes/users.js";
 import rolesRoutes from "./routes/roles.js";
-import { connectDB, getDBConnectionStatus, initializeIndexes } from "./db/connection.js";
+import { connectDB, getDBConnectionStatus } from "./db/connection.js";
 import { ensureSuperAdminExists } from "./scripts/createSuperAdmin.js";
-import { dbHealthCheck } from "./middleware/dbHealthCheck.js";
 
 let dbConnected = false;
 
@@ -17,13 +16,9 @@ export async function initializeDB() {
   try {
     console.log("[Server] Starting database initialization...");
 
-    // Connect to MongoDB with retries
+    // Connect to PostgreSQL
     await connectDB();
-    console.log("[Server] ✓ Connected to MongoDB");
-
-    // Create database indexes for performance
-    await initializeIndexes();
-    console.log("[Server] ✓ Database indexes created");
+    console.log("[Server] ✓ Connected to PostgreSQL");
 
     // Initialize admin user if not exists
     await ensureSuperAdminExists();
@@ -59,9 +54,6 @@ export function createServer() {
     next();
   });
 
-  // Heroku deployment: Routes are prefixed with /api for consistent client-server communication
-  // Note: Database is already initialized by initializeDB() in node-build.ts before this server is created
-
   // Example API routes
   app.get("/ping", (_req: Request, res: Response) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
@@ -69,10 +61,6 @@ export function createServer() {
   });
 
   app.get("/demo", handleDemo);
-
-  // Routes are mounted WITHOUT /api prefix here because:
-  // - In Vite dev: express app is mounted at /api, so paths don't include it
-  // - In production: node-build.ts mounts this app at /api
 
   // Authentication routes
   app.use("/auth", authRoutes);
@@ -83,11 +71,10 @@ export function createServer() {
   // Role management routes
   app.use("/roles", rolesRoutes);
 
-  // POS data routes (with built-in retry logic for database operations)
+  // POS data routes
   app.use("/data", dataRoutes);
 
-  // API 404 handler - returns JSON for unmatched API routes
-  // This prevents falling through to Vite's SPA fallback middleware in dev
+  // API 404 handler
   app.use((req: Request, res: Response) => {
     console.log(`API route not found: ${req.method} ${req.path}`);
     res.status(404).json({ error: `API endpoint not found: ${req.method} ${req.path}` });

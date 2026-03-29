@@ -185,7 +185,7 @@ export function usePOS() {
       }
       setItems(
         data.map((item: any) => ({
-          id: item._id,
+          id: item.id || item._id,
           name: item.name,
           price: parseFloat(item.price),
           stock: item.stock,
@@ -228,7 +228,7 @@ export function usePOS() {
       });
 
       const newItem = {
-        id: data._id,
+        id: data.id || data._id,
         name: data.name,
         price: parseFloat(data.price),
         stock: data.stock,
@@ -286,7 +286,7 @@ export function usePOS() {
       if (Array.isArray(data)) {
         setCategories(
           data.map((category: any) => ({
-            id: category._id,
+            id: category.id || category._id,
             name: category.name,
             description: category.description,
             createdAt: category.createdAt,
@@ -325,7 +325,7 @@ export function usePOS() {
       });
 
       const newCategory = {
-        id: data._id,
+        id: data.id || data._id,
         name: data.name,
         description: data.description,
         createdAt: data.createdAt,
@@ -369,7 +369,7 @@ export function usePOS() {
       }
 
       const products = productsData.map((product: any) => ({
-        id: product._id,
+        id: product.id || product._id,
         name: product.name,
         price: parseFloat(product.price) || 0,
         stock: product.stock || 0,
@@ -406,7 +406,7 @@ export function usePOS() {
       });
 
       const newProduct = {
-        id: data._id,
+        id: data.id || data._id,
         name: data.name,
         price: parseFloat(data.price) || 0,
         stock: data.stock || 0,
@@ -468,7 +468,7 @@ export function usePOS() {
         return;
       }
       const customersData = data.map((customer: any) => ({
-        id: customer._id,
+        id: customer.id || customer._id,
         name: customer.name,
         phone: customer.phone,
         altPhone: customer.altPhone,
@@ -501,7 +501,7 @@ export function usePOS() {
       });
 
       const newCustomer: Customer = {
-        id: data._id,
+        id: data.id || data._id,
         name: data.name,
         phone: data.phone,
         altPhone: data.altPhone,
@@ -536,7 +536,7 @@ export function usePOS() {
         return;
       }
       const sales = data.map((sale: any) => ({
-        id: sale._id,
+        id: sale.id || sale._id,
         items: sale.items || [],
         paymentMode: sale.paymentMode,
         paymentModes: sale.paymentModes,
@@ -613,7 +613,7 @@ export function usePOS() {
         isQuickSale: sale.isQuickSale || false,
       });
 
-      const saleId = saleData._id;
+      const saleId = saleData.id || saleData._id;
 
       // Handle credit records
       if (sale.paymentMode === "credit" && sale.customerId) {
@@ -793,7 +793,7 @@ export function usePOS() {
       }
       setCreditRecords(
         data.map((record: any) => ({
-          id: record._id,
+          id: record.id || record._id,
           customerId: record.customerId,
           amount: parseFloat(record.amount),
           date: record.date,

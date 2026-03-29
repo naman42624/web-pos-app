@@ -1,24 +1,24 @@
 import { Router, Response } from "express";
+import { db } from "../db/index.js";
 import {
-  Item,
-  Product,
-  Customer,
-  Sale,
-  CreditRecord,
-  DeliveryBoy,
-  Category,
-  Settings,
-} from "../db/models/index.js";
+  items,
+  products,
+  customers,
+  sales,
+  creditRecords,
+  deliveryBoys,
+  categories,
+  settings,
+  productItems,
+  customerAddresses,
+  saleItems as saleItemsTable,
+} from "../db/schema.js";
 import { AuthRequest, authMiddleware } from "../middleware/authMiddleware.js";
 import { checkPermission } from "../middleware/permissionMiddleware.js";
-import { connectDB } from "../db/connection.js";
+import { eq, and, sql, desc, count } from "drizzle-orm";
 import { handleMongoError, logMongoError } from "../utils/errorHandler.js";
 
 const router = Router();
-
-// DB connection is now established at server startup
-// This middleware is removed to improve performance
-// Each request no longer checks connection on every route
 
 router.get(
   "/items",
@@ -26,12 +26,18 @@ router.get(
   checkPermission("items", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const items = await Item.find().lean();
-      res.json(items);
+      const allItems = await db.query.items.findMany({
+        with: {
+          category: true,
+        },
+      });
+      res.json(allItems.map(i => ({
+        ...i,
+        category: i.category?.name || null
+      })));
     } catch (error: any) {
-      logMongoError("/items", error);
-      const { statusCode, message } = handleMongoError(error);
-      res.status(statusCode).json({ error: message });
+      console.error("Error fetching items:", error);
+      res.status(500).json({ error: error.message });
     }
   },
 );
@@ -42,7 +48,7 @@ router.post(
   checkPermission("items", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { name, price, stock, image, category, gstRate } = req.body;
+      const { name, price, stock, image, categoryId, gstRate } = req.body;
 
       // Validate image size (limit to 5MB)
       if (image && image.length > 5 * 1024 * 1024) {
@@ -51,18 +57,19 @@ router.post(
           .json({ error: "Image size must be less than 5MB" });
       }
 
-      const item = new Item({ name, price, stock, image, category, gstRate });
-      await item.save();
-      res.status(201).json(item);
+      const [newItem] = await db.insert(items).values({
+        name,
+        price: price?.toString() || "0.00",
+        stock: stock || 0,
+        image,
+        categoryId: categoryId || null,
+        gstRate: gstRate?.toString() || "0.00",
+      }).returning();
+
+      res.status(201).json(newItem);
     } catch (error: any) {
       console.error("Error creating item:", error);
-      if (error.message.includes("document exceeds")) {
-        res
-          .status(400)
-          .json({ error: "Document size too large. Image is too big." });
-      } else {
-        res.status(400).json({ error: error.message });
-      }
+      res.status(400).json({ error: error.message });
     }
   },
 );
@@ -73,10 +80,25 @@ router.put(
   checkPermission("items", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const item = await Item.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      res.json(item);
+      const { name, price, stock, image, categoryId, gstRate } = req.body;
+      const [updatedItem] = await db
+        .update(items)
+        .set({
+          name,
+          price: price?.toString(),
+          stock,
+          image,
+          categoryId: categoryId || null,
+          gstRate: gstRate?.toString(),
+          updatedAt: new Date(),
+        })
+        .where(eq(items.id, req.params.id))
+        .returning();
+      
+      if (!updatedItem) {
+        return res.status(404).json({ error: "Item not found" });
+      }
+      res.json(updatedItem);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -89,7 +111,10 @@ router.delete(
   checkPermission("items", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
-      await Item.findByIdAndDelete(req.params.id);
+      const [deletedItem] = await db.delete(items).where(eq(items.id, req.params.id)).returning();
+      if (!deletedItem) {
+        return res.status(404).json({ error: "Item not found" });
+      }
       res.json({ message: "Item deleted" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -104,12 +129,11 @@ router.get(
   checkPermission("items", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const categories = await Category.find().lean();
-      res.json(categories);
+      const allCategories = await db.query.categories.findMany();
+      res.json(allCategories);
     } catch (error: any) {
-      logMongoError("/categories", error);
-      const { statusCode, message } = handleMongoError(error);
-      res.status(statusCode).json({ error: message });
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: error.message });
     }
   },
 );
@@ -121,9 +145,11 @@ router.post(
   async (req: AuthRequest, res: Response) => {
     try {
       const { name, description } = req.body;
-      const category = new Category({ name, description });
-      await category.save();
-      res.status(201).json(category);
+      const [newCategory] = await db.insert(categories).values({
+        name,
+        description,
+      }).returning();
+      res.status(201).json(newCategory);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -136,7 +162,10 @@ router.delete(
   checkPermission("items", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
-      await Category.findByIdAndDelete(req.params.id);
+      const [deletedCategory] = await db.delete(categories).where(eq(categories.id, req.params.id)).returning();
+      if (!deletedCategory) {
+         return res.status(404).json({ error: "Category not found" });
+      }
       res.json({ message: "Category deleted" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -150,9 +179,14 @@ router.get(
   checkPermission("products", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const products = await Product.find().lean();
-      res.json(products);
+      const allProducts = await db.query.products.findMany({
+        with: {
+          productItems: true,
+        },
+      });
+      res.json(allProducts);
     } catch (error: any) {
+      console.error("Error fetching products:", error);
       res.status(500).json({ error: error.message });
     }
   },
@@ -164,10 +198,33 @@ router.post(
   checkPermission("products", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { name, price, stock, image, items } = req.body;
-      const product = new Product({ name, price, stock, image, items });
-      await product.save();
-      res.status(201).json(product);
+      const { name, price, stock, image, items: compositionItems } = req.body;
+      
+      const [newProduct] = await db.insert(products).values({
+        name,
+        price: price?.toString() || "0.00",
+        stock: stock || 0,
+        image,
+      }).returning();
+
+      if (compositionItems && compositionItems.length > 0) {
+        await db.insert(productItems).values(
+          compositionItems.map((ci: any) => ({
+            productId: newProduct.id,
+            itemId: ci.itemId,
+            quantity: ci.quantity,
+          }))
+        );
+      }
+
+      const productWithItems = await db.query.products.findFirst({
+        where: eq(products.id, newProduct.id),
+        with: {
+            productItems: true,
+        }
+      });
+
+      res.status(201).json(productWithItems);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -180,10 +237,44 @@ router.put(
   checkPermission("products", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
+      const { name, price, stock, image, items: compositionItems } = req.body;
+      
+      const [updatedProduct] = await db.update(products).set({
+        name,
+        price: price?.toString(),
+        stock,
+        image,
+        updatedAt: new Date(),
+      })
+      .where(eq(products.id, req.params.id))
+      .returning();
+
+      if (!updatedProduct) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      if (compositionItems) {
+        // Simple sync: delete old and insert new
+        await db.delete(productItems).where(eq(productItems.productId, req.params.id));
+        if (compositionItems.length > 0) {
+          await db.insert(productItems).values(
+            compositionItems.map((ci: any) => ({
+              productId: updatedProduct.id,
+              itemId: ci.itemId,
+              quantity: ci.quantity,
+            }))
+          );
+        }
+      }
+
+      const productWithItems = await db.query.products.findFirst({
+        where: eq(products.id, updatedProduct.id),
+        with: {
+            productItems: true,
+        }
       });
-      res.json(product);
+
+      res.json(productWithItems);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -196,7 +287,10 @@ router.delete(
   checkPermission("products", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
-      await Product.findByIdAndDelete(req.params.id);
+      const [deletedProduct] = await db.delete(products).where(eq(products.id, req.params.id)).returning();
+      if (!deletedProduct) {
+        return res.status(404).json({ error: "Product not found" });
+      }
       res.json({ message: "Product deleted" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -210,9 +304,14 @@ router.get(
   checkPermission("customers", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const customers = await Customer.find().lean();
-      res.json(customers);
+      const allCustomers = await db.query.customers.findMany({
+        with: {
+          addresses: true,
+        },
+      });
+      res.json(allCustomers);
     } catch (error: any) {
+      console.error("Error fetching customers:", error);
       res.status(500).json({ error: error.message });
     }
   },
@@ -224,10 +323,35 @@ router.post(
   checkPermission("customers", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const customer = new Customer(req.body);
-      await customer.save();
-      res.status(201).json(customer);
+      const { name, phone, altPhone, email, organization, addresses } = req.body;
+      const [newCustomer] = await db.insert(customers).values({
+        name,
+        phone,
+        altPhone,
+        email,
+        organization,
+      }).returning();
+
+      if (addresses && addresses.length > 0) {
+        await db.insert(customerAddresses).values(
+            addresses.map((addr: any) => ({
+                customerId: newCustomer.id,
+                address: typeof addr === 'string' ? addr : addr.address,
+            }))
+        );
+      }
+
+      const customerWithAddresses = await db.query.customers.findFirst({
+        where: eq(customers.id, newCustomer.id),
+        with: {
+            addresses: true,
+        }
+      });
+
+      console.log("[API] Creating customer with body:", JSON.stringify(req.body, null, 2));
+      res.status(201).json(customerWithAddresses);
     } catch (error: any) {
+      console.error("[API] Error creating customer:", error);
       res.status(400).json({ error: error.message });
     }
   },
@@ -239,7 +363,15 @@ router.get(
   checkPermission("customers", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const customer = await Customer.findById(req.params.id).lean();
+      const customer = await db.query.customers.findFirst({
+        where: eq(customers.id, req.params.id),
+        with: {
+          addresses: true,
+        },
+      });
+      if (!customer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
       res.json(customer);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -253,13 +385,44 @@ router.put(
   checkPermission("customers", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const customer = await Customer.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true },
-      );
-      res.json(customer);
+      const { name, phone, altPhone, email, organization, addresses } = req.body;
+      const [updatedCustomer] = await db.update(customers).set({
+        name,
+        phone,
+        altPhone,
+        email,
+        organization,
+        updatedAt: new Date(),
+      })
+      .where(eq(customers.id, req.params.id))
+      .returning();
+
+      if (!updatedCustomer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+
+      if (addresses) {
+        await db.delete(customerAddresses).where(eq(customerAddresses.customerId, req.params.id));
+        if (addresses.length > 0) {
+            await db.insert(customerAddresses).values(
+                addresses.map((addr: any) => ({
+                    customerId: updatedCustomer.id,
+                    address: typeof addr === 'string' ? addr : addr.address,
+                }))
+            );
+        }
+      }
+
+      const customerWithAddresses = await db.query.customers.findFirst({
+        where: eq(customers.id, updatedCustomer.id),
+        with: {
+            addresses: true,
+        }
+      });
+
+      res.json(customerWithAddresses);
     } catch (error: any) {
+      console.error("Error updating customer:", error);
       res.status(400).json({ error: error.message });
     }
   },
@@ -271,7 +434,10 @@ router.delete(
   checkPermission("customers", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
-      await Customer.findByIdAndDelete(req.params.id);
+      const [deletedCustomer] = await db.delete(customers).where(eq(customers.id, req.params.id)).returning();
+      if (!deletedCustomer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
       res.json({ message: "Customer deleted" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -285,9 +451,16 @@ router.get(
   checkPermission("sales", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const sales = await Sale.find().lean();
-      res.json(sales);
+      const allSales = (await db.query.sales.findMany({
+        with: {
+          items: true,
+          customer: true,
+        },
+        orderBy: [desc(sales.createdAt)],
+      })).map(s => ({ ...s, date: s.createdAt }));
+      res.json(allSales);
     } catch (error: any) {
+      console.error("Error fetching sales:", error);
       res.status(500).json({ error: error.message });
     }
   },
@@ -299,14 +472,16 @@ router.get(
   async (req: AuthRequest, res: Response) => {
     try {
       const { deliveryBoyId } = req.params;
-      console.log("[API] /sales/delivery-boy/:deliveryBoyId called with ID:", deliveryBoyId);
-      const sales = await Sale.find({
-        assignedDeliveryBoyId: deliveryBoyId,
-        orderType: "delivery",
-        status: { $ne: "cancelled" },
-      }).lean();
-      console.log(`[API] Found ${sales.length} sales for delivery boy ${deliveryBoyId}`);
-      res.json(sales);
+      const matchedSales = (await db.query.sales.findMany({
+          where: and(
+            sql`delivery_details->>'assignedDeliveryBoyId' = ${deliveryBoyId}`,
+            eq(sales.orderType, "delivery")
+          ),
+          with: {
+            items: true,
+          }
+      })).map(s => ({ ...s, date: s.createdAt }));
+      res.json(matchedSales);
     } catch (error: any) {
       console.error("[API] Error fetching sales for delivery boy:", error);
       res.status(500).json({ error: error.message });
@@ -321,34 +496,26 @@ router.post(
     try {
       const { saleId, status, paymentStatus } = req.body;
 
-      // Validate required fields
       if (!saleId || !status) {
         return res.status(400).json({ error: "saleId and status are required" });
       }
 
-      // Validate status
-      if (!["in_transit", "delivered", "pending", "cancelled"].includes(status)) {
-        return res.status(400).json({ error: "Invalid status value" });
-      }
-
-      // Validate paymentStatus if provided
-      if (paymentStatus && !["pending", "paid", "failed"].includes(paymentStatus)) {
-        return res.status(400).json({ error: "Invalid payment status value" });
-      }
-
-      const updateData: any = { status };
+      const updateData: any = { status, updatedAt: new Date() };
       if (paymentStatus) {
         updateData.paymentStatus = paymentStatus;
       }
 
-      const sale = await Sale.findByIdAndUpdate(saleId, updateData, { new: true });
+      const [updatedSale] = await db
+        .update(sales)
+        .set(updateData)
+        .where(eq(sales.id, saleId))
+        .returning();
 
-      if (!sale) {
+      if (!updatedSale) {
         return res.status(404).json({ error: "Sale not found" });
       }
 
-      console.log(`[API] Delivery boy updated sale ${saleId} status to ${status}`);
-      res.json(sale);
+      res.json(updatedSale);
     } catch (error: any) {
       console.error("[API] Error updating delivery boy sale status:", error);
       res.status(500).json({ error: error.message });
@@ -362,9 +529,19 @@ router.get(
   checkPermission("sales", "view"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const sale = await Sale.findById(req.params.id).lean();
-      res.json(sale);
+      const sale = await db.query.sales.findFirst({
+        where: eq(sales.id, req.params.id),
+        with: {
+          items: true,
+          customer: true,
+        },
+      });
+      if (!sale) {
+        return res.status(404).json({ error: "Sale not found" });
+      }
+      res.json({ ...sale, date: sale.createdAt });
     } catch (error: any) {
+      console.error("Error fetching sale:", error);
       res.status(400).json({ error: error.message });
     }
   },
@@ -376,10 +553,47 @@ router.post(
   checkPermission("sales", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const sale = new Sale(req.body);
-      await sale.save();
-      res.status(201).json(sale);
+      const { items: saleItems, customerId, total, subtotal, gstAmount, orderType, paymentMode, paymentStatus, status, deliveryDetails, paymentAmounts, discountAmount, deliveryCharges } = req.body;
+      
+      const [newSale] = await db.insert(sales).values({
+        customerId: customerId || null,
+        total: total?.toString() || "0.00",
+        subtotal: subtotal?.toString() || "0.00",
+        gstAmount: gstAmount?.toString() || "0.00",
+        discountAmount: discountAmount?.toString() || "0.00",
+        deliveryCharges: deliveryCharges?.toString() || "0.00",
+        paymentMode,
+        paymentStatus: paymentStatus || "pending",
+        status: status || "pending",
+        orderType,
+        deliveryDetails,
+        paymentAmounts,
+      }).returning();
+
+      if (saleItems && saleItems.length > 0) {
+        await db.insert(saleItemsTable).values(
+            saleItems.map((si: any) => ({
+                saleId: newSale.id,
+                productId: si.productId,
+                name: si.name,
+                quantity: si.quantity,
+                price: si.price?.toString(),
+                composition: si.composition,
+            }))
+        );
+      }
+
+      const completedSale = await db.query.sales.findFirst({
+        where: eq(sales.id, newSale.id),
+        with: {
+          items: true,
+        }
+      });
+
+      console.log("[API] Creating sale with body:", JSON.stringify(req.body, null, 2));
+      res.status(201).json({ ...completedSale, date: completedSale!.createdAt });
     } catch (error: any) {
+      console.error("[API] Error creating sale:", error);
       res.status(400).json({ error: error.message });
     }
   },
@@ -391,10 +605,16 @@ router.put(
   checkPermission("sales", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const sale = await Sale.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      res.json(sale);
+      const [updatedSale] = await db
+        .update(sales)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(sales.id, req.params.id))
+        .returning();
+      
+      if (!updatedSale) {
+        return res.status(404).json({ error: "Sale not found" });
+      }
+      res.json({ ...updatedSale, date: updatedSale.createdAt });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -407,7 +627,10 @@ router.delete(
   checkPermission("sales", "delete"),
   async (req: AuthRequest, res: Response) => {
     try {
-      await Sale.findByIdAndDelete(req.params.id);
+      const [deletedSale] = await db.delete(sales).where(eq(sales.id, req.params.id)).returning();
+      if (!deletedSale) {
+        return res.status(404).json({ error: "Sale not found" });
+      }
       res.json({ message: "Sale deleted" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -421,8 +644,13 @@ router.get(
   checkPermission("creditRecords", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const records = await CreditRecord.find().lean();
-      res.json(records);
+      const allRecords = await db.query.creditRecords.findMany({
+        with: {
+            customer: true,
+        },
+        orderBy: [desc(creditRecords.date)],
+      });
+      res.json(allRecords);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -435,9 +663,15 @@ router.post(
   checkPermission("creditRecords", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const record = new CreditRecord(req.body);
-      await record.save();
-      res.status(201).json(record);
+      const { customerId, amount, type, saleId, remarks } = req.body;
+      const [newRecord] = await db.insert(creditRecords).values({
+        customerId,
+        amount: amount?.toString(),
+        type,
+        saleId: saleId || null,
+        remarks,
+      }).returning();
+      res.status(201).json(newRecord);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -450,8 +684,8 @@ router.get(
   checkPermission("deliveryBoys", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const boys = await DeliveryBoy.find().lean();
-      res.json(boys);
+      const allBoys = await db.query.deliveryBoys.findMany();
+      res.json(allBoys);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -464,9 +698,8 @@ router.post(
   checkPermission("deliveryBoys", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const boy = new DeliveryBoy(req.body);
-      await boy.save();
-      res.status(201).json(boy);
+      const [newBoy] = await db.insert(deliveryBoys).values(req.body).returning();
+      res.status(201).json(newBoy);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -485,17 +718,17 @@ router.put(
         return res.status(400).json({ error: "Invalid status value" });
       }
 
-      const boy = await DeliveryBoy.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true },
-      );
+      const [updatedBoy] = await db
+        .update(deliveryBoys)
+        .set({ status, updatedAt: new Date() })
+        .where(eq(deliveryBoys.id, id))
+        .returning();
 
-      if (!boy) {
+      if (!updatedBoy) {
         return res.status(404).json({ error: "Delivery boy not found" });
       }
 
-      res.json(boy);
+      res.json(updatedBoy);
     } catch (error: any) {
       console.error("[API] Error updating delivery boy status:", error);
       res.status(500).json({ error: error.message });
@@ -509,10 +742,16 @@ router.put(
   checkPermission("deliveryBoys", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const boy = await DeliveryBoy.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      res.json(boy);
+      const [updatedBoy] = await db
+        .update(deliveryBoys)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(deliveryBoys.id, req.params.id))
+        .returning();
+      
+      if (!updatedBoy) {
+        return res.status(404).json({ error: "Delivery boy not found" });
+      }
+      res.json(updatedBoy);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -525,8 +764,8 @@ router.get(
   checkPermission("settings", "view"),
   async (_req: AuthRequest, res: Response) => {
     try {
-      const settings = await Settings.findOne().lean();
-      res.json(settings);
+      const currentSettings = await db.query.settings.findFirst();
+      res.json(currentSettings);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -539,14 +778,14 @@ router.put(
   checkPermission("settings", "edit"),
   async (req: AuthRequest, res: Response) => {
     try {
-      let settings = await Settings.findOne();
-      if (!settings) {
-        settings = new Settings(req.body);
+      const existingSettings = await db.query.settings.findFirst();
+      let result;
+      if (!existingSettings) {
+        [result] = await db.insert(settings).values(req.body).returning();
       } else {
-        Object.assign(settings, req.body);
+        [result] = await db.update(settings).set({ ...req.body, updatedAt: new Date() }).returning();
       }
-      await settings.save();
-      res.json(settings);
+      res.json(result);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }

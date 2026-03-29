@@ -1,35 +1,35 @@
 import { Router, Response } from "express";
-import { User, Role } from "../db/models/index.js";
+import { db } from "../db/index.js";
+import { users, roles } from "../db/schema.js";
 import { authMiddleware, AuthRequest } from "../middleware/authMiddleware.js";
-import { connectDB } from "../db/connection.js";
+import { eq, ne, and } from "drizzle-orm";
+import bcryptjs from "bcryptjs";
 
 const router = Router();
 
-router.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    return res.status(500).json({ error: "Database connection failed" });
-  }
-});
-
 router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const currentUser = await User.findById(req.userId);
+    const currentUser = await db.query.users.findFirst({
+      where: eq(users.id, req.userId!),
+    });
+
     if (!currentUser?.isAdmin) {
       return res.status(403).json({ error: "Only admins can view users" });
     }
 
-    // Fix corrupted user records (old schema had role as string "admin")
-    await User.updateMany(
-      { role: { $type: "string" } },
-      { $set: { role: null } },
-    );
+    const allUsers = await db.query.users.findMany({
+      with: {
+        role: true,
+      },
+    });
 
-    const users = await User.find().select("-password").populate("role").lean();
+    // Remove passwords from response
+    const usersWithoutPasswords = allUsers.map((u) => {
+      const { password, ...userWithoutPassword } = u;
+      return userWithoutPassword;
+    });
 
-    res.json(users);
+    res.json(usersWithoutPasswords);
   } catch (error: any) {
     console.error("Error fetching users:", error);
     res.status(500).json({ error: error.message });
@@ -38,21 +38,27 @@ router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
 
 router.get("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const currentUser = await User.findById(req.userId);
+    const currentUser = await db.query.users.findFirst({
+      where: eq(users.id, req.userId!),
+    });
+
     if (!currentUser?.isAdmin && req.userId !== req.params.id) {
       return res.status(403).json({ error: "Access denied" });
     }
 
-    const user = await User.findById(req.params.id)
-      .select("-password")
-      .populate("role")
-      .lean();
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, req.params.id),
+      with: {
+        role: true,
+      },
+    });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.json(user);
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
   } catch (error: any) {
     console.error("Error fetching user:", error);
     res.status(500).json({ error: error.message });
@@ -61,7 +67,10 @@ router.get("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
 
 router.post("/", authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const currentUser = await User.findById(req.userId);
+    const currentUser = await db.query.users.findFirst({
+      where: eq(users.id, req.userId!),
+    });
+
     if (!currentUser?.isAdmin) {
       return res.status(403).json({ error: "Only admins can create users" });
     }
@@ -74,7 +83,10 @@ router.post("/", authMiddleware, async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.email, email.toLowerCase()),
+    });
+
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
@@ -85,27 +97,35 @@ router.post("/", authMiddleware, async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const user = new User({
-      email,
-      password,
-      name,
-      isActive: isActive !== false,
-      isAdmin: false,
-      role: roleId || null,
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        name,
+        isActive: isActive !== false,
+        isAdmin: false,
+        roleId: roleId || null,
+      })
+      .returning();
+
+    // Fetch with role
+    const userWithRole = await db.query.users.findFirst({
+      where: eq(users.id, newUser.id),
+      with: {
+        role: true,
+      },
     });
 
-    await user.save();
-    await user.populate("role");
+    if (!userWithRole) {
+      throw new Error("Failed to fetch created user");
+    }
 
-    const userData = user.toJSON();
-    res.status(201).json({
-      id: userData._id,
-      email: userData.email,
-      name: userData.name,
-      isAdmin: userData.isAdmin,
-      isActive: userData.isActive,
-      role: userData.role,
-    });
+    const { password: _, ...userWithoutPassword } = userWithRole;
+    res.status(201).json(userWithoutPassword);
   } catch (error: any) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: error.message });
@@ -114,34 +134,44 @@ router.post("/", authMiddleware, async (req: AuthRequest, res: Response) => {
 
 router.put("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
-    const currentUser = await User.findById(req.userId);
+    const currentUser = await db.query.users.findFirst({
+      where: eq(users.id, req.userId!),
+    });
+
     if (!currentUser?.isAdmin) {
       return res.status(403).json({ error: "Only admins can edit users" });
     }
 
     const { name, roleId, isActive } = req.body;
-    const user = await User.findById(req.params.id);
+    
+    const updateData: any = { updatedAt: new Date() };
+    if (name) updateData.name = name;
+    if (roleId !== undefined) updateData.roleId = roleId || null;
+    if (isActive !== undefined) updateData.isActive = isActive;
 
-    if (!user) {
+    const [updatedUser] = await db
+      .update(users)
+      .set(updateData)
+      .where(eq(users.id, req.params.id))
+      .returning();
+
+    if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    if (name) user.name = name;
-    if (roleId !== undefined) user.role = roleId || null;
-    if (isActive !== undefined) user.isActive = isActive;
-
-    await user.save();
-    await user.populate("role");
-
-    const userData = user.toJSON();
-    res.json({
-      id: userData._id,
-      email: userData.email,
-      name: userData.name,
-      isAdmin: userData.isAdmin,
-      isActive: userData.isActive,
-      role: userData.role,
+    const userWithRole = await db.query.users.findFirst({
+      where: eq(users.id, updatedUser.id),
+      with: {
+        role: true,
+      },
     });
+
+    if (!userWithRole) {
+      throw new Error("Failed to fetch updated user");
+    }
+
+    const { password, ...userWithoutPassword } = userWithRole;
+    res.json(userWithoutPassword);
   } catch (error: any) {
     console.error("Error updating user:", error);
     res.status(500).json({ error: error.message });
@@ -153,7 +183,10 @@ router.delete(
   authMiddleware,
   async (req: AuthRequest, res: Response) => {
     try {
-      const currentUser = await User.findById(req.userId);
+      const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, req.userId!),
+      });
+
       if (!currentUser?.isAdmin) {
         return res.status(403).json({ error: "Only admins can delete users" });
       }
@@ -164,8 +197,12 @@ router.delete(
           .json({ error: "Cannot delete your own account" });
       }
 
-      const user = await User.findByIdAndDelete(req.params.id);
-      if (!user) {
+      const [deletedUser] = await db
+        .delete(users)
+        .where(eq(users.id, req.params.id))
+        .returning();
+
+      if (!deletedUser) {
         return res.status(404).json({ error: "User not found" });
       }
 

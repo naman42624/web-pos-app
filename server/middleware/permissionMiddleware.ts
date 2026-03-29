@@ -1,7 +1,19 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "./authMiddleware.js";
-import { User } from "../db/models/index.js";
-import { PermissionEntity, PermissionAction } from "../db/models/Role.js";
+import { db } from "../db/index.js";
+import { users } from "../db/schema.js";
+import { eq } from "drizzle-orm";
+
+export type PermissionEntity = 
+  | "sales" 
+  | "items" 
+  | "products" 
+  | "customers" 
+  | "deliveryBoys" 
+  | "creditRecords" 
+  | "settings";
+
+export type PermissionAction = "view" | "add" | "edit" | "changeStatus" | "delete";
 
 export function checkPermission(
   entity: PermissionEntity,
@@ -13,7 +25,13 @@ export function checkPermission(
         return res.status(401).json({ error: "User not authenticated" });
       }
 
-      const user = await User.findById(req.userId).populate("role");
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, req.userId),
+        with: {
+          role: true,
+        },
+      });
+
       if (!user) {
         return res.status(401).json({ error: "User not found" });
       }
@@ -32,8 +50,7 @@ export function checkPermission(
         });
       }
 
-      const roleDoc = user.role as any;
-      const permissions = roleDoc.permissions || {};
+      const permissions = (user.role.permissions || {}) as any;
       const entityPermissions = permissions[entity] || {};
       const hasPermission = entityPermissions[action];
 
