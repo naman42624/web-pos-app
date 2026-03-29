@@ -623,7 +623,7 @@ export function usePOS() {
         deliveryDetails: sale.deliveryDetails,
         date: new Date().toISOString(),
         total: sale.total,
-        status: sale.isQuickSale ? "delivered" : "pending",
+        status: sale.status || (sale.orderType === "pickup" || sale.isQuickSale ? "delivered" : "pending"),
         paymentStatus: sale.paymentMode === "credit" ? "pending" : "completed",
         isQuickSale: sale.isQuickSale || false,
       });

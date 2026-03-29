@@ -181,7 +181,7 @@ router.get(
     try {
       const allProducts = await db.query.products.findMany({
         with: {
-          productItems: true,
+          items: true,
         },
       });
       res.json(allProducts);
@@ -220,7 +220,7 @@ router.post(
       const productWithItems = await db.query.products.findFirst({
         where: eq(products.id, newProduct.id),
         with: {
-            productItems: true,
+            items: true,
         }
       });
 
@@ -270,7 +270,7 @@ router.put(
       const productWithItems = await db.query.products.findFirst({
         where: eq(products.id, updatedProduct.id),
         with: {
-            productItems: true,
+            items: true,
         }
       });
 
@@ -590,7 +590,7 @@ router.post(
         orderType,
         paymentMode,
         paymentStatus: paymentStatus || (paymentMode === "credit" ? "pending" : "completed"),
-        status: status || (orderType === "pickup" ? "delivered" : "pending"),
+        status: status && status !== "pending" ? status : (orderType === "pickup" ? "delivered" : "pending"),
         deliveryDetails,
         pickupDate,
         pickupTime,

@@ -207,7 +207,7 @@ export const itemRelations = relations(items, ({ one, many }) => ({
 }));
 
 export const productRelations = relations(products, ({ many }) => ({
-  productItems: many(productItems),
+  items: many(productItems),
   saleItems: many(saleItems),
 }));
 
