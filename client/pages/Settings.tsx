@@ -707,7 +707,7 @@ function UsersManagement() {
     if (!selectedUserForPermissions) return;
 
     try {
-      await api.updateUser(selectedUserForPermissions._id, { permissions });
+      await api.updateUser(selectedUserForPermissions.id, { permissions });
       toast.success("Permissions updated successfully!");
       await loadUsers();
     } catch (error: any) {
@@ -720,7 +720,7 @@ function UsersManagement() {
 
     try {
       await api.changeUserPassword(
-        selectedUserForPasswordChange._id,
+        selectedUserForPasswordChange.id,
         newPassword,
       );
       toast.success("User password changed successfully!");
@@ -735,7 +735,7 @@ function UsersManagement() {
     if (!selectedUserForRoles) return;
 
     try {
-      await api.updateUser(selectedUserForRoles._id, { roleIds });
+      await api.updateUser(selectedUserForRoles.id, { roleIds });
       toast.success("Roles assigned successfully!");
       setSelectedUserForRoles(null);
       await loadUsers();
@@ -848,7 +848,7 @@ function UsersManagement() {
               <tbody>
                 {users.map((user) => (
                   <tr
-                    key={user._id}
+                    key={user.id}
                     className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm text-slate-900">
@@ -863,7 +863,7 @@ function UsersManagement() {
                           <div className="flex flex-wrap gap-1">
                             {user.roleIds.map((roleId: string) => {
                               const roleName = roles?.find(
-                                (r: any) => r._id === roleId,
+                                (r: any) => r.id === roleId,
                               )?.name;
                               return roleName ? (
                                 <span
@@ -883,7 +883,7 @@ function UsersManagement() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() =>
-                          handleToggleActive(user._id, user.isActive)
+                          handleToggleActive(user.id, user.isActive)
                         }
                         className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                           user.isActive
@@ -917,7 +917,7 @@ function UsersManagement() {
                           Change Pass
                         </button>
                         <button
-                          onClick={() => handleDeleteUser(user._id)}
+                          onClick={() => handleDeleteUser(user.id)}
                           className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm font-medium transition-colors"
                         >
                           Delete

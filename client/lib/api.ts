@@ -169,12 +169,24 @@ export async function updateUser(
     name?: string;
     roleId?: string;
     isActive?: boolean;
+    role?: string;
+    roleIds?: string[];
+    permissions?: any;
   },
 ) {
   const response = await fetch(`${API_BASE}/users/${id}`, {
     method: "PUT",
     headers: getHeaders(),
     body: JSON.stringify(user),
+  });
+  return handleResponse(response);
+}
+
+export async function changeUserPassword(id: string, password: string) {
+  const response = await fetch(`${API_BASE}/users/${id}/password`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify({ password }),
   });
   return handleResponse(response);
 }

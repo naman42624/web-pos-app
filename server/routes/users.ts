@@ -178,6 +178,47 @@ router.put("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.put(
+  "/:id/password",
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const currentUser = await db.query.users.findFirst({
+        where: eq(users.id, req.userId!),
+      });
+
+      if (!currentUser?.isAdmin && req.userId !== req.params.id) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      const { password } = req.body;
+      if (!password || password.length < 6) {
+        return res
+          .status(400)
+          .json({ error: "Password must be at least 6 characters" });
+      }
+
+      const salt = await bcryptjs.genSalt(10);
+      const hashedPassword = await bcryptjs.hash(password, salt);
+
+      const [updatedUser] = await db
+        .update(users)
+        .set({ password: hashedPassword, updatedAt: new Date() })
+        .where(eq(users.id, req.params.id))
+        .returning();
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json({ message: "Password updated successfully" });
+    } catch (error: any) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+);
+
 router.delete(
   "/:id",
   authMiddleware,
