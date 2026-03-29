@@ -554,39 +554,71 @@ router.post(
   checkPermission("sales", "add"),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { items: saleItems, customerId, total, subtotal, gstAmount, orderType, paymentMode, paymentStatus, status, deliveryDetails, paymentAmounts, discountAmount, deliveryCharges, pickupDate, pickupTime, isQuickSale } = req.body;
-      
+      const { 
+        items: saleItems, 
+        customerId, 
+        total, 
+        subtotal, 
+        gstAmount, 
+        orderType, 
+        paymentMode, 
+        paymentStatus, 
+        status, 
+        deliveryDetails, 
+        paymentAmounts, 
+        discountAmount, 
+        deliveryCharges, 
+        pickupDate, 
+        pickupTime, 
+        isQuickSale 
+      } = req.body;
+
+      // Log the payload for debugging
+      console.log("[API] Creating sale with body:", JSON.stringify({ ...req.body, items: `${saleItems?.length || 0} items` }, null, 2));
+
+      // Sanitize numeric inputs to avoid NaN in Postgres
+      const sanitizeNumeric = (val: any) => {
+        const num = parseFloat(val);
+        return isNaN(num) ? "0.00" : num.toFixed(2);
+      };
+
       const [newSale] = await db.insert(sales).values({
-        customerId: customerId || null,
-        total: total?.toString() || "0.00",
-        subtotal: subtotal?.toString() || "0.00",
-        gstAmount: gstAmount?.toString() || "0.00",
-        discountAmount: discountAmount?.toString() || "0.00",
-        deliveryCharges: deliveryCharges?.toString() || "0.00",
-        paymentMode,
-        paymentStatus: paymentStatus || "pending",
-        status: status || "pending",
+        customerId,
+        total: sanitizeNumeric(total),
+        subtotal: sanitizeNumeric(subtotal),
+        gstAmount: sanitizeNumeric(gstAmount),
         orderType,
+        paymentMode,
+        paymentStatus: paymentStatus || (paymentMode === "credit" ? "pending" : "completed"),
+        status: status || (orderType === "pickup" ? "delivered" : "pending"),
         deliveryDetails,
-        paymentAmounts,
         pickupDate,
         pickupTime,
-        isQuickSale: isQuickSale || false,
+        isQuickSale: isQuickSale === true || isQuickSale === "true",
+        paymentAmounts,
+        discountAmount: sanitizeNumeric(discountAmount),
+        deliveryCharges: sanitizeNumeric(deliveryCharges),
       }).returning();
 
+      if (!newSale) {
+        throw new Error("Failed to insert sale records");
+      }
+
+      // 2. Insert Sale Items
       if (saleItems && saleItems.length > 0) {
         await db.insert(saleItemsTable).values(
             saleItems.map((si: any) => ({
                 saleId: newSale.id,
-                productId: si.productId,
+                productId: si.productId || null,
                 name: si.name,
-                quantity: si.quantity,
-                price: si.price?.toString(),
+                quantity: parseInt(si.quantity) || 1,
+                price: sanitizeNumeric(si.price),
                 composition: si.composition,
             }))
         );
       }
 
+      // Re-fetch the completed sale with joined items to return full object
       const completedSale = await db.query.sales.findFirst({
         where: eq(sales.id, newSale.id),
         with: {
@@ -594,11 +626,15 @@ router.post(
         }
       });
 
-      console.log("[API] Creating sale with body:", JSON.stringify(req.body, null, 2));
-      res.status(201).json({ ...completedSale, date: completedSale!.createdAt });
+      if (!completedSale) {
+        // Fallback if findFirst fails immediately after insert (race condition or connection issue)
+        return res.status(201).json({ ...newSale, items: saleItems || [], date: newSale.createdAt });
+      }
+
+      res.status(201).json({ ...completedSale, date: completedSale.createdAt });
     } catch (error: any) {
       console.error("[API] Error creating sale:", error);
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message || "Internal server error during sale creation" });
     }
   },
 );

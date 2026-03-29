@@ -165,7 +165,7 @@ export default function QuickSale() {
     setItemSearchTerm("");
     setShowItemDropdown(false);
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -174,7 +174,7 @@ export default function QuickSale() {
     const newItems = customProductItems.filter((_, i) => i !== index);
     setCustomProductItems(newItems);
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -185,7 +185,7 @@ export default function QuickSale() {
     );
     setCustomProductItems(newItems);
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -227,7 +227,7 @@ export default function QuickSale() {
     setCustomItemPrice("");
 
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -304,8 +304,6 @@ export default function QuickSale() {
 
   const isPaymentValid = () => {
     if (selectedPaymentModes.size === 0) return false;
-
-    if (selectedPaymentModes.size === 1) return true;
 
     const totalPayment = getTotalPaymentAmount();
     return Math.abs(totalPayment - total) < 0.01;
@@ -1236,7 +1234,7 @@ export default function QuickSale() {
                   <div>
                     <p className="text-sm text-slate-600">Default Qty</p>
                     <p className="font-semibold text-slate-900">
-                      {scannedProduct.quantity}
+                      1
                     </p>
                   </div>
                 </div>

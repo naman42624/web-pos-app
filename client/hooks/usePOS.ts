@@ -54,7 +54,7 @@ export interface DeliveryDetails {
 export interface Sale {
   id: string;
   items: SaleItem[];
-  paymentMode: "cash" | "upi" | "credit";
+  paymentMode: "cash" | "upi" | "credit" | "cod";
   paymentModes?: ("cash" | "upi" | "credit" | "cod")[];
   paymentAmounts?: Record<string, number>;
   customerId?: string;
@@ -638,6 +638,7 @@ export function usePOS() {
             amount: sale.total,
             saleId,
             date: new Date().toISOString(),
+            type: "credit",
           });
 
           // Update customer total credit
@@ -665,31 +666,43 @@ export function usePOS() {
       await loadCreditRecords();
       if (sale.customerId) await loadCustomers();
 
+      const parsedSaleItems = (saleData.items || []).map((si: any) => ({
+        ...si,
+        price: Number(si.price) || 0,
+        composition: Array.isArray(si.composition) 
+          ? si.composition.map((c: any) => ({
+              ...c,
+              customPrice: c.customPrice !== undefined ? (Number(c.customPrice) || 0) : undefined,
+              quantity: Number(c.quantity) || 1
+            }))
+          : si.composition
+      }));
+
       const newSale: Sale = {
         id: saleId,
-        items: sale.items,
-        paymentMode: sale.paymentMode,
-        paymentModes: sale.paymentModes,
-        paymentAmounts: sale.paymentAmounts,
-        customerId: sale.customerId,
-        total: sale.total,
-        subtotal: sale.subtotal,
-        gstAmount: sale.gstAmount,
-        date: new Date().toISOString(),
-        orderType: sale.orderType,
-        pickupDate: sale.pickupDate,
-        pickupTime: sale.pickupTime,
-        discountType: sale.discountType,
-        discountValue: sale.discountValue,
-        discountAmount: sale.discountAmount,
-        deliveryCharges: sale.deliveryCharges,
-        deliveryDetails: sale.deliveryDetails,
-        paymentStatus: "pending",
-        status: "pending",
-        isQuickSale: sale.isQuickSale || false,
+        items: parsedSaleItems,
+        paymentMode: saleData.paymentMode || sale.paymentMode,
+        paymentModes: saleData.paymentModes || sale.paymentModes,
+        paymentAmounts: saleData.paymentAmounts || sale.paymentAmounts,
+        customerId: saleData.customerId || sale.customerId,
+        total: Number(saleData.total) || sale.total,
+        subtotal: Number(saleData.subtotal) || sale.subtotal,
+        gstAmount: Number(saleData.gstAmount) || sale.gstAmount,
+        date: saleData.date || new Date().toISOString(),
+        orderType: saleData.orderType || sale.orderType,
+        pickupDate: saleData.pickupDate || sale.pickupDate,
+        pickupTime: saleData.pickupTime || sale.pickupTime,
+        status: saleData.status || (sale.isQuickSale ? "delivered" : "pending"),
+        paymentStatus: saleData.paymentStatus || (sale.paymentMode === "credit" ? "pending" : "completed"),
+        deliveryDetails: saleData.deliveryDetails || sale.deliveryDetails,
+        discountType: saleData.discountType || sale.discountType,
+        discountValue: saleData.discountValue !== undefined ? Number(saleData.discountValue) : sale.discountValue,
+        discountAmount: saleData.discountAmount !== undefined ? Number(saleData.discountAmount) : sale.discountAmount,
+        deliveryCharges: saleData.deliveryCharges !== undefined ? Number(saleData.deliveryCharges) : sale.deliveryCharges,
+        isQuickSale: saleData.isQuickSale || (sale as any).isQuickSale || false,
       };
 
-      setSales([...sales, newSale]);
+      setSales((prev) => [newSale, ...prev]);
       return newSale;
     } catch (error) {
       const errorMsg =

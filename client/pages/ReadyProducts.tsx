@@ -45,6 +45,7 @@ export default function ReadyProducts() {
     setFormData({
       name: "",
       price: "",
+      stock: "",
       image: "",
       selectedItems: [],
     });
@@ -200,7 +201,7 @@ export default function ReadyProducts() {
 
   const calculateCompositionPrice = () => {
     return formData.selectedItems.reduce((sum, pi) => {
-      const itemPrice = getItemPrice(pi.itemId, pi.customPrice);
+      const itemPrice = getItemPrice((pi as any).itemId, (pi as any).customPrice);
       return sum + itemPrice * pi.quantity;
     }, 0);
   };

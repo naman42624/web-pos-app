@@ -120,8 +120,7 @@ export function PermissionsMatrix({
       ...prev,
       [entity]: {
         ...prev[entity],
-        [action]:
-          !prev[entity][action as keyof (typeof prev)[(typeof entity)[number]]],
+        [action]: !(prev[entity] as any)[action],
       },
     }));
   };
@@ -193,9 +192,7 @@ export function PermissionsMatrix({
                         <input
                           type="checkbox"
                           checked={
-                            localPermissions[entity][
-                              action as keyof (typeof localPermissions)[(typeof entity)[number]]
-                            ]
+                            (localPermissions[entity] as any)[action]
                           }
                           onChange={() =>
                             handlePermissionToggle(entity, action)

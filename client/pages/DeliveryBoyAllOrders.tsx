@@ -158,7 +158,7 @@ export default function DeliveryBoyAllOrders() {
 
   const isCODOrder = (delivery: Sale) => {
     return (
-      delivery.paymentModes?.includes("cod") || delivery.paymentMode === "cod"
+      (delivery as any).paymentModes?.includes("cod") || (delivery as any).paymentMode === "cod"
     );
   };
 

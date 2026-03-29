@@ -251,7 +251,7 @@ export default function AddSale() {
     setShowItemDropdown(false);
     // Auto-update product price to composition total
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -261,7 +261,7 @@ export default function AddSale() {
     setCustomProductItems(newItems);
     // Auto-update product price to composition total
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -273,7 +273,7 @@ export default function AddSale() {
     setCustomProductItems(newItems);
     // Auto-update product price to composition total
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
@@ -316,14 +316,14 @@ export default function AddSale() {
 
     // Auto-update product price to composition total
     const newTotal = newItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
     setCustomProductPrice(newTotal.toString());
   };
 
   const getCustomProductTotalPrice = () => {
     return customProductItems.reduce((sum, pi) => {
-      return sum + getItemPrice(pi.itemId, pi.customPrice) * pi.quantity;
+      return sum + getItemPrice((pi as any).itemId, (pi as any).customPrice) * pi.quantity;
     }, 0);
   };
 

@@ -566,6 +566,8 @@ export async function createCreditRecord(record: {
   amount: number;
   date: string;
   saleId: string;
+  type: "credit" | "payment";
+  remarks?: string;
 }) {
   const response = await fetch(`${DATA_BASE}/credit-records`, {
     method: "POST",
